@@ -254,16 +254,19 @@ export const LandingPage: React.FC = () => {
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    localStorage.removeItem('planttwin_user_email');
     enterDemoMode(selectedRole.roleName);
     navigate(selectedRole.defaultRoute);
   };
 
   const handleSSOLogin = (provider: string) => {
+    localStorage.removeItem('planttwin_user_email');
     enterDemoMode(selectedRole.roleName);
     navigate(selectedRole.defaultRoute);
   };
 
   const handleQuickLaunch = (role: RoleTourInfo) => {
+    localStorage.removeItem('planttwin_user_email');
     enterDemoMode(role.roleName);
     navigate(role.defaultRoute);
   };
