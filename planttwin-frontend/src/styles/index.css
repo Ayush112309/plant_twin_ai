@@ -1,0 +1,302 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Global Single Unified Font Family System (Inter)
+   Standardized Font Weights & Typography Hierarchy across the entire application
+   ========================================================================== */
+
+*, ::before, ::after, body, button, input, select, textarea, code, kbd, samp, pre, .font-mono, .font-sans {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+p, span, td, label {
+  font-weight: 400;
+}
+
+button, input, select, textarea {
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Nexus Admin Design System Tokens & Color Palettes
+   Reference: Nexus Enterprise Admin Portal (https://github.com/vijayprabhakarusa/nexus-admin-template)
+   ========================================================================== */
+
+/* 1. Default: Nexus Dark Theme (Enterprise Slate Navy) */
+:root, [data-theme="industrial"], [data-theme="nexus-dark"] {
+  --bg-canvas: #090D16;
+  --bg-card: #111827;
+  --bg-card-hover: #162032;
+  --bg-sidebar: #0B0F19;
+  --bg-header: rgba(17, 24, 39, 0.85);
+  --border-color: #1E2D4A;
+  --border-strong: #334155;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  /* Nexus Brand Accent Tokens */
+  --brand-primary: #2563EB;
+  --brand-hover: #1D4ED8;
+  --brand-soft: rgba(37, 99, 235, 0.15);
+  --brand-border: rgba(37, 99, 235, 0.4);
+
+  /* Status Tokens */
+  --accent-emerald: #10B981;
+  --accent-cyan: #0EA5E9;
+  --accent-amber: #F59E0B;
+  --accent-crimson: #EF4444;
+  --accent-purple: #8B5CF6;
+}
+
+/* 2. Dark Slate Theme */
+[data-theme="dark"] {
+  --bg-canvas: #0F172A;
+  --bg-card: #1E293B;
+  --bg-card-hover: #26354A;
+  --bg-sidebar: #0F172A;
+  --bg-header: rgba(30, 41, 59, 0.85);
+  --border-color: #334155;
+  --border-strong: #475569;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+
+  --brand-primary: #3B82F6;
+  --brand-hover: #2563EB;
+  --brand-soft: rgba(59, 130, 246, 0.15);
+  --brand-border: rgba(59, 130, 246, 0.4);
+
+  --accent-emerald: #34D399;
+  --accent-cyan: #38BDF8;
+  --accent-amber: #FBBF24;
+  --accent-crimson: #F87171;
+  --accent-purple: #A78BFA;
+}
+
+/* 3. Light Operational Theme */
+[data-theme="light"] {
+  --bg-canvas: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F1F5F9;
+  --bg-sidebar: #FFFFFF;
+  --bg-header: rgba(255, 255, 255, 0.9);
+  --border-color: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+
+  --brand-primary: #2563EB;
+  --brand-hover: #1D4ED8;
+  --brand-soft: #EFF6FF;
+  --brand-border: #BFDBFE;
+
+  --accent-emerald: #059669;
+  --accent-cyan: #0284C7;
+  --accent-amber: #D97706;
+  --accent-crimson: #DC2626;
+  --accent-purple: #7C3AED;
+}
+
+/* 4. Siemens SCADA Teal Theme */
+[data-theme="siemens"] {
+  --bg-canvas: #002B36;
+  --bg-card: #073642;
+  --bg-card-hover: #0A4352;
+  --bg-sidebar: #00212B;
+  --bg-header: rgba(7, 54, 66, 0.85);
+  --border-color: #2AA198;
+  --border-strong: #36BEB4;
+  --text-primary: #EEE8D5;
+  --text-secondary: #93A1A1;
+  --text-muted: #657B83;
+
+  --brand-primary: #2AA198;
+  --brand-hover: #268BD2;
+  --brand-soft: rgba(42, 161, 152, 0.15);
+  --brand-border: rgba(42, 161, 152, 0.4);
+
+  --accent-emerald: #859900;
+  --accent-cyan: #2AA198;
+  --accent-amber: #B58900;
+  --accent-crimson: #CB4B16;
+  --accent-purple: #6C71C4;
+}
+
+/* 5. Midnight Purple Theme */
+[data-theme="midnight"] {
+  --bg-canvas: #0D0914;
+  --bg-card: #170F26;
+  --bg-card-hover: #211636;
+  --bg-sidebar: #09060E;
+  --bg-header: rgba(23, 15, 38, 0.85);
+  --border-color: #2D1D4A;
+  --border-strong: #422B6B;
+  --text-primary: #F5F3FF;
+  --text-secondary: #DDD6FE;
+  --text-muted: #A78BFA;
+
+  --brand-primary: #8B5CF6;
+  --brand-hover: #7C3AED;
+  --brand-soft: rgba(139, 92, 246, 0.15);
+  --brand-border: rgba(139, 92, 246, 0.4);
+
+  --accent-emerald: #10B981;
+  --accent-cyan: #06B6D4;
+  --accent-amber: #F59E0B;
+  --accent-crimson: #EC4899;
+  --accent-purple: #C084FC;
+}
+
+/* 6. High Contrast Accessibility Theme */
+[data-theme="contrast"] {
+  --bg-canvas: #000000;
+  --bg-card: #050505;
+  --bg-card-hover: #1A1A1A;
+  --bg-sidebar: #000000;
+  --bg-header: #000000;
+  --border-color: #FFFFFF;
+  --border-strong: #FFFFFF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #EEEEEE;
+  --text-muted: #CCCCCC;
+
+  --brand-primary: #FFFF00;
+  --brand-hover: #FFD700;
+  --brand-soft: rgba(255, 255, 0, 0.2);
+  --brand-border: #FFFF00;
+
+  --accent-emerald: #00FF00;
+  --accent-cyan: #00FFFF;
+  --accent-amber: #FFA500;
+  --accent-crimson: #FF0000;
+  --accent-purple: #FF00FF;
+}
+
+/* Dynamic Theme-Reactive Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 9999px;
+  border: 1px solid var(--bg-canvas);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-primary);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--bg-canvas);
+}
+
+/* Firefox Custom Scrollbar Styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) var(--bg-canvas);
+}
+
+/* Layout Density Rules */
+body.layout-compact {
+  font-size: 0.825rem;
+}
+body.layout-compact .space-y-6 > * + * {
+  margin-top: 1rem !important;
+}
+body.layout-compact .p-6 {
+  padding: 1rem !important;
+}
+body.layout-compact .p-5 {
+  padding: 0.85rem !important;
+}
+body.layout-compact .py-3.5 {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+/* Glassmorphism & Base Component Styles */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+}
+
+.glass-card-elevated {
+  background: var(--bg-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+.input-nexus {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 0.75rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-right: 0.875rem;
+  padding-left: 0.875rem;
+  width: 100%;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* Dedicated Search Input Class to guarantee left padding for search icons */
+.input-nexus-search {
+  padding-left: 2.75rem !important;
+}
+
+.input-nexus:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px var(--brand-soft);
+}
+
+.btn-nexus-primary {
+  background: var(--brand-primary);
+  color: #FFFFFF;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px -3px var(--brand-soft);
+}
+
+.btn-nexus-secondary {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-nexus-secondary:hover {
+  background: var(--bg-card-hover);
+}
+
+/* Custom Scrollbar Utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # --- PostgreSQL 14 + TimescaleDB Database ---
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    container_name: planttwin-db
+    restart: always
+    environment:
+      POSTGRES_USER: planttwin
+      POSTGRES_PASSWORD: planttwin_secret
+      POSTGRES_DB: planttwin_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U planttwin -d planttwin_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- Redis Cache & Telemetry Queue ---
+  redis:
+    image: redis:7-alpine
+    container_name: planttwin-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- FastAPI Backend API Gateway ---
+  backend:
+    build:
+      context: ./planttwin-backend
+      dockerfile: Dockerfile
+    container_name: planttwin-backend-service
+    restart: always
+    environment:
+      - ENVIRONMENT=production
+      - POSTGRES_SERVER=timescaledb
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=planttwin
+      - POSTGRES_PASSWORD=planttwin_secret
+      - POSTGRES_DB=planttwin_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - "8000:8000"
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # --- React Vite Frontend Web App ---
+  frontend:
+    build:
+      context: ./planttwin-frontend
+      dockerfile: Dockerfile
+    container_name: planttwin-frontend-service
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planttwin-backend
+  labels:
+    app: planttwin-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: planttwin-backend
+  template:
+    metadata:
+      labels:
+        app: planttwin-backend
+    spec:
+      containers:
+      - name: planttwin-backend
+        image: planttwin/backend:v2.0.0
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: planttwin-config
+        resources:
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10
