@@ -20,8 +20,11 @@ jobs:
         run: |
           cd planttwin-backend
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install --prefer-binary -r requirements.txt
       - name: Run Backend Syntax & Import Checks
+        env:
+          ENVIRONMENT: local_sqlite
+          JWT_SECRET_KEY: test_secret_key_for_ci_cd_pipeline_123!
         run: |
           cd planttwin-backend
           python -c "import sys; sys.path.insert(0, '.'); import app.main; print('FastAPI App Import Successful')"
