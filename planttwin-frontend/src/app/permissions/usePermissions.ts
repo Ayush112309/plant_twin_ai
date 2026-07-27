@@ -60,7 +60,18 @@ const PERSONA_PERMISSIONS: Record<string, RolePermissions> = {
   'System Administrator': {
     roleName: 'System Administrator (Full Access)',
     email: 'admin@planttwin.ai',
-    badge: '⚙ Super Admin (Full Platform Access)',
+    badge: '👑 Super Admin (100% Full Access)',
+    isFullAccess: true,
+    canWritePLC: true,
+    canManageWorkOrders: true,
+    canPromoteModels: true,
+    canExportReports: true,
+    canAdministerSystem: true,
+  },
+  'System Administrator (Full Access)': {
+    roleName: 'System Administrator (Full Access)',
+    email: 'admin@planttwin.ai',
+    badge: '👑 Super Admin (100% Full Access)',
     isFullAccess: true,
     canWritePLC: true,
     canManageWorkOrders: true,
@@ -81,7 +92,7 @@ export const usePermissions = (): RolePermissions => {
       PLANT_MANAGER: 'Plant Manager',
       MAINTENANCE_MANAGER: 'Maintenance Manager',
       AI_SPECIALIST: 'AI & Reliability Specialist',
-      CONTROL_OPERATOR: 'Control Room Operator',
+      CONTROL_OPERATOR: 'Control Operator',
       VIEWER: 'Viewer',
     };
 
@@ -90,7 +101,7 @@ export const usePermissions = (): RolePermissions => {
     return {
       roleName: roleNameStr,
       email: storedEmail || user.email,
-      badge: user.role === 'SYSTEM_ADMIN' ? '⚙ Super Admin' : '👤 Team Member',
+      badge: user.role === 'SYSTEM_ADMIN' ? '👑 Super Admin' : '👤 Team Member',
       isFullAccess: permissions.is_system_admin,
       canWritePLC: permissions.can_write_plc,
       canManageWorkOrders: permissions.can_manage_work_orders,
@@ -100,20 +111,20 @@ export const usePermissions = (): RolePermissions => {
     };
   }
 
-  // Fallback to Demo Mode personas
+  // Fallback to Demo Mode personas - Use authentic demo persona email (e.g. admin@planttwin.ai)
   if (isDemoMode && demoPersona) {
-    const base = PERSONA_PERMISSIONS[demoPersona] || PERSONA_PERMISSIONS['Plant Manager'];
+    const base = PERSONA_PERMISSIONS[demoPersona] || PERSONA_PERMISSIONS['System Administrator (Full Access)'] || PERSONA_PERMISSIONS['System Administrator'] || PERSONA_PERMISSIONS['Plant Manager'];
     return {
       ...base,
-      email: storedEmail || base.email,
+      email: base.email,
     };
   }
 
   // Default fallback if not logged in and not in demo mode
-  const base = PERSONA_PERMISSIONS['Plant Manager'];
+  const base = PERSONA_PERMISSIONS['System Administrator (Full Access)'] || PERSONA_PERMISSIONS['Plant Manager'];
   return {
     ...base,
-    email: storedEmail || base.email,
+    email: base.email,
   };
 };
 
