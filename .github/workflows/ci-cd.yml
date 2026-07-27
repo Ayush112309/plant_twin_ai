@@ -20,7 +20,7 @@ jobs:
         run: |
           cd planttwin-backend
           python -m pip install --upgrade pip
-          pip install --prefer-binary aiosqlite -r requirements.txt
+          pip install --prefer-binary "pydantic[email]" email-validator aiosqlite -r requirements.txt
       - name: Run Backend Syntax & Import Checks
         env:
           ENVIRONMENT: local_sqlite
