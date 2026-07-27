@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useTheme, ThemeMode } from '../../theme/ThemeProvider';
 import usePermissions from '../../permissions/usePermissions';
+import { useAuth } from '../../contexts/AuthContext';
 import apiClient from '../../../lib/api/client';
 
 interface HeaderProps {
@@ -52,6 +53,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { isDemoMode } = useAuth();
   const permissions = usePermissions();
 
   const headerRef = useRef<HTMLHeadingElement>(null);
@@ -143,7 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
       if (savedSelected && seen.has(savedSelected)) {
         setSelectedPlant(savedSelected);
         const match = uniquePlants.find((x) => x.name === savedSelected);
-        if (match && match.email) {
+        if (match && match.email && !isDemoMode) {
           localStorage.setItem('planttwin_user_email', match.email);
         }
       }
@@ -181,7 +183,7 @@ export const Header: React.FC<HeaderProps> = ({
 
     // If selected plant has a registered admin email, sync header user profile to it
     const match = plantsList.find((p) => p.name === plantName);
-    if (match && match.email) {
+    if (match && match.email && !isDemoMode) {
       localStorage.setItem('planttwin_user_email', match.email);
     }
 
