@@ -63,9 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [plantsList, setPlantsList] = useState<PlantOrgItem[]>(DEFAULT_PLANTS);
   const [backendStatus, setBackendStatus] = useState<string>('ONLINE');
 
-  const [userEmail, setUserEmail] = useState<string>(
-    localStorage.getItem('planttwin_user_email') || permissions.email
-  );
+  const userEmail = permissions.email;
 
   // Close all dropdowns when clicking anywhere outside the header
   useEffect(() => {
@@ -100,11 +98,6 @@ export const Header: React.FC<HeaderProps> = ({
       document.body.classList.remove('layout-compact');
     }
   };
-
-  useEffect(() => {
-    const email = localStorage.getItem('planttwin_user_email') || permissions.email;
-    setUserEmail(email);
-  }, [permissions.email]);
 
   // Load plants dynamically from registered local storage + backend API
   const loadPlants = async () => {
@@ -152,7 +145,6 @@ export const Header: React.FC<HeaderProps> = ({
         const match = uniquePlants.find((x) => x.name === savedSelected);
         if (match && match.email) {
           localStorage.setItem('planttwin_user_email', match.email);
-          setUserEmail(match.email);
         }
       }
     } catch (e) {
@@ -165,8 +157,6 @@ export const Header: React.FC<HeaderProps> = ({
 
     const handleOrgUpdate = () => {
       loadPlants();
-      const latestEmail = localStorage.getItem('planttwin_user_email') || permissions.email;
-      setUserEmail(latestEmail);
     };
 
     window.addEventListener('planttwin:org-updated', handleOrgUpdate);
@@ -193,7 +183,6 @@ export const Header: React.FC<HeaderProps> = ({
     const match = plantsList.find((p) => p.name === plantName);
     if (match && match.email) {
       localStorage.setItem('planttwin_user_email', match.email);
-      setUserEmail(match.email);
     }
 
     setPlantDropdownOpen(false);
