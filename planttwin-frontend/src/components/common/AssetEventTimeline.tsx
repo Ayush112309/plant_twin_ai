@@ -37,15 +37,18 @@ export interface TimelineEvent {
 
 interface ComponentProps {
   assetId?: string;
+  assetTag?: string;
   assetName?: string;
   onLaunchCopilotQuery?: (query: string) => void;
 }
 
 export const AssetEventTimeline: React.FC<ComponentProps> = ({
   assetId = 'Reactor-001',
+  assetTag,
   assetName = 'Reactor-001 Vessel',
   onLaunchCopilotQuery,
 }) => {
+  const targetAssetId = assetTag || assetId;
   const navigate = useNavigate();
   const { lifecycleEvents } = usePlantTelemetry();
   const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);
@@ -53,7 +56,7 @@ export const AssetEventTimeline: React.FC<ComponentProps> = ({
   const [activeModalEvent, setActiveModalEvent] = useState<TimelineEvent | null>(null);
 
   // Convert context lifecycle events for assetId to TimelineEvent format
-  const contextEvents: TimelineEvent[] = (lifecycleEvents[assetId] || []).map((evt: LifecycleEvent) => ({
+  const contextEvents: TimelineEvent[] = (lifecycleEvents[targetAssetId] || []).map((evt: LifecycleEvent) => ({
     id: evt.id,
     event_type: evt.type,
     category: evt.type === 'Telemetry' ? 'Telemetry' : evt.type === 'Failures' ? 'Failure' : 'Alarm',

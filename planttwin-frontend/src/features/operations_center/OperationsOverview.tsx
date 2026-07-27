@@ -118,7 +118,7 @@ export const OperationsOverview: React.FC = () => {
 
   const criticalCount = activeAlerts.filter((a) => a.severity === 'CRITICAL').length;
   const warningCount = activeAlerts.filter((a) => a.severity === 'WARNING').length;
-  const infoCount = activeAlerts.filter((a) => a.severity === 'INFO' || a.severity === 'NORMAL').length;
+  const infoCount = activeAlerts.filter((a) => (a.severity as string) === 'INFO' || (a.severity as string) === 'NORMAL').length;
 
   const alertSummaryData = [
     { name: 'Critical', value: criticalCount, color: '#EF4444' },
