@@ -143,7 +143,3 @@ The system includes pre-configured persona profiles for live demonstration:
 Distributed under the **Commercial Enterprise License** / **MIT License**. See `LICENSE` for more information.
 
 ---
-
-<p center>
-  Developed with ❤️ by the PlantTwin AI Platform Engineering Team
-</p>
