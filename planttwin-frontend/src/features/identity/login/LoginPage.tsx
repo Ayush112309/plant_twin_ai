@@ -50,12 +50,14 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    // Persist email in local storage & dispatch event
-    localStorage.setItem('planttwin_user_email', email);
-    window.dispatchEvent(new Event('planttwin:org-updated'));
+    // Save the email the user typed — this is what should show in the header after sign-in
+    const signInEmail = email;
 
     if (authMode === 'demo') {
       enterDemoMode(selectedPersona.role);
+      // Demo mode from login page: restore the typed email so header shows it
+      localStorage.setItem('planttwin_user_email', signInEmail);
+      window.dispatchEvent(new Event('planttwin:org-updated'));
       navigate(selectedPersona.route);
       return;
     }
@@ -69,6 +71,9 @@ export const LoginPage: React.FC = () => {
       });
 
       if (response && response.data) {
+        // Real backend auth: store the sign-in email
+        localStorage.setItem('planttwin_user_email', signInEmail);
+        window.dispatchEvent(new Event('planttwin:org-updated'));
         await setAuthData(response.data.access_token, response.data.refresh_token);
         navigate('/operations');
         return;
@@ -88,6 +93,9 @@ export const LoginPage: React.FC = () => {
 
       if (isRegistered || email.toLowerCase().includes('apex') || email.toLowerCase().includes('admin')) {
         enterDemoMode('System Administrator');
+        // Sign-in fallback: restore the typed email so header shows admin@apex.com
+        localStorage.setItem('planttwin_user_email', signInEmail);
+        window.dispatchEvent(new Event('planttwin:org-updated'));
         navigate('/operations');
         return;
       }

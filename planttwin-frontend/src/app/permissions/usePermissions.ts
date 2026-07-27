@@ -111,12 +111,14 @@ export const usePermissions = (): RolePermissions => {
     };
   }
 
-  // Fallback to Demo Mode personas - Use authentic demo persona email (e.g. admin@planttwin.ai)
+  // Fallback to Demo Mode personas
+  // If user signed in via Login page, storedEmail will be set (e.g. admin@apex.com)
+  // If user entered via 5-Persona landing page, storedEmail will be null (cleared by enterDemoMode)
   if (isDemoMode && demoPersona) {
     const base = PERSONA_PERMISSIONS[demoPersona] || PERSONA_PERMISSIONS['System Administrator (Full Access)'] || PERSONA_PERMISSIONS['System Administrator'] || PERSONA_PERMISSIONS['Plant Manager'];
     return {
       ...base,
-      email: base.email,
+      email: storedEmail || base.email,
     };
   }
 
