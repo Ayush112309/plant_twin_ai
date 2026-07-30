@@ -13,12 +13,15 @@ class RedisManager:
             self.redis = aioredis.from_url(
                 settings.REDIS_URI,
                 encoding="utf-8",
-                decode_responses=True
+                decode_responses=True,
+                protocol=2,
+                socket_connect_timeout=0.5,
+                socket_timeout=0.5,
             )
             await self.redis.ping()
             logger.info("Connected to Redis server successfully.")
         except Exception as e:
-            logger.warning(f"Redis connection failed: {e}. Running without Redis cache.")
+            logger.warning(f"Redis cache not connected ({e}). Running seamlessly without Redis cache.")
             self.redis = None
 
     async def close(self):

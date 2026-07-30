@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "PlantTwin AI Backend"
     VERSION: str = "2.0.0"
     API_V1_STR: str = "/api/v1"
-    ENVIRONMENT: str = "development"
+    ENVIRONMENT: str = "local_sqlite"
     DEBUG: bool = True
 
     # Security
@@ -29,8 +29,9 @@ class Settings(BaseSettings):
     
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
-        if self.ENVIRONMENT == "local_sqlite":
-            return "sqlite+aiosqlite:///./planttwin.db"
+        if self.ENVIRONMENT in ("local_sqlite", "development", "local") or os.getenv("USE_LOCAL_SQLITE", "true").lower() == "true":
+            if os.getenv("USE_POSTGRES", "false").lower() != "true":
+                return "sqlite+aiosqlite:///./planttwin.db"
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     # Redis

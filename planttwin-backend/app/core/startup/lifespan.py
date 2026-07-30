@@ -28,16 +28,24 @@ async def lifespan(app: FastAPI):
     import app.identity.invitations.models
     import app.enterprise.organizations.models
     
-    # Run database migrations automatically
-    try:
-        import asyncio
-        from alembic.config import Config
-        from alembic import command
-        alembic_cfg = Config("alembic.ini")
-        await asyncio.to_thread(command.upgrade, alembic_cfg, "head")
-        logger.info("Database migrations applied successfully (Alembic upgrade head).")
-    except Exception as e:
-        logger.error(f"Failed to apply database migrations: {e}")
+    # Run database migrations / table creation automatically
+    if "sqlite" in settings.SQLALCHEMY_DATABASE_URI:
+        try:
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            logger.info("SQLite database tables initialized successfully (local_sqlite mode).")
+        except Exception as e:
+            logger.error(f"Failed to initialize SQLite tables: {e}")
+    else:
+        try:
+            import asyncio
+            from alembic.config import Config
+            from alembic import command
+            alembic_cfg = Config("alembic.ini")
+            await asyncio.to_thread(command.upgrade, alembic_cfg, "head")
+            logger.info("Database migrations applied successfully (Alembic upgrade head).")
+        except Exception as e:
+            logger.error(f"Failed to apply database migrations: {e}")
         
     logger.info("Database connection pool initialized.")
 
