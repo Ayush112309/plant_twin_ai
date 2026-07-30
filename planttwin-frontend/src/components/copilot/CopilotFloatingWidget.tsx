@@ -24,6 +24,11 @@ import {
   Radio,
   Layers,
   HelpCircle,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  PlusCircle,
 } from 'lucide-react';
 import apiClient from '../../lib/api/client';
 import usePermissions from '../../app/permissions/usePermissions';
@@ -53,7 +58,90 @@ export const CopilotFloatingWidget: React.FC = () => {
   const [unreadCount, setUnreadCount] = useState(1);
   const [feedbackSuccess, setFeedbackSuccess] = useState<string | null>(null);
 
+  // Speech Recognition & Text-to-Speech State
+  const [isListening, setIsListening] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
+  const [selectedPromptCategory, setSelectedPromptCategory] = useState<string>('faults');
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Categorized Industrial NLP Prompt Selector Chips
+  const PROMPT_CATEGORIES = [
+    {
+      id: 'faults',
+      name: '🔥 Faults & Trips',
+      prompts: ['Why did Pump-12 stop?', 'Show abnormal sensors.', 'What alarms occurred last night?'],
+    },
+    {
+      id: 'predictive',
+      name: '🔮 Predictive RUL',
+      prompts: ['Predict failures for the next 7 days.', 'Why is temperature increasing in Reactor-3?', 'Show me all compressors with health below 70%.'],
+    },
+    {
+      id: 'oee',
+      name: '⚡ Energy & OEE',
+      prompts: ['Compare Line-1 and Line-2 performance.', 'Suggest energy optimization for Hydrocracking line.', 'Overall Plant OEE & Health Summary'],
+    },
+    {
+      id: 'maintenance',
+      name: '🛠️ Maintenance',
+      prompts: ['Generate a maintenance plan for this week.', "Generate today's production report.", 'Create work order for Reactor-001 thermal check.'],
+    },
+  ];
+
+  const toggleSpeechRecognition = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Voice dictation is not supported on this browser version.');
+      return;
+    }
+
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => setIsListening(true);
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0]?.transcript;
+        if (transcript) {
+          setInputMsg(transcript);
+        }
+        setIsListening(false);
+      };
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
+
+      recognition.start();
+    } catch (e) {
+      setIsListening(false);
+    }
+  };
+
+  const handleTextToSpeech = (msgId: string, text: string) => {
+    if (!('speechSynthesis' in window)) return;
+
+    if (speakingMsgId === msgId) {
+      window.speechSynthesis.cancel();
+      setSpeakingMsgId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[*_#`~]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.onend = () => setSpeakingMsgId(null);
+    utterance.onerror = () => setSpeakingMsgId(null);
+
+    setSpeakingMsgId(msgId);
+    window.speechSynthesis.speak(utterance);
+  };
 
   // Initial welcome message with signature features
   const [messages, setMessages] = useState<CopilotMessage[]>([
@@ -309,14 +397,30 @@ export const CopilotFloatingWidget: React.FC = () => {
                           : 'bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-bl-none'
                       }`}
                     >
-                      {/* Sender Category Badge */}
+                      {/* Sender Category Badge & Voice Read Aloud Toggle */}
                       {msg.sender === 'copilot' && (
                         <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-1.5 mb-1 text-[10px] font-mono text-emerald-400">
                           <span className="flex items-center gap-1 font-bold">
                             <Sparkles className="w-3 h-3 text-emerald-400" />
                             {msg.category || 'Cross-Module Intelligence'}
                           </span>
-                          <span className="text-slate-400">{msg.timestamp}</span>
+
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => handleTextToSpeech(msg.id, msg.text)}
+                              className={`p-1 rounded flex items-center gap-1 transition-colors ${
+                                speakingMsgId === msg.id
+                                  ? 'bg-emerald-500 text-slate-950 font-bold'
+                                  : 'text-slate-400 hover:text-emerald-400 hover:bg-slate-800'
+                              }`}
+                              title={speakingMsgId === msg.id ? 'Stop Speech' : 'Read Aloud (Text-to-Speech)'}
+                            >
+                              {speakingMsgId === msg.id ? <VolumeX className="w-3 h-3 animate-pulse" /> : <Volume2 className="w-3 h-3" />}
+                              <span>{speakingMsgId === msg.id ? 'Speaking...' : 'Listen'}</span>
+                            </button>
+
+                            <span className="text-slate-400">{msg.timestamp}</span>
+                          </div>
                         </div>
                       )}
 
@@ -373,17 +477,28 @@ export const CopilotFloatingWidget: React.FC = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Signature Prompts Bar */}
-              <div className="p-2.5 bg-[var(--bg-card)] border-t border-[var(--border-color)] space-y-1.5">
-                <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  <span className="flex items-center space-x-1">
-                    <HelpCircle className="w-3 h-3 text-sky-400" />
-                    <span>Signature Natural Language Queries:</span>
-                  </span>
-                  <span className="text-emerald-400 font-mono text-[9px]">Cross-Module NLP</span>
+              {/* Categorized Industrial Prompts Bar */}
+              <div className="p-2.5 bg-[var(--bg-card)] border-t border-[var(--border-color)] space-y-2">
+                {/* Category selector pills */}
+                <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar">
+                  {PROMPT_CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setSelectedPromptCategory(cat.id)}
+                      className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap transition-colors ${
+                        selectedPromptCategory === cat.id
+                          ? 'bg-emerald-600 text-slate-950'
+                          : 'bg-[var(--bg-canvas)] text-slate-400 hover:text-slate-200 border border-[var(--border-color)]'
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
+                  ))}
                 </div>
-                <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 no-scrollbar">
-                  {signaturePrompts.map((chip, idx) => (
+
+                {/* Selected category prompts */}
+                <div className="flex items-center space-x-1.5 overflow-x-auto pb-0.5 no-scrollbar">
+                  {(PROMPT_CATEGORIES.find((c) => c.id === selectedPromptCategory)?.prompts || []).map((chip, idx) => (
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(chip)}
@@ -395,7 +510,7 @@ export const CopilotFloatingWidget: React.FC = () => {
                 </div>
               </div>
 
-              {/* Input Form Footer */}
+              {/* Input Form Footer with Voice Dictation */}
               <div className="p-3 bg-[var(--bg-header)] border-t border-[var(--border-color)]">
                 <form
                   onSubmit={(e) => {
@@ -404,12 +519,25 @@ export const CopilotFloatingWidget: React.FC = () => {
                   }}
                   className="flex items-center space-x-2"
                 >
+                  <button
+                    type="button"
+                    onClick={toggleSpeechRecognition}
+                    className={`p-2 rounded-xl border transition-all ${
+                      isListening
+                        ? 'bg-rose-600 border-rose-400 text-white animate-pulse'
+                        : 'bg-[var(--bg-canvas)] border-[var(--border-color)] text-slate-400 hover:text-emerald-400 hover:border-emerald-500'
+                    }`}
+                    title={isListening ? 'Listening... Click to Stop' : 'Voice Dictation Mode (Click & Speak)'}
+                  >
+                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                  </button>
+
                   <input
                     type="text"
                     value={inputMsg}
                     onChange={(e) => setInputMsg(e.target.value)}
-                    placeholder="Ask Industrial AI Engineer (e.g. Why did Pump-12 stop?)..."
-                    className="flex-1 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"
+                    placeholder={isListening ? 'Listening to your voice...' : 'Ask Industrial AI Engineer (e.g. Why did Pump-12 stop?)...'}
+                    className="flex-1 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors font-sans"
                   />
                   <button
                     type="submit"
