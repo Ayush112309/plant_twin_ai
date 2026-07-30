@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { usePlantTelemetry } from '../../../app/contexts/PlantTelemetryContext';
 import { AICaseLibraryWorkspace } from '../case_library/AICaseLibraryWorkspace';
+import { MLOpsFeedbackPipeline } from '../../../components/ai/MLOpsFeedbackPipeline';
 
 interface FeedbackItem {
   id: string;
@@ -545,6 +546,9 @@ export const AICenter: React.FC = () => {
       {/* Tab 7: Engineer Feedback & MLOps */}
       {activeTab === 'feedback' && (
         <div className="space-y-6">
+          {/* Interactive 8-Stage Retraining Pipeline */}
+          <MLOpsFeedbackPipeline />
+
           {/* MLOps & Active Learning Key Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-2 shadow-xl">
