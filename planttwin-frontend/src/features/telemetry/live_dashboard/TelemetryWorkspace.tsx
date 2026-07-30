@@ -120,7 +120,7 @@ export const TelemetryWorkspace: React.FC = () => {
           <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
             {currentTemp} <span className="text-sm font-normal text-blue-400">°C</span>
           </div>
-          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+          <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] gap-1 whitespace-nowrap">
             <span>Range: 0 – 150 °C</span>
             <span className="text-blue-400 font-bold flex items-center gap-0.5">
               <TrendingUp className="w-3 h-3" /> Live Sync
@@ -150,10 +150,10 @@ export const TelemetryWorkspace: React.FC = () => {
           <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
             {currentVib} <span className="text-sm font-normal text-amber-400">mm/s</span>
           </div>
-          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span>Limit: 1.50 mm/s</span>
+          <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] gap-1 whitespace-nowrap">
+            <span>Max: 1.50 mm/s</span>
             <span className="text-amber-400 font-bold flex items-center gap-0.5">
-              <Activity className="w-3 h-3" /> SCADA Tag #04
+              <Activity className="w-3 h-3" /> Tag #04
             </span>
           </div>
         </div>
@@ -178,9 +178,9 @@ export const TelemetryWorkspace: React.FC = () => {
           <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
             {currentPressure} <span className="text-sm font-normal text-purple-400">bar</span>
           </div>
-          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span>Header Target: 520 bar</span>
-            <span className="text-purple-400 font-bold">TimescaleDB Hypertable</span>
+          <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] gap-1 whitespace-nowrap">
+            <span>Target: 520 bar</span>
+            <span className="text-purple-400 font-bold">TimescaleDB</span>
           </div>
         </div>
 
@@ -204,9 +204,9 @@ export const TelemetryWorkspace: React.FC = () => {
           <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
             {currentFlow} <span className="text-sm font-normal text-cyan-400">m³/h</span>
           </div>
-          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+          <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] gap-1 whitespace-nowrap">
             <span>Rated: 1,250 m³/h</span>
-            <span className="text-cyan-400 font-bold">100 ms Frequency</span>
+            <span className="text-cyan-400 font-bold">100 ms</span>
           </div>
         </div>
       </div>
