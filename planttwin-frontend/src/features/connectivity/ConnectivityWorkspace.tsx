@@ -414,7 +414,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
       setTimeout(() => {
         setUploading(false);
-        ingestCSVData(records);
+        ingestCSVData(records, 'CSV Batch Ingestion');
         setParsedCSV({
           fileName: file.name,
           fileSize: fileSizeFormatted,
@@ -1082,13 +1082,28 @@ export const ConnectivityWorkspace: React.FC = () => {
               </p>
             </div>
 
-            <button
-              onClick={handleDownloadSampleTemplate}
-              className="px-3.5 py-2 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-bold text-xs hover:bg-[var(--bg-card-hover)] inline-flex items-center space-x-2 shrink-0 transition-all shadow-sm"
-            >
-              <Download className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
-              <span>Download Sample SCADA CSV</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => {
+                  const sampleCSVContent = `Timestamp,Equipment_ID,Parameter,Value,Status\n${new Date().toISOString().substring(0, 19).replace('T', ' ')},Reactor-001,Temperature (°C),142.8,CRITICAL\n${new Date().toISOString().substring(0, 19).replace('T', ' ')},Pump-002,Vibration (mm/s),1.85,CRITICAL`;
+                  const blob = new Blob([sampleCSVContent], { type: 'text/csv' });
+                  const sampleFile = new File([blob], 'scada_critical_outage_batch.csv', { type: 'text/csv' });
+                  processFile(sampleFile);
+                }}
+                className="px-3 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs inline-flex items-center space-x-1.5 shrink-0 transition-all shadow-md"
+                title="Simulate Ingesting Critical SCADA Outage CSV Log File"
+              >
+                <span>🔥 Ingest Critical SCADA Batch CSV</span>
+              </button>
+
+              <button
+                onClick={handleDownloadSampleTemplate}
+                className="px-3.5 py-2 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-bold text-xs hover:bg-[var(--bg-card-hover)] inline-flex items-center space-x-2 shrink-0 transition-all shadow-sm"
+              >
+                <Download className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
+                <span>Download Sample SCADA CSV</span>
+              </button>
+            </div>
           </div>
 
           {uploadMsg && (
