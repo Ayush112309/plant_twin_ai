@@ -3,13 +3,14 @@ import {
   LineChart as LineIcon,
   Activity,
   Download,
-  RefreshCw,
-  Sliders,
-  Database,
+  Thermometer,
+  Zap,
+  Gauge,
+  Wind,
+  TrendingUp,
+  TrendingDown,
+  Clock,
   Radio,
-  Filter,
-  BarChart2,
-  CheckCircle2,
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import TelemetryReplayScrubber from '../replay/TelemetryReplayScrubber';
@@ -36,12 +37,19 @@ export const TelemetryWorkspace: React.FC = () => {
   const isIncidentPeak = replayFrame > 65 && replayFrame <= 85;
   const isWarningPhase = replayFrame > 30 && replayFrame <= 65;
 
+  // Real-time sensor metrics calculated live from stream or scrubber
+  const latestItem = activeStreamData.length > 0 ? activeStreamData[activeStreamData.length - 1] : { temp: 68.4, vibration: 0.18 };
+  const currentTemp = latestItem?.temp ?? 68.4;
+  const currentVib = latestItem?.vibration ?? 0.18;
+  const currentPressure = Number((520 + (currentTemp > 75 ? (currentTemp - 75) * 1.4 : 0.4)).toFixed(1));
+  const currentFlow = Number((1250 - (currentVib > 0.4 ? (currentVib - 0.4) * 160 : 0)).toFixed(1));
+
   const handleExportCSV = () => {
     setIsExporting(true);
     setTimeout(() => {
       const csvContent =
-        'data:text/csv;charset=utf-8,Timestamp,Temperature_C,Vibration_mm_s,Pressure_bar\n' +
-        activeStreamData.map((t: any) => `${t.timestamp},${t.temp},${t.vibration},520`).join('\n');
+        'data:text/csv;charset=utf-8,Timestamp,Temperature_C,Vibration_mm_s,Pressure_bar,Flow_m3_h\n' +
+        activeStreamData.map((t: any) => `${t.timestamp},${t.temp},${t.vibration},${currentPressure},${currentFlow}`).join('\n');
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement('a');
       link.setAttribute('href', encodedUri);
@@ -88,48 +96,117 @@ export const TelemetryWorkspace: React.FC = () => {
         </div>
       </div>
 
-      {/* Top 4 SCADA Metrics Ticker */}
+      {/* Top 4 Real-Time Live Sensor Telemetry Cards (Auto-updating) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-        <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-2 shadow-xl">
-          <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-            ACTIVE TELEMETRY TAGS
+        {/* Sensor 1: Temperature */}
+        <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-2 shadow-xl hover:border-blue-500/40 transition-all">
+          <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="flex items-center space-x-1">
+              <Thermometer className="w-3.5 h-3.5 text-blue-400" />
+              <span>Reactor Core Temp</span>
+            </span>
+            <span
+              className={`px-2 py-0.5 rounded text-[9px] font-bold ${
+                currentTemp > 100
+                  ? 'bg-rose-950 text-rose-400 border border-rose-500/40 animate-pulse'
+                  : currentTemp > 80
+                  ? 'bg-amber-950 text-amber-400 border border-amber-500/40'
+                  : 'bg-emerald-950 text-emerald-400 border border-emerald-500/40'
+              }`}
+            >
+              {currentTemp > 100 ? '🚨 EXCURSION' : currentTemp > 80 ? '⚠️ ELEVATED' : 'NORMAL'}
+            </span>
           </div>
-          <div className="text-2xl font-extrabold text-[var(--text-primary)]">45 SCADA Tags</div>
-          <div className="text-xs text-emerald-500 flex items-center gap-1 font-bold">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Siemens S7 & OPC-UA Ingestion</span>
+          <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
+            {currentTemp} <span className="text-sm font-normal text-blue-400">°C</span>
+          </div>
+          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+            <span>Range: 0 – 150 °C</span>
+            <span className="text-blue-400 font-bold flex items-center gap-0.5">
+              <TrendingUp className="w-3 h-3" /> Live Sync
+            </span>
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-2 shadow-xl">
-          <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-            INGESTION FREQUENCY
+        {/* Sensor 2: Vibration */}
+        <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-2 shadow-xl hover:border-amber-500/40 transition-all">
+          <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="flex items-center space-x-1">
+              <Zap className="w-3.5 h-3.5 text-amber-400" />
+              <span>Bearing Vibration</span>
+            </span>
+            <span
+              className={`px-2 py-0.5 rounded text-[9px] font-bold ${
+                currentVib > 1.2
+                  ? 'bg-rose-950 text-rose-400 border border-rose-500/40 animate-pulse'
+                  : currentVib > 0.4
+                  ? 'bg-amber-950 text-amber-400 border border-amber-500/40'
+                  : 'bg-emerald-950 text-emerald-400 border border-emerald-500/40'
+              }`}
+            >
+              {currentVib > 1.2 ? '🚨 HIGH VIB' : currentVib > 0.4 ? '⚠️ WARN' : 'OPTIMAL'}
+            </span>
           </div>
-          <div className="text-2xl font-extrabold text-emerald-500">100 ms (1,250 Hz)</div>
-          <div className="text-xs text-[var(--text-secondary)]">Millisecond Precision</div>
+          <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
+            {currentVib} <span className="text-sm font-normal text-amber-400">mm/s</span>
+          </div>
+          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+            <span>Limit: 1.50 mm/s</span>
+            <span className="text-amber-400 font-bold flex items-center gap-0.5">
+              <Activity className="w-3 h-3" /> SCADA Tag #04
+            </span>
+          </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-2 shadow-xl">
-          <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-            TIMESCALEDB HYPERTABLE
+        {/* Sensor 3: System Pressure */}
+        <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-2 shadow-xl hover:border-purple-500/40 transition-all">
+          <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="flex items-center space-x-1">
+              <Gauge className="w-3.5 h-3.5 text-purple-400" />
+              <span>Hydrocracker Pressure</span>
+            </span>
+            <span
+              className={`px-2 py-0.5 rounded text-[9px] font-bold ${
+                currentPressure > 560
+                  ? 'bg-rose-950 text-rose-400 border border-rose-500/40 animate-pulse'
+                  : 'bg-emerald-950 text-emerald-400 border border-emerald-500/40'
+              }`}
+            >
+              {currentPressure > 560 ? '🚨 HIGH PRESS' : 'STABLE'}
+            </span>
           </div>
-          <div className="text-2xl font-extrabold text-[var(--text-primary)]">1.42M Rows</div>
-          <div className="text-xs text-[var(--text-secondary)]">Compressed Chunking Active</div>
+          <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
+            {currentPressure} <span className="text-sm font-normal text-purple-400">bar</span>
+          </div>
+          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+            <span>Header Target: 520 bar</span>
+            <span className="text-purple-400 font-bold">TimescaleDB Hypertable</span>
+          </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-2 shadow-xl">
-          <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-            SYSTEM STREAM STATE
+        {/* Sensor 4: Gas Flow Rate */}
+        <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-2 shadow-xl hover:border-cyan-500/40 transition-all">
+          <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="flex items-center space-x-1">
+              <Wind className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Recirculation Flow</span>
+            </span>
+            <span
+              className={`px-2 py-0.5 rounded text-[9px] font-bold ${
+                currentFlow < 1000
+                  ? 'bg-amber-950 text-amber-400 border border-amber-500/40'
+                  : 'bg-emerald-950 text-emerald-400 border border-emerald-500/40'
+              }`}
+            >
+              {currentFlow < 1000 ? '⚠️ LOW FLOW' : 'NOMINAL'}
+            </span>
           </div>
-          <div
-            className={`text-2xl font-extrabold ${
-              isIncidentPeak ? 'text-rose-400' : isWarningPhase ? 'text-amber-400' : 'text-emerald-500'
-            }`}
-          >
-            {isIncidentPeak ? 'CRITICAL TRIP' : isWarningPhase ? 'THERMAL DRIFT' : 'OPTIMAL'}
+          <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
+            {currentFlow} <span className="text-sm font-normal text-cyan-400">m³/h</span>
           </div>
-          <div className="text-xs text-[var(--text-secondary)] font-bold">
-            {isIncidentPeak ? '🚨 May 15 Outage Peak' : isWarningPhase ? '⚠️ Warning Threshold' : '0 Packet Dropouts'}
+          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
+            <span>Rated: 1,250 m³/h</span>
+            <span className="text-cyan-400 font-bold">100 ms Frequency</span>
           </div>
         </div>
       </div>
@@ -139,12 +216,12 @@ export const TelemetryWorkspace: React.FC = () => {
 
       {/* Live Chart & Scatter Chart Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left: Real-Time SCADA Telemetry Stream Chart */}
-        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4">
+        {/* Left: Real-Time SCADA Telemetry Stream Chart with Dual Y-Axes */}
+        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4 font-mono">
           <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
             <div className="flex items-center space-x-2">
               <Activity className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
-              <h2 className="text-sm font-extrabold text-[var(--text-primary)]">
+              <h2 className="text-sm font-extrabold text-[var(--text-primary)] font-sans">
                 {isReplayPlaying ? '📼 Incident Replay Stream (Live Sync)' : 'Real-Time SCADA Telemetry Stream'}
               </h2>
             </div>
@@ -178,15 +255,36 @@ export const TelemetryWorkspace: React.FC = () => {
 
           <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={activeStreamData}>
+              <LineChart data={activeStreamData} margin={{ top: 10, right: 10, bottom: 0, left: -15 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
                 <XAxis dataKey="timestamp" stroke="var(--text-secondary)" fontSize={11} />
-                <YAxis stroke="var(--text-secondary)" fontSize={11} />
+                
+                {/* Left Y-Axis for Temperature */}
+                <YAxis
+                  yAxisId="temp"
+                  stroke="#2563EB"
+                  fontSize={11}
+                  domain={[0, 200]}
+                  label={{ value: '°C', angle: -90, position: 'insideLeft', fill: '#2563EB', fontSize: 10 }}
+                />
+
+                {/* Right Y-Axis for Vibration */}
+                <YAxis
+                  yAxisId="vib"
+                  orientation="right"
+                  stroke="#D97706"
+                  fontSize={11}
+                  domain={[0, 3.5]}
+                  label={{ value: 'mm/s', angle: 90, position: 'insideRight', fill: '#D97706', fontSize: 10 }}
+                />
+
                 <Tooltip
                   contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '12px' }}
                 />
+
                 {(selectedTag === 'ALL' || selectedTag === 'TEMP') && (
                   <Line
+                    yAxisId="temp"
                     type="monotone"
                     dataKey="temp"
                     stroke={isIncidentPeak ? '#EF4444' : '#2563EB'}
@@ -197,6 +295,7 @@ export const TelemetryWorkspace: React.FC = () => {
                 )}
                 {(selectedTag === 'ALL' || selectedTag === 'VIB') && (
                   <Line
+                    yAxisId="vib"
                     type="monotone"
                     dataKey="vibration"
                     stroke={isIncidentPeak ? '#F59E0B' : '#D97706'}

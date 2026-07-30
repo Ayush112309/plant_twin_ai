@@ -23,28 +23,54 @@ export const IndustrialCharts: React.FC<IndustrialChartsProps> = ({ streamData }
 
   return (
     <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4 font-mono">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans">
-          Temperature vs Vibration Scatter Correlation
-        </h3>
-        {isExcursion && (
+      <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+        <div>
+          <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans">
+            Temperature vs Vibration Scatter Correlation
+          </h3>
+          <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+            Cross-channel sensor correlation (°C vs mm/s)
+          </p>
+        </div>
+        {isExcursion ? (
           <span className="text-[10px] font-bold text-rose-400 bg-rose-950/80 px-2 py-0.5 rounded border border-rose-500/40 animate-pulse">
-            HIGH CORRELATION EXCURSION
+            🚨 EXCURSION
+          </span>
+        ) : (
+          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/40">
+            CORRELATED
           </span>
         )}
       </div>
 
-      <div className="h-56 w-full">
+      <div className="h-64 w-full pt-1">
         <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart margin={{ top: 10, right: 10, bottom: 10, left: -20 }}>
+          <ScatterChart margin={{ top: 10, right: 15, bottom: 20, left: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
-            <XAxis type="number" dataKey="temperature" name="Temperature" unit="°C" stroke="var(--text-secondary)" fontSize={11} />
-            <YAxis type="number" dataKey="vibration" name="Vibration" unit="mm/s" stroke="var(--text-secondary)" fontSize={11} />
+            <XAxis
+              type="number"
+              dataKey="temperature"
+              name="Temperature"
+              stroke="var(--text-secondary)"
+              fontSize={11}
+              domain={['auto', 'auto']}
+              label={{ value: 'Temperature (°C)', position: 'insideBottom', offset: -12, fill: 'var(--text-secondary)', fontSize: 10 }}
+            />
+            <YAxis
+              type="number"
+              dataKey="vibration"
+              name="Vibration"
+              stroke="var(--text-secondary)"
+              fontSize={11}
+              domain={[0, 'auto']}
+              label={{ value: 'Vib (mm/s)', angle: -90, position: 'insideLeft', offset: 10, fill: 'var(--text-secondary)', fontSize: 10 }}
+            />
             <Tooltip
               cursor={{ strokeDasharray: '3 3' }}
-              contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '12px' }}
+              contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '12px', fontSize: '12px' }}
+              formatter={(val: any, name: any) => [`${val} ${name === 'Temperature' ? '°C' : 'mm/s'}`, name]}
             />
-            <Scatter name="Sensors" data={chartData} fill={isExcursion ? '#F43F5E' : '#10B981'} />
+            <Scatter name="SCADA Sensor Node" data={chartData} fill={isExcursion ? '#F43F5E' : '#10B981'} />
           </ScatterChart>
         </ResponsiveContainer>
       </div>
