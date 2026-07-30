@@ -287,7 +287,7 @@ export const TelemetryWorkspace: React.FC = () => {
                   yAxisId="temp"
                   stroke="#2563EB"
                   fontSize={11}
-                  domain={[0, 200]}
+                  domain={['dataMin - 5', 'dataMax + 5']}
                   label={{ value: '°C', angle: -90, position: 'insideLeft', fill: '#2563EB', fontSize: 10 }}
                 />
 
@@ -297,7 +297,7 @@ export const TelemetryWorkspace: React.FC = () => {
                   orientation="right"
                   stroke="#D97706"
                   fontSize={11}
-                  domain={[0, 3.5]}
+                  domain={['dataMin - 0.05', 'dataMax + 0.2']}
                   label={{ value: 'mm/s', angle: 90, position: 'insideRight', fill: '#D97706', fontSize: 10 }}
                 />
 

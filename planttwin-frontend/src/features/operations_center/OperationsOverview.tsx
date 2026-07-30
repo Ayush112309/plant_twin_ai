@@ -424,19 +424,61 @@ export const OperationsOverview: React.FC = () => {
             </button>
           </div>
 
-          {/* Line Chart */}
+          {/* Line Chart with Dual Y-Axes & Dynamic Auto-Scaling */}
           <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={telemetryStream} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <LineChart data={telemetryStream} margin={{ top: 10, right: 15, left: -10, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
                 <XAxis dataKey="timestamp" stroke="var(--text-secondary)" fontSize={11} tickLine={false} />
-                <YAxis stroke="var(--text-secondary)" fontSize={11} tickLine={false} axisLine={false} />
+                
+                {/* Left Y-Axis for Temperature (Dynamic Scaling for vivid curve) */}
+                <YAxis
+                  yAxisId="temp"
+                  stroke="#3B82F6"
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                  domain={['dataMin - 5', 'dataMax + 5']}
+                  unit="°C"
+                />
+
+                {/* Right Y-Axis for Vibration (Dynamic Scaling) */}
+                <YAxis
+                  yAxisId="vib"
+                  orientation="right"
+                  stroke="#F59E0B"
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                  domain={['dataMin - 0.05', 'dataMax + 0.2']}
+                  unit="mm/s"
+                />
+
                 <Tooltip
                   contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '12px', fontSize: '12px' }}
                   itemStyle={{ color: 'var(--text-primary)' }}
                 />
-                <Line type="monotone" dataKey="temp" stroke="#3B82F6" strokeWidth={2.5} dot={{ r: 3.5 }} activeDot={{ r: 6 }} name="Temp (°C)" />
-                <Line type="monotone" dataKey="vibration" stroke="#F59E0B" strokeWidth={2.5} dot={{ r: 3.5 }} activeDot={{ r: 6 }} name="Vibration (mm/s)" />
+
+                <Line
+                  yAxisId="temp"
+                  type="monotone"
+                  dataKey="temp"
+                  stroke="#3B82F6"
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: '#3B82F6' }}
+                  activeDot={{ r: 7 }}
+                  name="Temp (°C)"
+                />
+                <Line
+                  yAxisId="vib"
+                  type="monotone"
+                  dataKey="vibration"
+                  stroke="#F59E0B"
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: '#F59E0B' }}
+                  activeDot={{ r: 7 }}
+                  name="Vibration (mm/s)"
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>

@@ -157,15 +157,22 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
 
       setTelemetryStream((prev) => {
         const last = prev[prev.length - 1] || { temp: 84.5, vibration: 0.24, pressure: 524, flow: 1250 };
-        const deltaTemp = (Math.random() - 0.5) * 0.8;
-        const deltaVib = (Math.random() - 0.5) * 0.02;
+        const stepCount = prev.length;
+        const sineWaveTemp = Math.sin(Date.now() / 2000) * 2.2;
+        const sineWaveVib = Math.cos(Date.now() / 2200) * 0.06;
+        const noiseTemp = (Math.random() - 0.5) * 1.2;
+        const noiseVib = (Math.random() - 0.5) * 0.03;
+
+        const isExcursion = last.temp > 110 || last.vibration > 1.2;
+        const baseTemp = isExcursion ? 142.8 : 83.5;
+        const baseVib = isExcursion ? 1.85 : 0.24;
 
         const newPoint: TelemetryPoint = {
           timestamp: timeStr,
-          temp: Number(Math.max(40, Math.min(180, last.temp + deltaTemp)).toFixed(1)),
-          vibration: Number(Math.max(0.05, Math.min(3.5, last.vibration + deltaVib)).toFixed(2)),
-          pressure: Number((520 + (last.temp > 80 ? (last.temp - 80) * 1.4 : 0.4)).toFixed(1)),
-          flow: Number((1250 - (last.vibration > 0.4 ? (last.vibration - 0.4) * 160 : 0)).toFixed(1)),
+          temp: Number(Math.max(40, Math.min(180, baseTemp + sineWaveTemp + noiseTemp)).toFixed(1)),
+          vibration: Number(Math.max(0.05, Math.min(3.5, baseVib + sineWaveVib + noiseVib)).toFixed(2)),
+          pressure: Number((520 + (baseTemp > 80 ? (baseTemp - 80) * 1.4 : 0.4) + Math.sin(stepCount) * 1.5).toFixed(1)),
+          flow: Number((1250 - (baseVib > 0.4 ? (baseVib - 0.4) * 160 : 0) + Math.cos(stepCount) * 8.0).toFixed(1)),
         };
 
         return [...prev.slice(1), newPoint];
