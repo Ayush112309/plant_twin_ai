@@ -431,15 +431,18 @@ export const OperationsOverview: React.FC = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
                 <XAxis dataKey="timestamp" stroke="var(--text-secondary)" fontSize={11} tickLine={false} />
                 
-                {/* Left Y-Axis for Temperature (Dynamic Scaling for vivid curve) */}
+                {/* Left Y-Axis for Temperature (Dynamic Scaling with clean integer ticks) */}
                 <YAxis
                   yAxisId="temp"
                   stroke="#3B82F6"
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
-                  domain={['dataMin - 5', 'dataMax + 5']}
-                  unit="°C"
+                  domain={[
+                    (dataMin: number) => Math.max(0, Math.floor(dataMin - 10)),
+                    (dataMax: number) => Math.min(250, Math.ceil(dataMax + 10))
+                  ]}
+                  tickFormatter={(val: number) => `${Math.round(val)}°C`}
                 />
 
                 {/* Right Y-Axis for Vibration (Dynamic Scaling) */}
@@ -450,8 +453,11 @@ export const OperationsOverview: React.FC = () => {
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
-                  domain={['dataMin - 0.05', 'dataMax + 0.2']}
-                  unit="mm/s"
+                  domain={[
+                    (dataMin: number) => Math.max(0, Number((dataMin - 0.05).toFixed(2))),
+                    (dataMax: number) => Math.min(10, Number((dataMax + 0.2).toFixed(2)))
+                  ]}
+                  tickFormatter={(val: number) => `${Number(val).toFixed(2)}mm/s`}
                 />
 
                 <Tooltip

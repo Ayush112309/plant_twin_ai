@@ -293,20 +293,26 @@ export const TelemetryWorkspace: React.FC = () => {
                 {/* Left Y-Axis for Temperature */}
                 <YAxis
                   yAxisId="temp"
-                  stroke="#2563EB"
+                  stroke="#3B82F6"
                   fontSize={11}
-                  domain={['dataMin - 5', 'dataMax + 5']}
-                  label={{ value: '°C', angle: -90, position: 'insideLeft', fill: '#2563EB', fontSize: 10 }}
+                  domain={[
+                    (dataMin: number) => Math.max(0, Math.floor(dataMin - 10)),
+                    (dataMax: number) => Math.min(250, Math.ceil(dataMax + 10))
+                  ]}
+                  tickFormatter={(val: number) => `${Math.round(val)}°C`}
                 />
 
                 {/* Right Y-Axis for Vibration */}
                 <YAxis
                   yAxisId="vib"
                   orientation="right"
-                  stroke="#D97706"
+                  stroke="#F59E0B"
                   fontSize={11}
-                  domain={['dataMin - 0.05', 'dataMax + 0.2']}
-                  label={{ value: 'mm/s', angle: 90, position: 'insideRight', fill: '#D97706', fontSize: 10 }}
+                  domain={[
+                    (dataMin: number) => Math.max(0, Number((dataMin - 0.05).toFixed(2))),
+                    (dataMax: number) => Math.min(10, Number((dataMax + 0.2).toFixed(2)))
+                  ]}
+                  tickFormatter={(val: number) => `${Number(val).toFixed(2)}mm/s`}
                 />
 
                 <Tooltip
