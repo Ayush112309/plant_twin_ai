@@ -60,6 +60,7 @@ export const RegisterPage: React.FC = () => {
 
     // Persist registered email & admin name in localStorage for top header profile display
     localStorage.setItem('planttwin_user_email', email);
+    localStorage.setItem('planttwin_registered_email', email);
     if (firstName || lastName) {
       localStorage.setItem('planttwin_user_name', `${firstName} ${lastName}`.trim());
     }
@@ -89,8 +90,11 @@ export const RegisterPage: React.FC = () => {
           admin_last_name: lastName,
         });
 
-        if (response && response.data && response.data.token) {
-          await setAuthData(response.data.token.access_token, response.data.token.refresh_token);
+        const payload = response?.data !== undefined ? response.data : response;
+        const tokenObj = payload?.token || payload?.data?.token;
+
+        if (tokenObj && tokenObj.access_token) {
+          await setAuthData(tokenObj.access_token, tokenObj.refresh_token);
         } else {
           enterDemoMode('System Administrator');
         }
