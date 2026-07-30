@@ -22,8 +22,9 @@ export const TelemetryWorkspace: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<'ALL' | 'TEMP' | 'VIB' | 'PRESSURE'>('ALL');
   const [isExporting, setIsExporting] = useState(false);
 
-  // Scrubber Replay State
-  const [replayFrame, setReplayFrame] = useState<number>(74);
+  // Scrubber Replay State & Live Toggle
+  const [isReplayActive, setIsReplayActive] = useState<boolean>(false);
+  const [replayFrame, setReplayFrame] = useState<number>(1);
   const [isReplayPlaying, setIsReplayPlaying] = useState<boolean>(false);
   const [replayStream, setReplayStream] = useState<any[]>([]);
 
@@ -31,16 +32,19 @@ export const TelemetryWorkspace: React.FC = () => {
     setReplayFrame(frame);
     setIsReplayPlaying(playing);
     setReplayStream(data);
+    if (playing) {
+      setIsReplayActive(true);
+    }
   };
 
-  const activeStreamData = replayStream.length > 0 ? replayStream : telemetryStream;
-  const isIncidentPeak = replayFrame > 65 && replayFrame <= 85;
-  const isWarningPhase = replayFrame > 30 && replayFrame <= 65;
+  const activeStreamData = isReplayActive && replayStream.length > 0 ? replayStream : telemetryStream;
+  const isIncidentPeak = isReplayActive && replayFrame > 65 && replayFrame <= 85;
+  const isWarningPhase = isReplayActive && replayFrame > 30 && replayFrame <= 65;
 
   // Real-time sensor metrics calculated live from stream or scrubber
-  const latestItem = activeStreamData.length > 0 ? activeStreamData[activeStreamData.length - 1] : { temp: 68.4, vibration: 0.18 };
-  const currentTemp = latestItem?.temp ?? 68.4;
-  const currentVib = latestItem?.vibration ?? 0.18;
+  const latestItem = activeStreamData.length > 0 ? activeStreamData[activeStreamData.length - 1] : { temp: 84.5, vibration: 0.24 };
+  const currentTemp = latestItem?.temp ?? 84.5;
+  const currentVib = latestItem?.vibration ?? 0.24;
   const currentPressure = Number((520 + (currentTemp > 75 ? (currentTemp - 75) * 1.4 : 0.4)).toFixed(1));
   const currentFlow = Number((1250 - (currentVib > 0.4 ? (currentVib - 0.4) * 160 : 0)).toFixed(1));
 
@@ -209,6 +213,25 @@ export const TelemetryWorkspace: React.FC = () => {
             <span className="text-cyan-400 font-bold">100 ms</span>
           </div>
         </div>
+      </div>
+
+      {/* Telemetry Stream Mode Switcher */}
+      <div className="flex items-center justify-between p-3 rounded-2xl bg-[var(--bg-canvas)] border border-[var(--border-color)] font-mono text-xs shadow-sm">
+        <div className="flex items-center space-x-2">
+          <span className={`w-2.5 h-2.5 rounded-full ${!isReplayActive ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'}`} />
+          <span className="font-bold text-[var(--text-primary)]">
+            {!isReplayActive ? '📡 Live SCADA & OPC-UA Real-Time Stream (1,250 Hz Active)' : '📼 Incident Replay Mode Active (May 15 Outage Scrubber)'}
+          </span>
+        </div>
+        {isReplayActive && (
+          <button
+            onClick={() => setIsReplayActive(false)}
+            className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold transition-all shadow-sm flex items-center space-x-1"
+          >
+            <Radio className="w-3.5 h-3.5" />
+            <span>Switch to Live OPC-UA Stream</span>
+          </button>
+        )}
       </div>
 
       {/* Incident Replay Scrubber Component */}

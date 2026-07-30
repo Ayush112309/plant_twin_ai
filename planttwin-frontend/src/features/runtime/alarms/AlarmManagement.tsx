@@ -111,6 +111,28 @@ export const AlarmManagement: React.FC = () => {
       .catch(() => {});
   }, []);
 
+  // Merge Context Active Alerts (OPC-UA / Siemens S7 / Ingested) into Alarms state
+  useEffect(() => {
+    if (activeAlerts && activeAlerts.length > 0) {
+      const contextAlarms: AlarmItem[] = activeAlerts.map((alt) => ({
+        id: alt.id.startsWith('ALM-') ? alt.id : `ALM-${alt.id.slice(-4).toUpperCase()}`,
+        name: alt.title,
+        source: alt.asset_tag,
+        severity: alt.severity === 'CRITICAL' ? 'CRITICAL' : alt.severity === 'WARNING' ? 'WARNING' : 'HIGH',
+        time: alt.timestamp || 'Just now',
+        ack: false,
+        threshold: alt.severity === 'CRITICAL' ? '> 120.0 °C / 1.5 mm/s' : '> Standard',
+        currentVal: '🚨 ACTIVE EXCURSION',
+      }));
+
+      setAlarms((prev) => {
+        const existingIds = new Set(prev.map((a) => a.id));
+        const newUnique = contextAlarms.filter((ca) => !existingIds.has(ca.id));
+        return [...newUnique, ...prev];
+      });
+    }
+  }, [activeAlerts]);
+
   const handleAck = async (id: string) => {
     try {
       await apiClient.post(`/runtime/alarms/${id}/acknowledge`, {});
