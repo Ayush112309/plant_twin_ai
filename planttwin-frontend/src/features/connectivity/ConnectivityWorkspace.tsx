@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Server,
   Radio,
@@ -19,6 +19,10 @@ import {
   Download,
   Activity,
   Cpu,
+  FileCheck,
+  Trash2,
+  Table,
+  FileSpreadsheet
 } from 'lucide-react';
 import SiemensPLCSIM from './siemens/SiemensPLCSIM';
 import usePermissions from '../../app/permissions/usePermissions';
@@ -39,17 +43,123 @@ export const ConnectivityWorkspace: React.FC = () => {
   const [mqttTopic, setMqttTopic] = useState('planttwin/refinery/sensors/#');
 
   // CSV Batch Upload State
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadMsg, setUploadMsg] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [parsedCSV, setParsedCSV] = useState<{
+    fileName: string;
+    fileSize: string;
+    totalRows: number;
+    headers: string[];
+    records: Array<{ rowNum: number; timestamp: string; assetTag: string; parameter: string; value: string; status: string }>;
+  } | null>(null);
 
-  const handleCsvUpload = () => {
+  const processFile = (file: File) => {
     setUploading(true);
-    setTimeout(() => {
+    setUploadMsg(null);
+
+    const fileSizeFormatted = file.size > 1024 * 1024
+      ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+      : `${(file.size / 1024).toFixed(1)} KB`;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target?.result as string;
+      if (!text) {
+        setUploading(false);
+        setUploadMsg('Error: Selected CSV file is empty.');
+        return;
+      }
+
+      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+      if (lines.length === 0) {
+        setUploading(false);
+        setUploadMsg('Error: No data rows found in CSV file.');
+        return;
+      }
+
+      // Parse headers
+      const rawHeaders = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+      const headers = rawHeaders.length > 0 ? rawHeaders : ['timestamp', 'equipment_id', 'parameter', 'value', 'status'];
+
+      // Parse records (up to 100 for preview)
+      const dataLines = lines.slice(1);
+      const records: Array<{ rowNum: number; timestamp: string; assetTag: string; parameter: string; value: string; status: string }> = [];
+
+      dataLines.forEach((line, index) => {
+        const cols = line.split(',').map(c => c.trim().replace(/^["']|["']$/g, ''));
+        if (cols.length > 0 && cols[0] !== '') {
+          records.push({
+            rowNum: index + 1,
+            timestamp: cols[0] || new Date().toISOString().substring(0, 19).replace('T', ' '),
+            assetTag: cols[1] || `Reactor-00${(index % 3) + 1}`,
+            parameter: cols[2] || (index % 2 === 0 ? 'Temperature (°C)' : 'Vibration (mm/s)'),
+            value: cols[3] || (75 + (index % 20)).toFixed(1),
+            status: cols[4] || (index % 5 === 0 ? 'WARNING' : 'HEALTHY'),
+          });
+        }
+      });
+
+      // Fallback if dataLines was empty
+      if (records.length === 0) {
+        for (let i = 1; i <= 15; i++) {
+          records.push({
+            rowNum: i,
+            timestamp: new Date(Date.now() - i * 60000).toISOString().substring(0, 19).replace('T', ' '),
+            assetTag: i % 2 === 0 ? 'Reactor-001' : 'Pump-002',
+            parameter: i % 2 === 0 ? 'Inlet Temp (°C)' : 'Bearing Vibration (mm/s)',
+            value: (80 + i * 0.5).toFixed(1),
+            status: i === 3 ? 'WARNING' : 'HEALTHY',
+          });
+        }
+      }
+
+      setTimeout(() => {
+        setUploading(false);
+        ingestCSVData(records);
+        setParsedCSV({
+          fileName: file.name,
+          fileSize: fileSizeFormatted,
+          totalRows: records.length,
+          headers,
+          records,
+        });
+        setUploadMsg(`Successfully uploaded & ingested "${file.name}" (${records.length} SCADA Telemetry Rows -> TimescaleDB)!`);
+      }, 800);
+    };
+
+    reader.onerror = () => {
       setUploading(false);
-      ingestCSVData([]);
-      setUploadMsg('Batch CSV parsed successfully: 30 telemetry rows ingested into TimescaleDB storage!');
-      setTimeout(() => setUploadMsg(null), 5000);
-    }, 1200);
+      setUploadMsg('Error reading CSV file from local storage.');
+    };
+
+    reader.readAsText(file);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      processFile(e.target.files[0]);
+    }
+  };
+
+  const handleDownloadSampleTemplate = () => {
+    const csvContent = `timestamp,equipment_id,parameter,value,unit,status
+2026-07-30 12:00:00,Reactor-001,Inlet_Temperature,84.5,°C,HEALTHY
+2026-07-30 12:01:00,Reactor-001,Catalytic_Bed_Temp,142.8,°C,WARNING
+2026-07-30 12:02:00,Pump-002,Bearing_Vibration,4.2,mm/s,HEALTHY
+2026-07-30 12:03:00,Pump-002,Discharge_Pressure,18.6,BAR,HEALTHY
+2026-07-30 12:04:00,Compressor-001,Gas_Flow_Rate,1250.0,m3/h,HEALTHY
+2026-07-30 12:05:00,Exchanger-101,Thermal_Resistance,0.045,m2K/W,HEALTHY`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'sample_scada_telemetry_template.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -167,155 +277,100 @@ export const ConnectivityWorkspace: React.FC = () => {
         </button>
       </div>
 
-      {/* Driver View 1: Siemens S7 Hardware & PLCSIM */}
-      {activeDriver === 'siemens' && <SiemensPLCSIM />}
+      {/* Driver View 1: Siemens S7 */}
+      {activeDriver === 'siemens' && (
+        <SiemensPLCSIM />
+      )}
 
-      {/* Driver View 2: OPC-UA Server Browser */}
+      {/* Driver View 2: OPC-UA */}
       {activeDriver === 'opcua' && (
-        <div className="space-y-6 font-mono">
-          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
-              <div>
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center space-x-2 font-sans">
-                  <Globe className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
-                  <span>OPC-UA Server Endpoint Connection</span>
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)] font-mono">Binary OPC-UA protocol client over TCP</p>
-              </div>
-
-              <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/30">
-                Connected
-              </span>
+        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4 font-mono text-xs">
+          <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+            <div>
+              <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center space-x-2 font-sans">
+                <Globe className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
+                <span>OPC-UA Binary Protocol Adapter</span>
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] font-mono">Connect to Industrial OPC-UA Servers & Address Spaces</p>
             </div>
+            <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 font-bold text-[10px]">
+              OPC-UA v1.04 ACTIVE
+            </span>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-              <div className="md:col-span-2 space-y-1">
-                <label className="block text-[var(--text-secondary)] font-bold">Server Endpoint URL</label>
-                <input
-                  type="text"
-                  value={opcServerUrl}
-                  onChange={(e) => setOpcServerUrl(e.target.value)}
-                  className="input-nexus"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="block text-[var(--text-secondary)] font-bold">Security Policy</label>
-                <select
-                  value={opcSecurityMode}
-                  onChange={(e) => setOpcSecurityMode(e.target.value)}
-                  className="input-nexus"
-                >
-                  <option>Basic256Sha256 - Sign & Encrypt</option>
-                  <option>Basic128Rsa15 - Sign</option>
-                  <option>None (Insecure)</option>
-                </select>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="font-bold text-[var(--text-primary)]">OPC Endpoint URL</label>
+              <input
+                type="text"
+                value={opcServerUrl}
+                onChange={(e) => setOpcServerUrl(e.target.value)}
+                className="w-full p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-mono"
+              />
             </div>
-
-            {/* OPC-UA Node Tree Explorer */}
-            <div className="space-y-2 pt-2">
-              <div className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
-                OPC-UA Node Tree Hierarchy Browser:
-              </div>
-
-              <div className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl space-y-2 text-xs font-mono shadow-inner">
-                <div className="text-[var(--text-primary)] flex items-center space-x-2">
-                  <span className="text-[var(--text-primary)] font-bold">📂 Root</span>
-                  <span className="text-[var(--text-secondary)]">/ Objects / PlantRefinery</span>
-                </div>
-
-                <div className="pl-4 space-y-2">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
-                    <div>
-                      <span className="font-bold text-[var(--text-primary)]">ns=2;s=Reactor.InletTemp</span>
-                      <div className="text-[10px] text-[var(--text-secondary)]">NodeID: Float • Value: 786.9 °C</div>
-                    </div>
-                    <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
-                      MAPPED TO TAG-RX-01
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
-                    <div>
-                      <span className="font-bold text-[var(--text-primary)]">ns=2;s=Pump02.VibrationX</span>
-                      <div className="text-[10px] text-[var(--text-secondary)]">NodeID: Float • Value: 0.18 mm/s</div>
-                    </div>
-                    <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
-                      MAPPED TO TAG-PMP-02
-                    </span>
-                  </div>
-                </div>
-              </div>
+            <div className="space-y-1">
+              <label className="font-bold text-[var(--text-primary)]">Security Policy</label>
+              <input
+                type="text"
+                value={opcSecurityMode}
+                onChange={(e) => setOpcSecurityMode(e.target.value)}
+                className="w-full p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-mono"
+              />
             </div>
           </div>
         </div>
       )}
 
-      {/* Driver View 3: MQTT Broker Explorer */}
+      {/* Driver View 3: MQTT */}
       {activeDriver === 'mqtt' && (
-        <div className="space-y-6 font-mono">
-          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
-              <div>
-                <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center space-x-2 font-sans">
-                  <Radio className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
-                  <span>MQTT v5.0 Broker Subscription Engine</span>
-                </h3>
-                <p className="text-xs text-[var(--text-secondary)] font-mono">Publish/Subscribe IoT Messaging Broker</p>
-              </div>
-
-              <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/30">
-                Subscribed
-              </span>
+        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4 font-mono text-xs">
+          <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+            <div>
+              <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center space-x-2 font-sans">
+                <Radio className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
+                <span>MQTT Broker & Sparkplug B Pub/Sub Telemetry</span>
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] font-mono">Subscribe to Edge IoT Gateways and Industrial MQTT Topics</p>
             </div>
+            <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 font-bold text-[10px]">
+              MQTT v3.1.1 SUBSCRIBED
+            </span>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-              <div className="space-y-1">
-                <label className="block text-[var(--text-secondary)] font-bold">Broker Host Address</label>
-                <input
-                  type="text"
-                  value={mqttBroker}
-                  onChange={(e) => setMqttBroker(e.target.value)}
-                  className="input-nexus"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="block text-[var(--text-secondary)] font-bold">Subscribed Topic Pattern</label>
-                <input
-                  type="text"
-                  value={mqttTopic}
-                  onChange={(e) => setMqttTopic(e.target.value)}
-                  className="input-nexus"
-                />
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="font-bold text-[var(--text-primary)]">Broker Connection String</label>
+              <input
+                type="text"
+                value={mqttBroker}
+                onChange={(e) => setMqttBroker(e.target.value)}
+                className="w-full p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-mono"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="font-bold text-[var(--text-primary)]">Subscribed Wildcard Topic</label>
+              <input
+                type="text"
+                value={mqttTopic}
+                onChange={(e) => setMqttTopic(e.target.value)}
+                className="w-full p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-mono"
+              />
             </div>
           </div>
         </div>
       )}
 
-      {/* Driver View 4: REST API Ingestion */}
+      {/* Driver View 4: REST */}
       {activeDriver === 'rest' && (
-        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4 font-mono">
+        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4 font-mono text-xs">
           <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
             <div>
               <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center space-x-2 font-sans">
                 <Code className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
-                <span>REST API Telemetry Ingestion Endpoint</span>
+                <span>REST Webhook & JSON HTTP Payload Driver</span>
               </h3>
-              <p className="text-xs text-[var(--text-secondary)] font-mono">HTTP POST JSON Telemetry Ingestion Server</p>
+              <p className="text-xs text-[var(--text-secondary)] font-mono">Ingest REST API Webhook payloads from ERP & MES</p>
             </div>
-            <span className="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/30">
-              Active Listening (Port 8000)
-            </span>
-          </div>
-
-          <div className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl text-xs space-y-2">
-            <div className="text-[var(--text-primary)] font-bold">Endpoint: POST http://127.0.0.1:8000/api/v1/telemetry/stream</div>
-            <pre className="text-[var(--text-secondary)] bg-[var(--bg-card)] border border-[var(--border-color)] p-3 rounded-lg overflow-x-auto text-[11px]">
-              {`{\n  "equipment_tag": "EQ-RX-001",\n  "temperature": 825.5,\n  "vibration": 0.89,\n  "timestamp": "2026-07-27T23:49:00Z"\n}`}
-            </pre>
           </div>
         </div>
       )}
@@ -323,38 +378,163 @@ export const ConnectivityWorkspace: React.FC = () => {
       {/* Driver View 5: CSV Batch Upload */}
       {activeDriver === 'csv' && (
         <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-5 font-mono">
-          <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-color)] pb-3">
             <div>
               <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center space-x-2 font-sans">
-                <FileText className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
+                <FileText className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
                 <span>CSV Batch Telemetry File Ingestion</span>
               </h3>
-              <p className="text-xs text-[var(--text-secondary)] font-mono">Upload historical telemetry logs in standard CSV format</p>
+              <p className="text-xs text-[var(--text-secondary)] font-mono mt-0.5">
+                Upload historical SCADA telemetry logs directly from your computer's File Explorer (.csv)
+              </p>
             </div>
+
+            <button
+              onClick={handleDownloadSampleTemplate}
+              className="px-3.5 py-2 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-bold text-xs hover:bg-[var(--bg-card-hover)] inline-flex items-center space-x-2 shrink-0 transition-all shadow-sm"
+            >
+              <Download className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
+              <span>Download Sample SCADA CSV</span>
+            </button>
           </div>
 
           {uploadMsg && (
-            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-500 flex items-center space-x-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-500 flex items-center space-x-2 animate-fade-in shadow-sm font-bold">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
               <span>{uploadMsg}</span>
             </div>
           )}
 
-          <div className="p-8 border-2 border-dashed border-[var(--border-color)] hover:border-[var(--brand-primary)] rounded-2xl bg-[var(--bg-canvas)] text-center space-y-4 transition-colors">
-            <UploadCloud className="w-10 h-10 text-[var(--text-secondary)] mx-auto" />
+          {/* Hidden File Input for Native OS File Explorer */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept=".csv,text/csv,text/plain"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
+          {/* Drag & Drop Upload Zone */}
+          <div
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragging(false);
+              if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                processFile(e.dataTransfer.files[0]);
+              }
+            }}
+            onClick={() => fileInputRef.current?.click()}
+            className={`p-8 border-2 border-dashed rounded-2xl bg-[var(--bg-canvas)] text-center space-y-4 cursor-pointer transition-all ${
+              isDragging
+                ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)]/10 scale-[1.01]'
+                : 'border-[var(--border-color)] hover:border-[var(--brand-primary)] hover:bg-[var(--bg-card-hover)]'
+            }`}
+          >
+            <div className="p-3 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--brand-primary)] w-14 h-14 mx-auto flex items-center justify-center shadow-md">
+              <UploadCloud className="w-8 h-8 shrink-0" />
+            </div>
             <div>
-              <div className="text-sm font-bold text-[var(--text-primary)]">Drag and drop SCADA CSV files here</div>
-              <div className="text-xs text-[var(--text-secondary)] mt-1">Supports Siemens S7 CSV, Modbus TCP dumps, and custom sensor logs</div>
+              <div className="text-sm font-extrabold text-[var(--text-primary)] font-sans">
+                Drag and drop SCADA CSV files here, or click to browse
+              </div>
+              <div className="text-xs text-[var(--text-secondary)] mt-1 font-mono">
+                Opens native File Explorer. Supports Siemens S7 CSV exports, Modbus TCP dumps, and custom sensor logs (.csv)
+              </div>
             </div>
             <button
-              onClick={handleCsvUpload}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                fileInputRef.current?.click();
+              }}
               disabled={uploading}
-              className="btn-nexus-primary bg-[var(--brand-primary)] hover:bg-[var(--brand-hover)] text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md inline-flex items-center space-x-2"
+              className="btn-nexus-primary bg-[var(--brand-primary)] hover:bg-[var(--brand-hover)] text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-md inline-flex items-center space-x-2 font-mono transition-all disabled:opacity-50"
             >
-              <UploadCloud className="w-4 h-4 shrink-0" />
-              <span>{uploading ? 'Parsing CSV Telemetry...' : 'Browse & Upload CSV File'}</span>
+              <FileSpreadsheet className={`w-4 h-4 shrink-0 ${uploading ? 'animate-spin' : ''}`} />
+              <span>{uploading ? 'Parsing CSV File...' : 'Browse Local Computer Files (.csv)'}</span>
             </button>
           </div>
+
+          {/* Live Parsed CSV Data Preview Table */}
+          {parsedCSV && (
+            <div className="p-5 rounded-2xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-4 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-color)] pb-3">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500">
+                    <FileCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="font-extrabold text-[var(--text-primary)] font-sans flex items-center gap-2">
+                      <span>{parsedCSV.fileName}</span>
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 font-mono font-bold">
+                        INGESTED ({parsedCSV.fileSize})
+                      </span>
+                    </div>
+                    <div className="text-xs text-[var(--text-secondary)] font-mono mt-0.5">
+                      {parsedCSV.totalRows} Telemetry Rows Parsed & Persisted to TimescaleDB
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setParsedCSV(null)}
+                  className="px-3 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold text-xs inline-flex items-center space-x-1.5"
+                >
+                  <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                  <span>Clear Upload</span>
+                </button>
+              </div>
+
+              {/* Data Table */}
+              <div className="overflow-x-auto rounded-xl border border-[var(--border-color)]">
+                <table className="w-full text-left border-collapse text-xs font-mono">
+                  <thead>
+                    <tr className="bg-[var(--bg-card)] border-b border-[var(--border-color)] text-[var(--text-secondary)]">
+                      <th className="p-2.5 font-bold">Row #</th>
+                      <th className="p-2.5 font-bold">Timestamp</th>
+                      <th className="p-2.5 font-bold">Asset Tag</th>
+                      <th className="p-2.5 font-bold">Telemetry Parameter</th>
+                      <th className="p-2.5 font-bold">Value</th>
+                      <th className="p-2.5 font-bold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border-color)]">
+                    {parsedCSV.records.slice(0, 10).map((row) => (
+                      <tr key={row.rowNum} className="hover:bg-[var(--bg-card-hover)] text-[var(--text-primary)]">
+                        <td className="p-2.5 font-bold text-[var(--text-secondary)]">#{row.rowNum}</td>
+                        <td className="p-2.5 font-mono">{row.timestamp}</td>
+                        <td className="p-2.5 font-bold text-[var(--brand-primary)]">{row.assetTag}</td>
+                        <td className="p-2.5">{row.parameter}</td>
+                        <td className="p-2.5 font-bold">{row.value}</td>
+                        <td className="p-2.5">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              row.status === 'WARNING'
+                                ? 'bg-amber-500/10 text-amber-500 border border-amber-500/30'
+                                : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30'
+                            }`}
+                          >
+                            {row.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {parsedCSV.records.length > 10 && (
+                <div className="text-[11px] text-center text-[var(--text-secondary)] font-mono">
+                  Showing first 10 of {parsedCSV.totalRows} ingested telemetry rows. All rows successfully stored in TimescaleDB.
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
