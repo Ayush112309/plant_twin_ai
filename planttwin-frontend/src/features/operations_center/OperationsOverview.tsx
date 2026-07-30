@@ -26,11 +26,13 @@ import {
   Cell,
 } from 'recharts';
 import MetricInspectorModal, { MetricInspectorData } from '../../components/dialogs/MetricInspectorModal';
+import AlertInspectorModal from '../../components/dialogs/AlertInspectorModal';
 import { usePlantTelemetry } from '../../app/contexts/PlantTelemetryContext';
 
 export const OperationsOverview: React.FC = () => {
   const [timeRange, setTimeRange] = useState('7d');
   const [inspectorData, setInspectorData] = useState<MetricInspectorData | null>(null);
+  const [alertInspectorFilter, setAlertInspectorFilter] = useState<'ALL' | 'CRITICAL' | 'WARNING' | 'NORMAL' | null>(null);
   const { systemHealthScore, activeAlerts, telemetryStream, equipmentList } = usePlantTelemetry();
 
   const openMetricInspector = (metricName: string) => {
@@ -138,6 +140,15 @@ export const OperationsOverview: React.FC = () => {
       {/* Metric Inspector Modal */}
       <MetricInspectorModal data={inspectorData} onClose={() => setInspectorData(null)} />
 
+      {/* ISA-18.2 Active Alert Inspector Modal */}
+      {alertInspectorFilter && (
+        <AlertInspectorModal
+          initialSeverityFilter={alertInspectorFilter}
+          alerts={activeAlerts}
+          onClose={() => setAlertInspectorFilter(null)}
+        />
+      )}
+
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -233,10 +244,10 @@ export const OperationsOverview: React.FC = () => {
           </div>
         </div>
 
-        {/* Card 4: ACTIVE ALERTS (ENHANCED BREAKDOWN DISPLAY) */}
+        {/* Card 4: ACTIVE ALERTS (INTERACTIVE SEVERITY INSPECTION) */}
         <div
-          onClick={() => openMetricInspector('vibration')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)]"
+          onClick={() => setAlertInspectorFilter('ALL')}
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-amber-500/50 transition-all"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">ACTIVE ALERTS</span>
@@ -254,17 +265,35 @@ export const OperationsOverview: React.FC = () => {
 
             {/* Clear Severity Breakdown: Critical 🔴 | Warning 🟠 | Normal 🟢 */}
             <div className="grid grid-cols-3 gap-1 pt-2 font-mono text-[10px] border-t border-[var(--border-color)] mt-2">
-              <div className="flex items-center space-x-1 text-red-400 font-bold">
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setAlertInspectorFilter('CRITICAL');
+                }}
+                className="flex items-center space-x-1 text-red-400 font-bold hover:underline cursor-pointer hover:bg-rose-500/10 p-0.5 rounded transition-all"
+              >
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                 <span>Critical: {criticalCount}</span>
               </div>
 
-              <div className="flex items-center space-x-1 text-amber-400 font-bold">
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setAlertInspectorFilter('WARNING');
+                }}
+                className="flex items-center space-x-1 text-amber-400 font-bold hover:underline cursor-pointer hover:bg-amber-500/10 p-0.5 rounded transition-all"
+              >
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                 <span>Warning: {warningCount}</span>
               </div>
 
-              <div className="flex items-center space-x-1 text-emerald-400 font-bold">
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setAlertInspectorFilter('NORMAL');
+                }}
+                className="flex items-center space-x-1 text-emerald-400 font-bold hover:underline cursor-pointer hover:bg-emerald-500/10 p-0.5 rounded transition-all"
+              >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                 <span>Normal: {infoCount}</span>
               </div>
