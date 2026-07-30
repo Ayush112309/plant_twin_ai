@@ -21,12 +21,27 @@ export const TelemetryWorkspace: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<'ALL' | 'TEMP' | 'VIB' | 'PRESSURE'>('ALL');
   const [isExporting, setIsExporting] = useState(false);
 
+  // Scrubber Replay State
+  const [replayFrame, setReplayFrame] = useState<number>(74);
+  const [isReplayPlaying, setIsReplayPlaying] = useState<boolean>(false);
+  const [replayStream, setReplayStream] = useState<any[]>([]);
+
+  const handleReplayFrameChange = (frame: number, playing: boolean, data: any[]) => {
+    setReplayFrame(frame);
+    setIsReplayPlaying(playing);
+    setReplayStream(data);
+  };
+
+  const activeStreamData = replayStream.length > 0 ? replayStream : telemetryStream;
+  const isIncidentPeak = replayFrame > 65 && replayFrame <= 85;
+  const isWarningPhase = replayFrame > 30 && replayFrame <= 65;
+
   const handleExportCSV = () => {
     setIsExporting(true);
     setTimeout(() => {
       const csvContent =
         'data:text/csv;charset=utf-8,Timestamp,Temperature_C,Vibration_mm_s,Pressure_bar\n' +
-        telemetryStream.map((t: any) => `${t.timestamp},${t.temp},${t.vibration},520`).join('\n');
+        activeStreamData.map((t: any) => `${t.timestamp},${t.temp},${t.vibration},520`).join('\n');
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement('a');
       link.setAttribute('href', encodedUri);
@@ -106,13 +121,21 @@ export const TelemetryWorkspace: React.FC = () => {
           <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
             SYSTEM STREAM STATE
           </div>
-          <div className="text-2xl font-extrabold text-emerald-500">OPTIMAL</div>
-          <div className="text-xs text-[var(--text-secondary)]">0 Packet Dropouts</div>
+          <div
+            className={`text-2xl font-extrabold ${
+              isIncidentPeak ? 'text-rose-400' : isWarningPhase ? 'text-amber-400' : 'text-emerald-500'
+            }`}
+          >
+            {isIncidentPeak ? 'CRITICAL TRIP' : isWarningPhase ? 'THERMAL DRIFT' : 'OPTIMAL'}
+          </div>
+          <div className="text-xs text-[var(--text-secondary)] font-bold">
+            {isIncidentPeak ? '🚨 May 15 Outage Peak' : isWarningPhase ? '⚠️ Warning Threshold' : '0 Packet Dropouts'}
+          </div>
         </div>
       </div>
 
       {/* Incident Replay Scrubber Component */}
-      <TelemetryReplayScrubber />
+      <TelemetryReplayScrubber onFrameChange={handleReplayFrameChange} />
 
       {/* Live Chart & Scatter Chart Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -121,10 +144,18 @@ export const TelemetryWorkspace: React.FC = () => {
           <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
             <div className="flex items-center space-x-2">
               <Activity className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
-              <h2 className="text-sm font-extrabold text-[var(--text-primary)]">Real-Time SCADA Telemetry Stream</h2>
+              <h2 className="text-sm font-extrabold text-[var(--text-primary)]">
+                {isReplayPlaying ? '📼 Incident Replay Stream (Live Sync)' : 'Real-Time SCADA Telemetry Stream'}
+              </h2>
             </div>
-            <span className="text-[10px] font-mono text-emerald-500 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-500/30">
-              Live Sync Active
+            <span
+              className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-md border ${
+                isIncidentPeak
+                  ? 'bg-rose-500/20 text-rose-400 border-rose-500/40 animate-pulse'
+                  : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+              }`}
+            >
+              {isReplayPlaying ? `Frame ${replayFrame}/100 Replaying` : 'Live Sync Active'}
             </span>
           </div>
 
@@ -147,7 +178,7 @@ export const TelemetryWorkspace: React.FC = () => {
 
           <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={telemetryStream}>
+              <LineChart data={activeStreamData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
                 <XAxis dataKey="timestamp" stroke="var(--text-secondary)" fontSize={11} />
                 <YAxis stroke="var(--text-secondary)" fontSize={11} />
@@ -155,10 +186,24 @@ export const TelemetryWorkspace: React.FC = () => {
                   contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', borderRadius: '12px' }}
                 />
                 {(selectedTag === 'ALL' || selectedTag === 'TEMP') && (
-                  <Line type="monotone" dataKey="temp" stroke="#2563EB" strokeWidth={2.5} dot={{ r: 4 }} name="Temp (°C)" />
+                  <Line
+                    type="monotone"
+                    dataKey="temp"
+                    stroke={isIncidentPeak ? '#EF4444' : '#2563EB'}
+                    strokeWidth={2.5}
+                    dot={{ r: 4 }}
+                    name="Temp (°C)"
+                  />
                 )}
                 {(selectedTag === 'ALL' || selectedTag === 'VIB') && (
-                  <Line type="monotone" dataKey="vibration" stroke="#D97706" strokeWidth={2.5} dot={{ r: 4 }} name="Vibration (mm/s)" />
+                  <Line
+                    type="monotone"
+                    dataKey="vibration"
+                    stroke={isIncidentPeak ? '#F59E0B' : '#D97706'}
+                    strokeWidth={2.5}
+                    dot={{ r: 4 }}
+                    name="Vibration (mm/s)"
+                  />
                 )}
               </LineChart>
             </ResponsiveContainer>
@@ -166,7 +211,7 @@ export const TelemetryWorkspace: React.FC = () => {
         </div>
 
         {/* Right: Scatter Correlation & Industrial Charts */}
-        <IndustrialCharts />
+        <IndustrialCharts streamData={activeStreamData} />
       </div>
     </div>
   );
