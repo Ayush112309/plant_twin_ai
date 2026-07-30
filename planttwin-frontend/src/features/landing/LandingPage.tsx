@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../app/contexts/AuthContext';
 import apiClient from '../../lib/api/client';
+import { SSOModal } from '../identity/login/SSOModal';
 import {
   Activity,
   Radio,
@@ -252,6 +253,8 @@ export const LandingPage: React.FC = () => {
     checkBackend();
   }, []);
 
+  const [ssoModalProvider, setSsoModalProvider] = useState<'google' | 'microsoft' | null>(null);
+
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.removeItem('planttwin_user_email');
@@ -259,10 +262,8 @@ export const LandingPage: React.FC = () => {
     navigate(selectedRole.defaultRoute);
   };
 
-  const handleSSOLogin = (provider: string) => {
-    localStorage.removeItem('planttwin_user_email');
-    enterDemoMode(selectedRole.roleName);
-    navigate(selectedRole.defaultRoute);
+  const handleSSOLogin = (provider: 'google' | 'microsoft') => {
+    setSsoModalProvider(provider);
   };
 
   const handleQuickLaunch = (role: RoleTourInfo) => {
@@ -640,6 +641,14 @@ export const LandingPage: React.FC = () => {
       <footer className="py-6 px-6 text-center text-slate-500 text-xs border-t border-slate-800/60 z-10">
         © 2026 PlantTwin AI Industrial Inc. • SOC-2 Type II Certified • ISA-99 / IEC 62443 Compliant
       </footer>
+
+      {/* SSO Modal Overlay */}
+      {ssoModalProvider && (
+        <SSOModal
+          provider={ssoModalProvider}
+          onClose={() => setSsoModalProvider(null)}
+        />
+      )}
     </div>
   );
 };

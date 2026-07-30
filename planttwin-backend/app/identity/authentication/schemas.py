@@ -10,6 +10,13 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class SSOLoginRequest(BaseModel):
+    email: EmailStr
+    provider: str = "google"
+    domain: Optional[str] = None
+    id_token: Optional[str] = None
+
+
 class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str

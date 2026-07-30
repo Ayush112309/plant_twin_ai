@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../../app/contexts/AuthContext';
 import apiClient from '../../../lib/api/client';
+import { SSOModal } from './SSOModal';
 
 const DEMO_PERSONAS = [
   { role: 'Plant Manager', email: 'plant.manager@planttwin.ai', route: '/operations', icon: Building2, color: 'text-teal-400 border-teal-500/40 bg-teal-950/60' },
@@ -45,6 +46,7 @@ export const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState(DEMO_PERSONAS[4]); // Default to Super Admin
   const [authMode, setAuthMode] = useState<'backend' | 'demo'>('backend');
+  const [ssoModalProvider, setSsoModalProvider] = useState<'google' | 'microsoft' | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,27 +67,34 @@ export const LoginPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response: any = await apiClient.post('/identity/auth/login', {
+      // Attempt backend API login first
+      const res: any = await apiClient.post('/identity/auth/login', {
         email,
         password,
       });
 
-      if (response && response.data) {
-        // Real backend auth: store the sign-in email
+      if (res && res.data) {
+        await setAuthData(res.data.access_token, res.data.refresh_token);
+        // Explicitly persist typed email for header display
         localStorage.setItem('planttwin_user_email', signInEmail);
         window.dispatchEvent(new Event('planttwin:org-updated'));
-        await setAuthData(response.data.access_token, response.data.refresh_token);
         navigate('/operations');
         return;
       }
     } catch (err: any) {
-      // Allow seamless login for local registered organizations (e.g., admin@apex.com)
-      const registeredOrgsStr = localStorage.getItem('planttwin_registered_orgs');
+      // Fallback: If backend is unreachable or user is registered/demo, allow sign in
       let isRegistered = false;
-      if (registeredOrgsStr) {
+      const registeredEmail = localStorage.getItem('planttwin_registered_email');
+      if (registeredEmail && registeredEmail.toLowerCase() === email.toLowerCase()) {
+        isRegistered = true;
+      }
+
+      // Check registered orgs
+      if (!isRegistered) {
         try {
-          const registeredOrgs = JSON.parse(registeredOrgsStr);
-          isRegistered = registeredOrgs.some(
+          const orgsRes: any = await apiClient.get('/enterprise/organizations');
+          const orgs = orgsRes?.data || [];
+          isRegistered = orgs.some(
             (o: any) => o.email?.toLowerCase() === email.toLowerCase() || email.toLowerCase().includes(o.name?.toLowerCase())
           );
         } catch (e) {}
@@ -113,11 +122,8 @@ export const LoginPage: React.FC = () => {
     window.dispatchEvent(new Event('planttwin:org-updated'));
   };
 
-  const handleSSO = (provider: string) => {
-    localStorage.setItem('planttwin_user_email', selectedPersona.email);
-    window.dispatchEvent(new Event('planttwin:org-updated'));
-    enterDemoMode(selectedPersona.role);
-    navigate(selectedPersona.route);
+  const handleSSO = (provider: 'google' | 'microsoft') => {
+    setSsoModalProvider(provider);
   };
 
   // Password Policy Checklist Validations
@@ -411,6 +417,14 @@ export const LoginPage: React.FC = () => {
       <footer className="py-4 px-6 text-center text-slate-500 text-xs border-t border-slate-800/60 z-10">
         © 2026 PlantTwin AI Industrial Inc. • SOC-2 Type II Certified • ISA-99 / IEC 62443 Compliant
       </footer>
+
+      {/* SSO Authentication Modal Overlay */}
+      {ssoModalProvider && (
+        <SSOModal
+          provider={ssoModalProvider}
+          onClose={() => setSsoModalProvider(null)}
+        />
+      )}
     </div>
   );
 };
