@@ -184,20 +184,22 @@ export const OperationsOverview: React.FC = () => {
         {/* Card 1: PLANTS */}
         <div
           onClick={() => openMetricInspector('health')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)]"
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] transition-all"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">PLANTS</span>
-            {/* Monochrome Neutral Icon Container */}
             <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
               <Building2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
             <div className="text-2xl font-extrabold text-[var(--text-primary)] font-mono">1</div>
-            <div className="flex items-center justify-between mt-1 text-[11px]">
+            <div className="flex items-center justify-between mt-2 pt-2 text-[10px] font-mono border-t border-[var(--border-color)]">
               <span className="text-[var(--text-secondary)] truncate">Refinery Alpha</span>
-              <span className="text-emerald-400 font-bold font-mono">100% Active</span>
+              <span className="text-emerald-400 font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                100% Active
+              </span>
             </div>
           </div>
         </div>
@@ -205,20 +207,22 @@ export const OperationsOverview: React.FC = () => {
         {/* Card 2: REGISTERED EQUIPMENT */}
         <div
           onClick={() => openMetricInspector('temperature')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)]"
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] transition-all"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">EQUIPMENT</span>
-            {/* Monochrome Neutral Icon Container */}
             <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
               <Cpu className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
             <div className="text-2xl font-extrabold text-[var(--text-primary)] font-mono">{equipmentList.length}</div>
-            <div className="flex items-center justify-between mt-1 text-[11px]">
+            <div className="flex items-center justify-between mt-2 pt-2 text-[10px] font-mono border-t border-[var(--border-color)]">
               <span className="text-[var(--text-secondary)] truncate">SCADA Assets</span>
-              <span className="text-emerald-400 font-bold font-mono">Active</span>
+              <span className="text-emerald-400 font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Active
+              </span>
             </div>
           </div>
         </div>
@@ -226,20 +230,22 @@ export const OperationsOverview: React.FC = () => {
         {/* Card 3: ACTIVE WORKFLOWS */}
         <div
           onClick={() => openMetricInspector('health')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)]"
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] transition-all"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">WORKFLOWS</span>
-            {/* Monochrome Neutral Icon Container */}
             <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
               <Workflow className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
             <div className="text-2xl font-extrabold text-[var(--text-primary)] font-mono">2</div>
-            <div className="flex items-center justify-between mt-1 text-[11px]">
+            <div className="flex items-center justify-between mt-2 pt-2 text-[10px] font-mono border-t border-[var(--border-color)]">
               <span className="text-[var(--text-secondary)] truncate">Auto Escalation</span>
-              <span className="text-emerald-400 font-bold font-mono">Running</span>
+              <span className="text-emerald-400 font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Running
+              </span>
             </div>
           </div>
         </div>
@@ -251,7 +257,6 @@ export const OperationsOverview: React.FC = () => {
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">ACTIVE ALERTS</span>
-            {/* Monochrome Neutral Icon Container */}
             <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
               <Bell className="w-4 h-4" />
             </div>
@@ -263,17 +268,18 @@ export const OperationsOverview: React.FC = () => {
               <span className="text-[10px] font-mono font-bold text-amber-400">ISA-18.2 LIVE</span>
             </div>
 
-            {/* Clear Severity Breakdown: Critical 🔴 | Warning 🟠 | Normal 🟢 */}
-            <div className="grid grid-cols-3 gap-1 pt-2 font-mono text-[10px] border-t border-[var(--border-color)] mt-2">
+            {/* Sub-row with zero line-breaks: Crit 🔴 | Warn 🟡 | Norm 🟢 */}
+            <div className="flex items-center justify-between text-[10px] font-mono border-t border-[var(--border-color)] mt-2 pt-2 font-bold gap-0.5">
               <div
                 onClick={(e) => {
                   e.stopPropagation();
                   setAlertInspectorFilter('CRITICAL');
                 }}
-                className="flex items-center space-x-1 text-red-400 font-bold hover:underline cursor-pointer hover:bg-rose-500/10 p-0.5 rounded transition-all"
+                className="flex items-center space-x-1 text-red-400 hover:underline cursor-pointer hover:bg-rose-500/10 px-1 py-0.5 rounded transition-all whitespace-nowrap"
+                title="View Critical Alarms"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
-                <span>Critical: {criticalCount}</span>
+                <span>Crit: {criticalCount}</span>
               </div>
 
               <div
@@ -281,10 +287,11 @@ export const OperationsOverview: React.FC = () => {
                   e.stopPropagation();
                   setAlertInspectorFilter('WARNING');
                 }}
-                className="flex items-center space-x-1 text-amber-400 font-bold hover:underline cursor-pointer hover:bg-amber-500/10 p-0.5 rounded transition-all"
+                className="flex items-center space-x-1 text-amber-400 hover:underline cursor-pointer hover:bg-amber-500/10 px-1 py-0.5 rounded transition-all whitespace-nowrap"
+                title="View Warning Alarms"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                <span>Warning: {warningCount}</span>
+                <span>Warn: {warningCount}</span>
               </div>
 
               <div
@@ -292,10 +299,11 @@ export const OperationsOverview: React.FC = () => {
                   e.stopPropagation();
                   setAlertInspectorFilter('NORMAL');
                 }}
-                className="flex items-center space-x-1 text-emerald-400 font-bold hover:underline cursor-pointer hover:bg-emerald-500/10 p-0.5 rounded transition-all"
+                className="flex items-center space-x-1 text-emerald-400 hover:underline cursor-pointer hover:bg-emerald-500/10 px-1 py-0.5 rounded transition-all whitespace-nowrap"
+                title="View Normal Alarms"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                <span>Normal: {infoCount}</span>
+                <span>Norm: {infoCount}</span>
               </div>
             </div>
           </div>
@@ -304,11 +312,10 @@ export const OperationsOverview: React.FC = () => {
         {/* Card 5: SYSTEM HEALTH */}
         <div
           onClick={() => openMetricInspector('health')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)]"
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] transition-all"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">SYSTEM HEALTH</span>
-            {/* Monochrome Neutral Icon Container */}
             <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
               <Activity className="w-4 h-4" />
             </div>
@@ -317,9 +324,10 @@ export const OperationsOverview: React.FC = () => {
             <div className={`text-2xl font-extrabold font-mono ${systemHealthScore < 70 ? 'text-amber-400' : 'text-emerald-400'}`}>
               {systemHealthScore}%
             </div>
-            <div className="flex items-center justify-between mt-1 text-[11px]">
+            <div className="flex items-center justify-between mt-2 pt-2 text-[10px] font-mono border-t border-[var(--border-color)]">
               <span className="text-[var(--text-secondary)] truncate">Overall Index</span>
-              <span className={`font-bold font-mono ${systemHealthScore < 70 ? 'text-amber-400' : 'text-emerald-400'}`}>
+              <span className={`font-bold flex items-center gap-1 ${systemHealthScore < 70 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${systemHealthScore < 70 ? 'bg-amber-400' : 'bg-emerald-400'}`} />
                 {systemHealthScore < 70 ? 'STRESS' : 'OPTIMAL'}
               </span>
             </div>
