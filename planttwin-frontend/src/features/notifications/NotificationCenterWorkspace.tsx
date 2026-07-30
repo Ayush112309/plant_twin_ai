@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react';
 import apiClient from '../../lib/api/client';
+import { usePlantTelemetry } from '../../app/contexts/PlantTelemetryContext';
 
 interface NotificationItem {
   id: string;
@@ -37,6 +38,7 @@ interface NotificationItem {
 }
 
 export const NotificationCenterWorkspace: React.FC = () => {
+  const { activeAlerts } = usePlantTelemetry();
   const [activeTab, setActiveTab] = useState<'inbox' | 'escalation' | 'channels' | 'preferences'>('inbox');
   const [filterCategory, setFilterCategory] = useState<string>('ALL');
   const [filterTime, setFilterTime] = useState<string>('ALL');
@@ -123,6 +125,30 @@ export const NotificationCenterWorkspace: React.FC = () => {
   useEffect(() => {
     fetchNotifications();
   }, []);
+
+  useEffect(() => {
+    if (activeAlerts && activeAlerts.length > 0) {
+      const contextNotifications: NotificationItem[] = activeAlerts.map((alt) => ({
+        id: `notif-opc-${alt.id}`,
+        title: `🚨 ${alt.title}`,
+        message: `Industrial SCADA Protocol Adapter ingested alert on ${alt.asset_tag}. Live telemetry excursion active across all operational workspaces.`,
+        category: 'Critical',
+        severity: alt.severity || 'CRITICAL',
+        channels_sent: ['In-App', 'Push', 'Email', 'SMS Cellular'],
+        read: false,
+        archived: false,
+        escalation_stage: 1,
+        associated_asset: alt.asset_tag,
+        created_at: new Date().toISOString(),
+      }));
+
+      setNotifications((prev) => {
+        const existingIds = new Set(prev.map((n) => n.id));
+        const newUnique = contextNotifications.filter((cn) => !existingIds.has(cn.id));
+        return [...newUnique, ...prev];
+      });
+    }
+  }, [activeAlerts]);
 
   const handleMarkRead = (id: string) => {
     apiClient

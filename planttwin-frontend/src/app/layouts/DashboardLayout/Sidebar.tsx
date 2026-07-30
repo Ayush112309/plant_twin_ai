@@ -40,10 +40,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
         { label: 'Digital Twin Explorer', icon: Layers, path: '/digital-twin' },
         { label: 'Live SCADA Telemetry', icon: LineChart, path: '/telemetry' },
         { label: 'Runtime Operations', icon: PlaySquare, path: '/runtime' },
-        { label: 'Alarm Management', icon: AlertTriangle, path: '/alerts', badge: activeAlerts.length || 4, badgeColor: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
+        { label: 'Alarm Management', icon: AlertTriangle, path: '/alerts', badge: (activeAlerts?.length || 0) + 4, badgeColor: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
         { label: 'Work Orders', icon: ClipboardList, path: '/work-orders' },
         { label: 'Reports & Analytics', icon: FileText, path: '/reports' },
-        { label: 'Notification Inbox', icon: Bell, path: '/notifications', badge: 2, badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/40' },
+        { label: 'Notification Inbox', icon: Bell, path: '/notifications', badge: (activeAlerts?.length || 0) + 2, badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/40' },
       ],
     },
     {
