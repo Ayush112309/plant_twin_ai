@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface TelemetryPoint {
   timestamp: string;
@@ -62,7 +62,7 @@ const initialTelemetryStream: TelemetryPoint[] = [
   { timestamp: '14:32', temp: 71.5, vibration: 0.35, pressure: 535, flow: 258 },
   { timestamp: '14:33', temp: 74.2, vibration: 0.48, pressure: 542, flow: 255 },
   { timestamp: '14:34', temp: 78.9, vibration: 0.85, pressure: 555, flow: 250 },
-  { timestamp: '14:35', temp: 68.0, vibration: 0.19, pressure: 515, flow: 262 },
+  { timestamp: '14:35', temp: 84.5, vibration: 0.24, pressure: 524, flow: 262 },
 ];
 
 const initialEquipmentList: EquipmentState[] = [
@@ -75,18 +75,18 @@ const initialEquipmentList: EquipmentState[] = [
     health_score: 74.0,
     location: 'Refinery Area A',
     temp: 68.4,
-    vibration: 0.18,
+    vibration: 0.24,
   },
   {
     id: 'e2',
     name: 'Reactor Vessel-001',
     asset_tag: 'Reactor-001',
     equipment_type: 'Reactor',
-    status: 'Critical',
-    health_score: 42.0,
+    status: 'Healthy',
+    health_score: 84.5,
     location: 'Chemical Processing Line 1',
-    temp: 786.9,
-    vibration: 0.42,
+    temp: 84.5,
+    vibration: 0.18,
   },
   {
     id: 'e3',
@@ -94,7 +94,7 @@ const initialEquipmentList: EquipmentState[] = [
     asset_tag: 'Compressor-001',
     equipment_type: 'Compressor',
     status: 'Healthy',
-    health_score: 98.0,
+    health_score: 98.5,
     location: 'Compressor House B',
     temp: 45.2,
     vibration: 0.08,
@@ -143,18 +143,157 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
   const [digitalTwinState, setDigitalTwinState] = useState({
     motor_rpm: 1450,
     vibration_amplitude: 0.18,
-    winding_temp_c: 68.4,
+    winding_temp_c: 84.5,
     lubrication_pressure: 4.2,
   });
   const [rulDays, setRulDays] = useState(142);
   const [systemHealthScore, setSystemHealthScore] = useState(88.5);
 
+  // Live Auto-Updating Telemetry Ticker (Ticks values every 2.5s across all 11 workspaces)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      setTelemetryStream((prev) => {
+        const last = prev[prev.length - 1] || { temp: 84.5, vibration: 0.24, pressure: 524, flow: 1250 };
+        const deltaTemp = (Math.random() - 0.5) * 0.8;
+        const deltaVib = (Math.random() - 0.5) * 0.02;
+
+        const newPoint: TelemetryPoint = {
+          timestamp: timeStr,
+          temp: Number(Math.max(40, Math.min(180, last.temp + deltaTemp)).toFixed(1)),
+          vibration: Number(Math.max(0.05, Math.min(3.5, last.vibration + deltaVib)).toFixed(2)),
+          pressure: Number((520 + (last.temp > 80 ? (last.temp - 80) * 1.4 : 0.4)).toFixed(1)),
+          flow: Number((1250 - (last.vibration > 0.4 ? (last.vibration - 0.4) * 160 : 0)).toFixed(1)),
+        };
+
+        return [...prev.slice(1), newPoint];
+      });
+
+      setDigitalTwinState((prev) => ({
+        ...prev,
+        winding_temp_c: Number((prev.winding_temp_c + (Math.random() - 0.5) * 0.4).toFixed(1)),
+        vibration_amplitude: Number((prev.vibration_amplitude + (Math.random() - 0.5) * 0.01).toFixed(2)),
+      }));
+    }, 2500);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const updateSiemensTag = (tagAddress: string, value: number) => {
-    // Basic mock update logic
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    setDigitalTwinState((prev) => {
+      if (tagAddress.includes('DBD4') || tagAddress.includes('Temp')) {
+        return { ...prev, winding_temp_c: value };
+      }
+      if (tagAddress.includes('DBD8') || tagAddress.includes('Vib')) {
+        return { ...prev, vibration_amplitude: value };
+      }
+      if (tagAddress.includes('DBD0') || tagAddress.includes('RPM')) {
+        return { ...prev, motor_rpm: value };
+      }
+      return prev;
+    });
+
+    setTelemetryStream((prev) => {
+      const last = prev[prev.length - 1] || { temp: 84.5, vibration: 0.24, pressure: 524, flow: 1250 };
+      const isTemp = tagAddress.includes('Temp') || tagAddress.includes('DBD4');
+      const isVib = tagAddress.includes('Vib') || tagAddress.includes('DBD8');
+
+      const newPoint: TelemetryPoint = {
+        timestamp: timeStr,
+        temp: isTemp ? value : last.temp,
+        vibration: isVib ? value : last.vibration,
+        pressure: last.pressure,
+        flow: last.flow,
+      };
+
+      return [...prev.slice(1), newPoint];
+    });
+
+    if (value > 100 || (tagAddress.includes('Vib') && value > 1.0)) {
+      const newAlert: AlertItem = {
+        id: `a-${Date.now()}`,
+        title: `Siemens S7 Signal Surge on ${tagAddress}`,
+        asset_tag: 'Pump-002',
+        severity: 'CRITICAL',
+        timestamp: 'Just now',
+        timeAgo: 'Just now',
+      };
+      setActiveAlerts((prev) => [newAlert, ...prev]);
+      setSystemHealthScore(64.2);
+      setRulDays(45);
+    }
   };
 
   const ingestCSVData = (rows: any[]) => {
-    // Basic mock ingest logic
+    if (!rows || rows.length === 0) return;
+
+    const newPoints: TelemetryPoint[] = [];
+    let hasCritical = false;
+
+    rows.forEach((row, idx) => {
+      const valNum = parseFloat(row.value) || 84.5;
+      const isTemp = (row.parameter || '').toLowerCase().includes('temp') || valNum > 30;
+      const isVib = (row.parameter || '').toLowerCase().includes('vib') || valNum < 10;
+      const statusStr = (row.status || '').toUpperCase();
+
+      if (statusStr === 'CRITICAL' || valNum > 120 || (isVib && valNum > 1.5)) {
+        hasCritical = true;
+      }
+
+      newPoints.push({
+        timestamp: row.timestamp || `T+${idx}m`,
+        temp: isTemp ? valNum : 84.5 + idx * 0.5,
+        vibration: isVib ? valNum : 0.24 + idx * 0.05,
+        pressure: 524 + idx * 2,
+        flow: 1250 - idx * 10,
+      });
+    });
+
+    if (newPoints.length > 0) {
+      setTelemetryStream((prev) => [...prev.slice(newPoints.length), ...newPoints]);
+    }
+
+    if (hasCritical) {
+      // Update Equipment Statuses across all workspaces
+      setEquipmentList((prev) =>
+        prev.map((eq) => {
+          if (eq.asset_tag === 'Reactor-001' || eq.asset_tag === 'Pump-002') {
+            return {
+              ...eq,
+              status: 'Critical',
+              health_score: 38.5,
+              temp: 142.8,
+              vibration: 1.85,
+            };
+          }
+          return eq;
+        })
+      );
+
+      // Push active alerts
+      const newCriticalAlert: AlertItem = {
+        id: `a-opcua-${Date.now()}`,
+        title: '🚨 OPC-UA Ingested Thermal & Vibration Outage Spike',
+        asset_tag: 'Reactor-001 / Pump-002',
+        severity: 'CRITICAL',
+        timestamp: 'Just now',
+        timeAgo: 'Just now',
+      };
+
+      setActiveAlerts((prev) => [newCriticalAlert, ...prev]);
+      setSystemHealthScore(58.0);
+      setRulDays(14);
+      setDigitalTwinState((prev) => ({
+        ...prev,
+        winding_temp_c: 142.8,
+        vibration_amplitude: 1.85,
+      }));
+    } else {
+      setSystemHealthScore(92.4);
+    }
   };
 
   return (
