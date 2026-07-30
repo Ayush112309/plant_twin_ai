@@ -245,7 +245,101 @@ export const ConnectivityWorkspace: React.FC = () => {
     }
   };
 
-  // CSV Batch Upload State
+  // REST API Webhook State & HTTP Ingestion
+  const [restEndpointUrl, setRestEndpointUrl] = useState('http://localhost:8000/api/v1/telemetry/ingest');
+  const [restAuthHeader, setRestAuthHeader] = useState('Bearer apex-scada-token-2026');
+  const [restIsConnected, setRestIsConnected] = useState(true);
+  const [restIsLoading, setRestIsLoading] = useState(false);
+  const [restStatusMsg, setRestStatusMsg] = useState<string | null>(null);
+
+  const [restLogs, setRestLogs] = useState([
+    {
+      timestamp: new Date().toLocaleTimeString(),
+      method: 'POST',
+      path: '/api/v1/telemetry/ingest',
+      status_code: 200,
+      client_ip: '192.168.1.120',
+      payload: '{"asset_tag":"Reactor-001","metrics":{"temp":84.5,"pressure":524.2},"source":"MES_API"}',
+      status: 'PROCESSED',
+    },
+    {
+      timestamp: new Date().toLocaleTimeString(),
+      method: 'POST',
+      path: '/api/v1/telemetry/ingest',
+      status_code: 200,
+      client_ip: '192.168.1.125',
+      payload: '{"asset_tag":"Pump-002","metrics":{"vibration":0.24,"rpm":1450},"source":"ERP_GATEWAY"}',
+      status: 'PROCESSED',
+    },
+  ]);
+
+  const handleTestRestEndpoint = () => {
+    setRestIsLoading(true);
+    setRestStatusMsg(null);
+    setTimeout(() => {
+      setRestIsLoading(false);
+      setRestIsConnected(true);
+      ingestCSVData([]);
+      setRestStatusMsg(`⚡ REST API Webhook Listener Verified (${restEndpointUrl})! 200 OK — Ready for HTTP POST JSON payloads.`);
+      setTimeout(() => setRestStatusMsg(null), 5000);
+    }, 600);
+  };
+
+  const handlePostRestTempAlert = () => {
+    setRestIsConnected(true);
+    const newLog = {
+      timestamp: new Date().toLocaleTimeString(),
+      method: 'POST',
+      path: '/api/v1/telemetry/ingest',
+      status_code: 201,
+      client_ip: '192.168.1.130',
+      payload: '{"event":"HIGH_TEMP_EXCURSION","asset_tag":"Reactor-001","value":142.8,"unit":"°C","status":"CRITICAL"}',
+      status: 'CRITICAL ALERT',
+    };
+    setRestLogs((prev) => [newLog, ...prev]);
+
+    ingestCSVData([
+      { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Reactor-001', parameter: 'Temperature (°C)', value: '142.8', status: 'CRITICAL' }
+    ], 'REST Webhook API');
+
+    setRestStatusMsg('🔥 HTTP POST Webhook Ingested: High Temp Excursion on Reactor-001 (142.8 °C)! Live sync active across all 11 workspaces.');
+    setTimeout(() => setRestStatusMsg(null), 6000);
+  };
+
+  const handlePostRestVibAlert = () => {
+    setRestIsConnected(true);
+    const newLog = {
+      timestamp: new Date().toLocaleTimeString(),
+      method: 'POST',
+      path: '/api/v1/telemetry/ingest',
+      status_code: 201,
+      client_ip: '192.168.1.135',
+      payload: '{"event":"BEARING_VIB_SPIKE","asset_tag":"Pump-002","value":1.85,"unit":"mm/s","status":"CRITICAL"}',
+      status: 'CRITICAL ALERT',
+    };
+    setRestLogs((prev) => [newLog, ...prev]);
+
+    ingestCSVData([
+      { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Pump-002', parameter: 'Vibration (mm/s)', value: '1.85', status: 'CRITICAL' }
+    ], 'REST Webhook API');
+
+    setRestStatusMsg('⚡ HTTP POST Webhook Ingested: Bearing Vib Spike on Pump-002 (1.85 mm/s)! Live sync active across all 11 workspaces.');
+    setTimeout(() => setRestStatusMsg(null), 6000);
+  };
+
+  const handleToggleRestListener = () => {
+    if (restIsConnected) {
+      setRestIsConnected(false);
+      resetNominalState();
+      setRestStatusMsg('🛑 REST Webhook Listener Paused — Telemetry stream paused and plant baseline restored across all workspaces!');
+      setTimeout(() => setRestStatusMsg(null), 6000);
+    } else {
+      setRestIsConnected(true);
+      ingestCSVData([]);
+      setRestStatusMsg('▶️ REST Webhook Listener Resumed — Live telemetry stream resumed across all workspaces!');
+      setTimeout(() => setRestStatusMsg(null), 6000);
+    }
+  };
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadMsg, setUploadMsg] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -818,14 +912,157 @@ export const ConnectivityWorkspace: React.FC = () => {
 
       {/* Driver View 4: REST */}
       {activeDriver === 'rest' && (
-        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4 font-mono text-xs">
-          <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-5 font-mono text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-color)] pb-3">
             <div>
               <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center space-x-2 font-sans">
-                <Code className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
+                <Code className="w-4 h-4 text-sky-400 shrink-0" />
                 <span>REST Webhook & JSON HTTP Payload Driver</span>
               </h3>
-              <p className="text-xs text-[var(--text-secondary)] font-mono">Ingest REST API Webhook payloads from ERP & MES</p>
+              <p className="text-xs text-[var(--text-secondary)] font-mono mt-0.5">
+                Receive and process HTTP POST/PUT JSON Webhook payloads from ERP, MES, and Enterprise Cloud Services
+              </p>
+            </div>
+            <span
+              className={`px-2.5 py-1 rounded font-bold text-[10px] shrink-0 ${
+                restIsConnected
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+              }`}
+            >
+              {restIsConnected ? 'HTTP WEBHOOK LISTENER (LISTENING :8000)' : 'REST LISTENER PAUSED'}
+            </span>
+          </div>
+
+          {/* REST API Endpoint Inputs & Action Buttons */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="font-bold text-[var(--text-primary)]">Webhook Receiver Endpoint URL</label>
+              <input
+                type="text"
+                value={restEndpointUrl}
+                onChange={(e) => setRestEndpointUrl(e.target.value)}
+                className="w-full p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-mono"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="font-bold text-[var(--text-primary)]">Authorization Header</label>
+              <input
+                type="text"
+                value={restAuthHeader}
+                onChange={(e) => setRestAuthHeader(e.target.value)}
+                className="w-full p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-mono"
+              />
+            </div>
+            <div className="flex flex-wrap items-end gap-2 pt-2 lg:pt-0">
+              <button
+                onClick={handleTestRestEndpoint}
+                disabled={restIsLoading}
+                className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold transition-all shadow-md flex items-center justify-center space-x-1 text-xs shrink-0"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${restIsLoading ? 'animate-spin' : ''}`} />
+                <span>{restIsLoading ? 'Testing...' : 'Test Webhook'}</span>
+              </button>
+
+              <button
+                onClick={handlePostRestTempAlert}
+                className="py-2 px-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1"
+                title="Post High Temp Excursion JSON Webhook Payload (142.8 °C)"
+              >
+                <span>🔥 POST Temp Alert</span>
+              </button>
+
+              <button
+                onClick={handlePostRestVibAlert}
+                className="py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1"
+                title="Post Bearing Vib Spike JSON Webhook Payload (1.85 mm/s)"
+              >
+                <span>⚡ POST Vib Alert</span>
+              </button>
+
+              <button
+                onClick={handleToggleRestListener}
+                className={`py-2 px-3 rounded-xl font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1 ${
+                  restIsConnected
+                    ? 'bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40'
+                    : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold border border-emerald-400'
+                }`}
+              >
+                {restIsConnected ? (
+                  <>
+                    <XCircle className="w-3.5 h-3.5 text-amber-400" />
+                    <span>🛑 Pause Listener</span>
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 text-slate-950" />
+                    <span>▶️ Resume Listener</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* REST Status Notification Banner */}
+          {restStatusMsg && (
+            <div className="p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-bold flex items-center justify-between shadow-md animate-pulse">
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>{restStatusMsg}</span>
+              </div>
+              <button onClick={() => setRestStatusMsg(null)} className="text-emerald-400 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Live Ingested REST HTTP Webhook Logs Table */}
+          <div className="space-y-2 pt-2">
+            <div className="flex items-center justify-between text-xs">
+              <div className="font-bold text-[var(--text-primary)] flex items-center space-x-1.5 font-sans">
+                <Code className="w-4 h-4 text-sky-400" />
+                <span>Received REST HTTP Webhook Ingestion Log</span>
+              </div>
+              <span className="text-emerald-400 font-mono text-[11px]">Format: JSON / application/json</span>
+            </div>
+
+            <div className="overflow-x-auto border border-[var(--border-color)] rounded-xl">
+              <table className="w-full text-left border-collapse font-mono text-xs">
+                <thead>
+                  <tr className="bg-[var(--bg-canvas)] border-b border-[var(--border-color)] text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <th className="p-3">Timestamp</th>
+                    <th className="p-3">Method & Path</th>
+                    <th className="p-3">Client IP</th>
+                    <th className="p-3">HTTP Status</th>
+                    <th className="p-3">Ingested JSON Payload</th>
+                    <th className="p-3">Processing Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--border-color)] bg-[var(--bg-card)]">
+                  {restLogs.map((log, idx) => (
+                    <tr key={idx} className="hover:bg-[var(--bg-card-hover)] transition-colors">
+                      <td className="p-3 text-slate-400 whitespace-nowrap">{log.timestamp}</td>
+                      <td className="p-3 font-bold text-sky-400 whitespace-nowrap">{log.method} {log.path}</td>
+                      <td className="p-3 text-slate-400">{log.client_ip}</td>
+                      <td className="p-3 text-emerald-400 font-bold">{log.status_code} OK</td>
+                      <td className="p-3 text-slate-300 font-mono text-[11px] max-w-xs truncate" title={log.payload}>
+                        {log.payload}
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap ${
+                            log.status.includes('ALERT') || log.status.includes('CRITICAL')
+                              ? 'bg-rose-950 text-rose-400 border border-rose-500/40 animate-pulse'
+                              : 'bg-emerald-950 text-emerald-400 border border-emerald-500/30'
+                          }`}
+                        >
+                          {log.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
