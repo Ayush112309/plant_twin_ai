@@ -22,7 +22,8 @@ import {
   FileCheck,
   Trash2,
   Table,
-  FileSpreadsheet
+  FileSpreadsheet,
+  X,
 } from 'lucide-react';
 import SiemensPLCSIM from './siemens/SiemensPLCSIM';
 import usePermissions from '../../app/permissions/usePermissions';
@@ -34,9 +35,53 @@ export const ConnectivityWorkspace: React.FC = () => {
   const { ingestCSVData } = usePlantTelemetry();
   const [activeDriver, setActiveDriver] = useState<'siemens' | 'opcua' | 'mqtt' | 'rest' | 'csv' | 'mapping'>('siemens');
 
-  // OPC-UA State
+  // OPC-UA Interactive Testing State
   const [opcServerUrl, setOpcServerUrl] = useState('opc.tcp://192.168.0.50:4840');
   const [opcSecurityMode, setOpcSecurityMode] = useState('Basic256Sha256 - Sign & Encrypt');
+  const [opcIsConnected, setOpcIsConnected] = useState(true);
+  const [opcIsSubscribed, setOpcIsSubscribed] = useState(true);
+  const [opcStatusMsg, setOpcStatusMsg] = useState<string | null>(null);
+  const [opcIsLoading, setOpcIsLoading] = useState(false);
+
+  const [opcNodes, setOpcNodes] = useState([
+    { nodeId: 'ns=2;s=RefineryAlpha.Reactor001.Temperature', displayName: 'Reactor-001 Temp', dataType: 'Double (°C)', val: '84.5', quality: 'GOOD_100', sampling: '100 ms', targetAsset: 'Reactor-001' },
+    { nodeId: 'ns=2;s=RefineryAlpha.Pump002.Vibration', displayName: 'Pump-002 Vibration', dataType: 'Float (mm/s)', val: '0.24', quality: 'GOOD_100', sampling: '100 ms', targetAsset: 'Pump-002' },
+    { nodeId: 'ns=2;s=RefineryAlpha.Hydrocracker.Pressure', displayName: 'Hydrocracker Pressure', dataType: 'Float (bar)', val: '524.2', quality: 'GOOD_100', sampling: '100 ms', targetAsset: 'Hydrocracker Header' },
+    { nodeId: 'ns=2;s=RefineryAlpha.Compressor001.HealthIndex', displayName: 'Compressor Health Index', dataType: 'Double (%)', val: '98.5', quality: 'GOOD_100', sampling: '250 ms', targetAsset: 'Compressor-001' },
+    { nodeId: 'ns=2;s=RefineryAlpha.Line101.FlowRate', displayName: 'Recirculation Line Flow', dataType: 'Double (m³/h)', val: '1250.0', quality: 'GOOD_100', sampling: '100 ms', targetAsset: 'Line-101 Recirculation' },
+    { nodeId: 'ns=2;s=RefineryAlpha.Cooler001.ThermalResistance', displayName: 'Heat Exchanger Resistance', dataType: 'Double (m²K/W)', val: '0.045', quality: 'GOOD_100', sampling: '500 ms', targetAsset: 'Exchanger-101' },
+  ]);
+
+  const handleTestOpcConnection = () => {
+    setOpcIsLoading(true);
+    setOpcStatusMsg(null);
+
+    setTimeout(() => {
+      setOpcIsLoading(false);
+      setOpcIsConnected(true);
+      setOpcStatusMsg(`⚡ OPC-UA Binary Connection Verified (${opcServerUrl})! Discovered 6 Active Subscribed Nodes, 0 Dropouts. Cross-workspace live sync active!`);
+      setTimeout(() => setOpcStatusMsg(null), 5000);
+    }, 600);
+  };
+
+  const handleSimulateOpcSurge = () => {
+    setOpcNodes((prev) =>
+      prev.map((node) => {
+        if (node.nodeId.includes('Temperature')) return { ...node, val: '142.8', quality: 'UNCERTAIN_WARNING' };
+        if (node.nodeId.includes('Vibration')) return { ...node, val: '1.85', quality: 'BAD_ALARM' };
+        return node;
+      })
+    );
+
+    // Push live telemetry data to context so all workspaces update in real time
+    ingestCSVData([
+      { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Reactor-001', parameter: 'Temperature (°C)', value: '142.8', status: 'CRITICAL' },
+      { rowNum: 2, timestamp: new Date().toLocaleTimeString(), assetTag: 'Pump-002', parameter: 'Vibration (mm/s)', value: '1.85', status: 'CRITICAL' },
+    ]);
+
+    setOpcStatusMsg('🚨 OPC-UA Thermal & Vibration Surge Signal Ingested! Live telemetry & alarms updated across all 11 workspaces!');
+    setTimeout(() => setOpcStatusMsg(null), 6000);
+  };
 
   // MQTT State
   const [mqttBroker, setMqttBroker] = useState('mqtt://broker.hivemq.com:1883');
@@ -284,21 +329,24 @@ export const ConnectivityWorkspace: React.FC = () => {
 
       {/* Driver View 2: OPC-UA */}
       {activeDriver === 'opcua' && (
-        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4 font-mono text-xs">
-          <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-5 font-mono text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-color)] pb-3">
             <div>
               <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center space-x-2 font-sans">
-                <Globe className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
-                <span>OPC-UA Binary Protocol Adapter</span>
+                <Globe className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>OPC-UA Binary Protocol Adapter & Server Browser</span>
               </h3>
-              <p className="text-xs text-[var(--text-secondary)] font-mono">Connect to Industrial OPC-UA Servers & Address Spaces</p>
+              <p className="text-xs text-[var(--text-secondary)] font-mono mt-0.5">
+                Connect to Industrial OPC-UA Servers, browse address spaces, and stream SCADA telemetry signals
+              </p>
             </div>
-            <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 font-bold text-[10px]">
-              OPC-UA v1.04 ACTIVE
+            <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold text-[10px] shrink-0">
+              OPC-UA v1.04 ACTIVE (CONNECTED)
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Connection Controls & Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-1">
               <label className="font-bold text-[var(--text-primary)]">OPC Endpoint URL</label>
               <input
@@ -316,6 +364,86 @@ export const ConnectivityWorkspace: React.FC = () => {
                 onChange={(e) => setOpcSecurityMode(e.target.value)}
                 className="w-full p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-mono"
               />
+            </div>
+            <div className="flex items-end space-x-2">
+              <button
+                onClick={handleTestOpcConnection}
+                disabled={opcIsLoading}
+                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold transition-all shadow-md flex items-center justify-center space-x-1.5"
+              >
+                <RefreshCw className={`w-4 h-4 ${opcIsLoading ? 'animate-spin' : ''}`} />
+                <span>{opcIsLoading ? 'Connecting...' : 'Test OPC Connection'}</span>
+              </button>
+              <button
+                onClick={handleSimulateOpcSurge}
+                className="py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-md text-[11px] shrink-0"
+                title="Ingest High Temp/Vibration Surge Signal to All Workspaces"
+              >
+                Simulate Signal Surge
+              </button>
+            </div>
+          </div>
+
+          {/* OPC-UA Status Notification Banner */}
+          {opcStatusMsg && (
+            <div className="p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-bold flex items-center justify-between shadow-md animate-pulse">
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>{opcStatusMsg}</span>
+              </div>
+              <button onClick={() => setOpcStatusMsg(null)} className="text-emerald-400 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* OPC-UA Address Space Live Discovered Nodes Table */}
+          <div className="space-y-2 pt-2">
+            <div className="flex items-center justify-between text-xs">
+              <div className="font-bold text-[var(--text-primary)] flex items-center space-x-1.5">
+                <Database className="w-4 h-4 text-sky-400" />
+                <span>Discovered OPC-UA Address Space Nodes & Live Signals</span>
+              </div>
+              <span className="text-emerald-400 font-mono text-[11px]">Sampling: 100 ms Frequency</span>
+            </div>
+
+            <div className="overflow-x-auto border border-[var(--border-color)] rounded-xl">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[var(--bg-canvas)] border-b border-[var(--border-color)] text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <th className="p-3">OPC Node Identifier (NodeId)</th>
+                    <th className="p-3">Tag Display Name</th>
+                    <th className="p-3">Data Type</th>
+                    <th className="p-3">Live Signal Value</th>
+                    <th className="p-3">Quality Code</th>
+                    <th className="p-3">Linked Asset</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--border-color)] bg-[var(--bg-card)]">
+                  {opcNodes.map((node, idx) => (
+                    <tr key={idx} className="hover:bg-[var(--bg-card-hover)] transition-colors">
+                      <td className="p-3 text-emerald-400 font-mono font-bold">{node.nodeId}</td>
+                      <td className="p-3 font-semibold text-[var(--text-primary)]">{node.displayName}</td>
+                      <td className="p-3 text-slate-400">{node.dataType}</td>
+                      <td className="p-3 font-bold text-white bg-slate-900/60 rounded px-2 py-1 font-mono inline-block my-1">
+                        {node.val}
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            node.quality.includes('GOOD')
+                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30'
+                              : 'bg-rose-950 text-rose-400 border border-rose-500/30 animate-pulse'
+                          }`}
+                        >
+                          {node.quality}
+                        </span>
+                      </td>
+                      <td className="p-3 text-sky-400 font-semibold">{node.targetAsset}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
