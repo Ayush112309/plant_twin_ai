@@ -22,7 +22,7 @@ import { usePlantTelemetry } from '../../../app/contexts/PlantTelemetryContext';
 
 export const SiemensPLCSIM: React.FC = () => {
   const permissions = usePermissions();
-  const { updateSiemensTag } = usePlantTelemetry();
+  const { updateSiemensTag, ingestCSVData, resetNominalState } = usePlantTelemetry();
 
   // Mode Selection: 'S71200_HARDWARE' | 'S71500_HARDWARE' | 'PLCSIM_VIRTUAL'
   const [connectionMode, setConnectionMode] = useState<'S71200_HARDWARE' | 'S71500_HARDWARE' | 'PLCSIM_VIRTUAL'>('S71200_HARDWARE');
@@ -79,6 +79,37 @@ export const SiemensPLCSIM: React.FC = () => {
     setTimeout(() => setWriteMsg(null), 4000);
   };
 
+  const handleTriggerS7TempAlert = () => {
+    setIsConnected(true);
+    setDb100Val(142.8);
+    updateSiemensTag(`${dataBlock}.DBD4`, 142.8);
+    ingestCSVData([
+      { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Reactor-001', parameter: 'Temperature (°C)', value: '142.8', status: 'CRITICAL' }
+    ], 'Siemens S7 PLC');
+    setWriteMsg('🔥 Siemens S7-1200 / S7-1500 Outage Ingested: High Temp Excursion on Reactor-001 (142.8 °C)! Live sync active across all 11 workspaces.');
+    setTimeout(() => setWriteMsg(null), 6000);
+  };
+
+  const handleTriggerS7VibAlert = () => {
+    setIsConnected(true);
+    setVibrationVal(1.85);
+    updateSiemensTag(`${dataBlock}.DBD0`, 1.85);
+    ingestCSVData([
+      { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Pump-002', parameter: 'Vibration (mm/s)', value: '1.85', status: 'CRITICAL' }
+    ], 'Siemens S7 PLC');
+    setWriteMsg('⚡ Siemens S7-1200 / S7-1500 Outage Ingested: Bearing Vib Spike on Pump-002 (1.85 mm/s)! Live sync active across all 11 workspaces.');
+    setTimeout(() => setWriteMsg(null), 6000);
+  };
+
+  const handleStopS7Stream = () => {
+    setIsConnected(false);
+    setDb100Val(68.4);
+    setVibrationVal(0.18);
+    resetNominalState();
+    setWriteMsg('🛑 Siemens S7-1200 / S7-1500 PLC Disconnected — Telemetry stream paused and plant baseline restored across all 11 workspaces!');
+    setTimeout(() => setWriteMsg(null), 6000);
+  };
+
   return (
     <div className="space-y-6 font-mono">
       {/* Top Section Header */}
@@ -93,14 +124,41 @@ export const SiemensPLCSIM: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center space-x-3 shrink-0">
-          <div
-            className={`px-3 py-1 rounded-full border text-xs font-bold flex items-center space-x-2 ${
-              isConnected ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-400' : 'bg-red-950/80 border-red-500/50 text-red-400'
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <button
+            onClick={handleTriggerS7TempAlert}
+            className="py-1.5 px-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold transition-all shadow-md text-xs flex items-center space-x-1"
+            title="Simulate Ingesting Siemens S7 High Temp Outage (DB100.DBD4 = 142.8 °C)"
+          >
+            <span>🔥 S7 Temp Alert</span>
+          </button>
+
+          <button
+            onClick={handleTriggerS7VibAlert}
+            className="py-1.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold transition-all shadow-md text-xs flex items-center space-x-1"
+            title="Simulate Ingesting Siemens S7 Bearing Vib Spike (DB100.DBD0 = 1.85 mm/s)"
+          >
+            <span>⚡ S7 Vib Alert</span>
+          </button>
+
+          <button
+            onClick={handleStopS7Stream}
+            className={`py-1.5 px-3 rounded-xl font-bold transition-all shadow-md text-xs flex items-center space-x-1 ${
+              isConnected
+                ? 'bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40'
+                : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold border border-emerald-400'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
-            <span>{isConnected ? `S7-1200 Hardware Online (${ipAddress})` : 'Disconnected'}</span>
+            {isConnected ? '🛑 Stop S7 Stream' : '▶️ Connect S7 PLC'}
+          </button>
+
+          <div
+            className={`px-3 py-1 rounded-full border text-xs font-bold flex items-center space-x-2 ${
+              isConnected ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-400' : 'bg-amber-950/80 border-amber-500/50 text-amber-400'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+            <span>{isConnected ? `S7-1200 Hardware Online (${ipAddress})` : 'S7 PLC Disconnected'}</span>
           </div>
         </div>
       </div>
