@@ -60,6 +60,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     setTimeout(() => {
       setOpcIsLoading(false);
       setOpcIsConnected(true);
+      ingestCSVData([]);
       setOpcStatusMsg(`⚡ OPC-UA Binary Connection Verified (${opcServerUrl})! Discovered 6 Active Subscribed Nodes, 0 Dropouts. Cross-workspace live sync active!`);
       setTimeout(() => setOpcStatusMsg(null), 5000);
     }, 600);

@@ -152,8 +152,10 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
   const [systemHealthScore, setSystemHealthScore] = useState(88.5);
   const [isOpcStreaming, setIsOpcStreaming] = useState(true);
 
-  // Live Auto-Updating Telemetry Ticker (Ticks values every 2.5s across all 11 workspaces)
+  // Live Auto-Updating Telemetry Ticker (Ticks values every 2.5s across all 11 workspaces when OPC-UA streaming is active)
   useEffect(() => {
+    if (!isOpcStreaming) return;
+
     const timer = setInterval(() => {
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
@@ -188,7 +190,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
     }, 2500);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isOpcStreaming]);
 
   const updateSiemensTag = (tagAddress: string, value: number) => {
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -318,10 +320,18 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
     setSystemHealthScore(94.5);
     setRulDays(142);
     setIsOpcStreaming(false);
+    setTelemetryStream([
+      { timestamp: '17:50:00', temp: 84.5, vibration: 0.24, pressure: 520.0, flow: 1250.0 },
+      { timestamp: '17:51:00', temp: 84.5, vibration: 0.24, pressure: 520.0, flow: 1250.0 },
+      { timestamp: '17:52:00', temp: 84.5, vibration: 0.24, pressure: 520.0, flow: 1250.0 },
+      { timestamp: '17:53:00', temp: 84.5, vibration: 0.24, pressure: 520.0, flow: 1250.0 },
+      { timestamp: '17:54:00', temp: 84.5, vibration: 0.24, pressure: 520.0, flow: 1250.0 },
+      { timestamp: '17:55:00', temp: 84.5, vibration: 0.24, pressure: 520.0, flow: 1250.0 },
+    ]);
     setDigitalTwinState({
       motor_rpm: 1450,
       vibration_amplitude: 0.18,
-      winding_temp_c: 68.4,
+      winding_temp_c: 84.5,
       lubrication_pressure: 4.2,
     });
   };
