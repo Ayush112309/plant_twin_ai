@@ -599,24 +599,131 @@ export const AICenter: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 4: Root Cause & XAI */}
+      {/* Tab 4: Root Cause & XAI (Advanced Explainable AI Suite) */}
       {activeTab === 'xai' && (
-        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-5 font-mono text-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--border-color)] pb-3">
-            <div>
-              <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans">Explainable AI (SHAP / LIME Feature Attribution & Root Cause)</h3>
-              <p className="text-[var(--text-secondary)]">Multi-variate feature contribution weights for critical telemetry excursions and bearing anomalies</p>
+        <div className="space-y-6 font-mono text-xs">
+          {/* Header Bar */}
+          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-color)] pb-3">
+              <div>
+                <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-purple-400 shrink-0" />
+                  <span>Explainable AI (SHAP / LIME / Counterfactual Simulator & Causal DAG)</span>
+                </h3>
+                <p className="text-[var(--text-secondary)] text-[11px]">Deconstruct machine learning predictions into human-interpretable root causes & interactive what-if scenarios</p>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <span className="px-3 py-1 rounded-xl bg-purple-500/10 text-purple-400 font-bold border border-purple-500/30 text-[10px]">
+                  XGBoost Kernel Explainer v0.42
+                </span>
+              </div>
             </div>
-            <span className="px-3 py-1 rounded-xl bg-purple-500/10 text-purple-400 font-bold border border-purple-500/30 text-[10px]">
-              XGBoost + SHAP v0.42 Kernel
-            </span>
+
+            {/* Interactive Counterfactual "What-If" Simulator Panel */}
+            <div className="p-5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-4 shadow-md">
+              <div className="flex items-center justify-between">
+                <div className="font-extrabold text-sm text-[var(--text-primary)] font-sans flex items-center space-x-2">
+                  <Sliders className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Interactive Counterfactual "What-If" Telemetry Simulator</span>
+                </div>
+                <span className="text-[10px] text-emerald-400 font-bold bg-emerald-950/80 px-2.5 py-0.5 rounded border border-emerald-500/40">
+                  REAL-TIME SENSITIVITY INFERENCE
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Control 1: Inlet Temperature */}
+                <div className="space-y-2">
+                  <div className="flex justify-between font-bold">
+                    <span className="text-[var(--text-primary)]">Simulated Inlet Temperature (°C)</span>
+                    <span className="text-rose-400 font-extrabold">142.8 °C</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="60"
+                    max="180"
+                    defaultValue="142.8"
+                    className="w-full accent-rose-500 cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-[var(--text-secondary)]">
+                    <span>Nominal: 84.5 °C</span>
+                    <span>Critical Trip: 150.0 °C</span>
+                  </div>
+                </div>
+
+                {/* Control 2: Bearing Vibration */}
+                <div className="space-y-2">
+                  <div className="flex justify-between font-bold">
+                    <span className="text-[var(--text-primary)]">Simulated Vibration Velocity (mm/s)</span>
+                    <span className="text-amber-400 font-extrabold">1.85 mm/s</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.1"
+                    max="4.0"
+                    step="0.05"
+                    defaultValue="1.85"
+                    className="w-full accent-amber-500 cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-[var(--text-secondary)]">
+                    <span>Nominal: 0.24 mm/s</span>
+                    <span>ISO 10816 Limit: 1.50 mm/s</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Counterfactual Impact Output Card */}
+              <div className="p-4 bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <div className="text-[10px] text-[var(--text-secondary)] uppercase font-bold">Predicted Asset Health</div>
+                  <div className="text-xl font-extrabold text-rose-400 font-mono mt-0.5">38.5% CRITICAL</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-[var(--text-secondary)] uppercase font-bold">Predicted RUL Horizon</div>
+                  <div className="text-xl font-extrabold text-amber-400 font-mono mt-0.5">14 Days Remaining</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-[var(--text-secondary)] uppercase font-bold">Risk Mitigation Verdict</div>
+                  <div className="text-xs font-bold text-emerald-400 mt-0.5">
+                    Reducing Temp to 85°C & Vib to 0.24mm/s restores RUL to <strong>142 Days (HEALTHY)</strong>.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Causal DAG Tree Visualizer */}
+            <div className="p-5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-3 shadow-md">
+              <div className="font-extrabold text-sm text-[var(--text-primary)] font-sans flex items-center space-x-2">
+                <Layers className="w-4 h-4 text-purple-400 shrink-0" />
+                <span>Causal DAG Dependency Tree (Root Cause Propagation Path)</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-[10px] pt-1">
+                <div className="p-3 bg-[var(--bg-card)] rounded-xl border border-purple-500/30 space-y-1">
+                  <div className="text-purple-400 font-bold uppercase">Root Trigger</div>
+                  <div className="font-extrabold text-[var(--text-primary)]">Coolant Bypass Valve Stiction</div>
+                </div>
+                <div className="flex items-center justify-center text-purple-400 font-bold">➔</div>
+                <div className="p-3 bg-[var(--bg-card)] rounded-xl border border-rose-500/30 space-y-1">
+                  <div className="text-rose-400 font-bold uppercase">Thermal Drift</div>
+                  <div className="font-extrabold text-[var(--text-primary)]">Inlet Temp Surge (142.8 °C)</div>
+                </div>
+                <div className="flex items-center justify-center text-amber-400 font-bold">➔</div>
+                <div className="p-3 bg-[var(--bg-card)] rounded-xl border border-amber-500/30 space-y-1">
+                  <div className="text-amber-400 font-bold uppercase">Mechanical Failure</div>
+                  <div className="font-extrabold text-[var(--text-primary)]">Bearing Vib Spike (1.85 mm/s)</div>
+                </div>
+              </div>
+            </div>
           </div>
 
+          {/* Asset SHAP Feature Contribution Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Asset 1: Centrifugal Pump-002 Vibration SHAP Card (Workflow 2) */}
-            <div className="p-4 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-3 shadow-md">
-              <div className="flex items-center justify-between">
-                <div className="font-bold text-[var(--text-primary)]">Centrifugal Pump-002 Vibration Anomaly SHAP Weights</div>
+            <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-3 shadow-xl">
+              <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-2">
+                <div className="font-extrabold text-sm text-[var(--text-primary)] font-sans">Centrifugal Pump-002 SHAP Feature Attribution</div>
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/30">
                   BEARING SPIKE
                 </span>
@@ -627,7 +734,7 @@ export const AICenter: React.FC = () => {
                     <span>Bearing Vibration RMS (mm/s)</span>
                     <span className="font-bold text-amber-400">+54.2% SHAP Value (1.85 mm/s)</span>
                   </div>
-                  <div className="w-full bg-[var(--bg-card)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
+                  <div className="w-full bg-[var(--bg-canvas)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
                     <div className="bg-amber-400 h-full w-[54.2%]" />
                   </div>
                 </div>
@@ -636,7 +743,7 @@ export const AICenter: React.FC = () => {
                     <span>Drive End Bearing Temp (°C)</span>
                     <span className="font-bold text-orange-400">+28.5% SHAP Value (84.5 °C)</span>
                   </div>
-                  <div className="w-full bg-[var(--bg-card)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
+                  <div className="w-full bg-[var(--bg-canvas)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
                     <div className="bg-orange-400 h-full w-[28.5%]" />
                   </div>
                 </div>
@@ -645,16 +752,25 @@ export const AICenter: React.FC = () => {
                     <span>Pump Shaft Load & Turbulence (m³/h)</span>
                     <span className="font-bold text-sky-400">+17.3% SHAP Value (1250 m³/h)</span>
                   </div>
-                  <div className="w-full bg-[var(--bg-card)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
+                  <div className="w-full bg-[var(--bg-canvas)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
                     <div className="bg-sky-400 h-full w-[17.3%]" />
                   </div>
                 </div>
               </div>
 
               {/* Prescriptive Recommendation Box */}
-              <div className="p-3 bg-amber-950/40 border border-amber-500/30 rounded-xl text-[11px] space-y-1 text-amber-200">
-                <div className="font-bold text-amber-400 flex items-center space-x-1">
+              <div className="p-3.5 bg-amber-950/40 border border-amber-500/30 rounded-xl text-[11px] space-y-2 text-amber-200">
+                <div className="font-bold text-amber-400 flex items-center justify-between">
                   <span>🛠️ Prescriptive Maintenance Recommendation:</span>
+                  <button
+                    onClick={() => {
+                      setRetrainMsg('🚨 Emergency Dispatch Work Order generated for Pump-002 Bearing Assembly Replacement!');
+                      setTimeout(() => setRetrainMsg(null), 4000);
+                    }}
+                    className="py-1 px-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-[10px] transition-all shadow-md"
+                  >
+                    Dispatch Work Order
+                  </button>
                 </div>
                 <p className="leading-relaxed text-[10.5px]">
                   Pump-002 bearing vibration exceeds ISO 10816 threshold (<strong>1.85 mm/s</strong> vs 1.50 mm/s limit). RUL model estimates <strong>14 Days remaining</strong>. Recommended action: Dispatch maintenance team to replace drive end bearing assembly before impeller seizure.
@@ -663,9 +779,9 @@ export const AICenter: React.FC = () => {
             </div>
 
             {/* Asset 2: Reactor-001 Vessel Thermal SHAP Card */}
-            <div className="p-4 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-3 shadow-md">
-              <div className="flex items-center justify-between">
-                <div className="font-bold text-[var(--text-primary)]">Reactor-001 Vessel Thermal Anomaly SHAP Weights</div>
+            <div className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] space-y-3 shadow-xl">
+              <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-2">
+                <div className="font-extrabold text-sm text-[var(--text-primary)] font-sans">Reactor-001 Vessel SHAP Feature Attribution</div>
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-500 border border-rose-500/30">
                   THERMAL DRIFT
                 </span>
@@ -676,7 +792,7 @@ export const AICenter: React.FC = () => {
                     <span>Inlet Temperature (°C)</span>
                     <span className="font-bold text-rose-500">+42.5% SHAP Value (142.8 °C)</span>
                   </div>
-                  <div className="w-full bg-[var(--bg-card)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
+                  <div className="w-full bg-[var(--bg-canvas)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
                     <div className="bg-rose-500 h-full w-[42.5%]" />
                   </div>
                 </div>
@@ -685,7 +801,7 @@ export const AICenter: React.FC = () => {
                     <span>Vibration RMS (mm/s)</span>
                     <span className="font-bold text-amber-500">+38.0% SHAP Value</span>
                   </div>
-                  <div className="w-full bg-[var(--bg-card)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
+                  <div className="w-full bg-[var(--bg-canvas)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
                     <div className="bg-amber-500 h-full w-[38%]" />
                   </div>
                 </div>
@@ -694,16 +810,25 @@ export const AICenter: React.FC = () => {
                     <span>System Pressure (BAR)</span>
                     <span className="font-bold text-sky-500">+19.5% SHAP Value (520 bar)</span>
                   </div>
-                  <div className="w-full bg-[var(--bg-card)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
+                  <div className="w-full bg-[var(--bg-canvas)] h-2 rounded-full overflow-hidden border border-[var(--border-color)]">
                     <div className="bg-sky-500 h-full w-[19.5%]" />
                   </div>
                 </div>
               </div>
 
               {/* Prescriptive Recommendation Box */}
-              <div className="p-3 bg-rose-950/40 border border-rose-500/30 rounded-xl text-[11px] space-y-1 text-rose-200">
-                <div className="font-bold text-rose-400 flex items-center space-x-1">
+              <div className="p-3.5 bg-rose-950/40 border border-rose-500/30 rounded-xl text-[11px] space-y-2 text-rose-200">
+                <div className="font-bold text-rose-400 flex items-center justify-between">
                   <span>🔥 Prescriptive Maintenance Recommendation:</span>
+                  <button
+                    onClick={() => {
+                      setRetrainMsg('🚨 Emergency Dispatch Work Order generated for Reactor-001 Coolant Calibration!');
+                      setTimeout(() => setRetrainMsg(null), 4000);
+                    }}
+                    className="py-1 px-2.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-[10px] transition-all shadow-md"
+                  >
+                    Dispatch Work Order
+                  </button>
                 </div>
                 <p className="leading-relaxed text-[10.5px]">
                   Reactor-001 temperature spike (<strong>142.8 °C</strong>) indicates catalytic bed overheating. Recommended action: Modulate coolant bypass valve and inspect thermal sensor calibration.
