@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Brain,
   CheckCircle2,
-  ArrowRight,
   Database,
   RefreshCw,
   ShieldCheck,
   Rocket,
   Layers,
-  FileCheck,
-  FileText,
   UserCheck,
   Wrench,
-  Search,
   Sparkles,
   Zap,
 } from 'lucide-react';
@@ -37,9 +33,7 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
       name: 'Prediction',
       subtitle: 'Generated PRED-RX-102',
       icon: Brain,
-      color: 'text-purple-400',
-      borderColor: 'border-purple-500/50',
-      bgColor: 'bg-purple-950/40',
+      color: 'text-[var(--brand-primary)]',
       details: 'Isolation Forest + XGBoost generated failure prediction PRED-RX-102 on Pump-002.',
     },
     {
@@ -47,9 +41,7 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
       name: 'Engineer Feedback',
       subtitle: 'PARTIALLY_CORRECT',
       icon: UserCheck,
-      color: 'text-indigo-400',
-      borderColor: 'border-indigo-500/50',
-      bgColor: 'bg-indigo-950/40',
+      color: 'text-indigo-500',
       details: 'Reliability Engineer modified diagnosis: "Lubrication Issue, bearing race undamaged."',
     },
     {
@@ -57,9 +49,7 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
       name: 'Verified Outcome',
       subtitle: 'Confirmed Breakdown',
       icon: Wrench,
-      color: 'text-amber-400',
-      borderColor: 'border-amber-500/50',
-      bgColor: 'bg-amber-950/40',
+      color: 'text-amber-500',
       details: 'Overhaul confirmed oil reservoir port blockage throttling coolant throughput.',
     },
     {
@@ -67,9 +57,7 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
       name: 'Knowledge Base',
       subtitle: 'Vector DB Ingested',
       icon: Database,
-      color: 'text-sky-400',
-      borderColor: 'border-sky-500/50',
-      bgColor: 'bg-sky-950/40',
+      color: 'text-sky-500',
       details: 'Ingested incident case KB-PMP-12 into Qdrant Vector Store embeddings.',
     },
     {
@@ -77,9 +65,7 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
       name: 'Training Dataset',
       subtitle: 'Parquet Staged',
       icon: Layers,
-      color: 'text-teal-400',
-      borderColor: 'border-teal-500/50',
-      bgColor: 'bg-teal-950/40',
+      color: 'text-teal-500',
       details: 'Curated feature vector added to training dataset-v2.5.0.parquet.',
     },
     {
@@ -87,9 +73,7 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
       name: 'Offline Retraining',
       subtitle: 'PyTorch / XGBoost',
       icon: RefreshCw,
-      color: 'text-emerald-400',
-      borderColor: 'border-emerald-500/50',
-      bgColor: 'bg-emerald-950/40',
+      color: 'text-emerald-500',
       details: 'Executed offline GPU batch retraining across 14,850 feature vector samples.',
     },
     {
@@ -97,9 +81,7 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
       name: 'Model Validation',
       subtitle: 'F1: 0.988 Approved',
       icon: ShieldCheck,
-      color: 'text-purple-400',
-      borderColor: 'border-purple-500/50',
-      bgColor: 'bg-purple-950/40',
+      color: 'text-[var(--brand-primary)]',
       details: 'Validation gating: F1-Score 0.988 > 0.95 threshold. Zero concept drift detected.',
     },
     {
@@ -107,9 +89,7 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
       name: 'Production Deployment',
       subtitle: 'Promoted v2.5.0',
       icon: Rocket,
-      color: 'text-emerald-400',
-      borderColor: 'border-emerald-500/50',
-      bgColor: 'bg-emerald-950/40',
+      color: 'text-emerald-500',
       details: 'Model v2.5.0 promoted to Production Registry & active SCADA inference engine.',
     },
   ];
@@ -144,15 +124,15 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
   };
 
   return (
-    <div className="industrial-card p-6 space-y-6 border-purple-500/40">
+    <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-6 font-mono text-xs">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border-color)] pb-4">
         <div>
-          <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center space-x-2">
-            <Brain className="w-5 h-5 text-purple-400" />
+          <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans flex items-center space-x-2">
+            <Brain className="w-5 h-5 text-[var(--brand-primary)] shrink-0" />
             <span>End-to-End Engineer Feedback & Retraining Pipeline (MLOps Governance)</span>
           </h3>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-[var(--text-secondary)] mt-1 font-mono leading-relaxed">
             Prediction → Engineer Feedback → Verified Outcome → Knowledge Base → Training Dataset → Retraining → Validation → Production
           </p>
         </div>
@@ -160,46 +140,46 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
         <button
           onClick={handleExecutePipeline}
           disabled={executing}
-          className="bg-gradient-to-r from-purple-600 to-emerald-600 hover:from-purple-500 hover:to-emerald-500 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition-colors shadow-lg shadow-purple-950/40 shrink-0 flex items-center space-x-1.5 disabled:opacity-50"
+          className="btn-nexus-primary bg-[var(--brand-primary)] hover:bg-[var(--brand-hover)] text-white font-bold text-xs inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl shrink-0 font-mono shadow-md transition-all disabled:opacity-50"
         >
-          <Zap className={`w-4 h-4 ${executing ? 'animate-spin' : ''}`} />
+          <Zap className={`w-4 h-4 shrink-0 ${executing ? 'animate-spin' : ''}`} />
           <span>{executing ? 'Executing MLOps Pipeline...' : 'Execute Full Retraining Pipeline'}</span>
         </button>
       </div>
 
       {executionMessage && (
-        <div className="p-3 bg-purple-950/50 border border-purple-500/40 rounded-xl text-xs text-purple-200 flex items-center space-x-2 animate-fade-in font-mono">
-          <Sparkles className="w-4 h-4 text-purple-400 shrink-0 animate-pulse" />
-          <span>{executionMessage}</span>
+        <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-500 flex items-center space-x-2 font-mono shadow-md animate-fade-in">
+          <Sparkles className="w-4 h-4 text-emerald-500 shrink-0 animate-pulse" />
+          <span className="font-bold">{executionMessage}</span>
         </div>
       )}
 
       {/* Live Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-        <div className="p-3 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl space-y-1">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">CURATED DATASET SAMPLES</div>
-          <div className="text-lg font-extrabold text-slate-100">{pipelineData.metrics?.dataset_sample_count || 14850} Vectors</div>
+        <div className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl space-y-1">
+          <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">CURATED DATASET SAMPLES</div>
+          <div className="text-lg font-extrabold font-mono text-[var(--text-primary)]">{pipelineData.metrics?.dataset_sample_count || 14850} Vectors</div>
         </div>
 
-        <div className="p-3 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl space-y-1">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">VALIDATION F1-SCORE</div>
-          <div className="text-lg font-extrabold text-emerald-400">{pipelineData.metrics?.validation_f1_score || 0.988}</div>
+        <div className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl space-y-1">
+          <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">VALIDATION F1-SCORE</div>
+          <div className="text-lg font-extrabold font-mono text-emerald-500">{pipelineData.metrics?.validation_f1_score || 0.988}</div>
         </div>
 
-        <div className="p-3 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl space-y-1">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">ACCURACY GAIN</div>
-          <div className="text-lg font-extrabold text-sky-400">{pipelineData.metrics?.accuracy_improvement || '+3.2%'}</div>
+        <div className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl space-y-1">
+          <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">ACCURACY GAIN</div>
+          <div className="text-lg font-extrabold font-mono text-sky-500">{pipelineData.metrics?.accuracy_improvement || '+3.2%'}</div>
         </div>
 
-        <div className="p-3 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl space-y-1">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">PRODUCTION MODEL</div>
-          <div className="text-lg font-extrabold text-purple-400">{pipelineData.metrics?.active_production_version || 'v2.5.0'}</div>
+        <div className="p-4 bg-[var(--bg-canvas)] border border-[var(--border-color)] rounded-xl space-y-1">
+          <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">PRODUCTION MODEL</div>
+          <div className="text-lg font-extrabold font-mono text-[var(--brand-primary)]">{pipelineData.metrics?.active_production_version || 'v2.5.0'}</div>
         </div>
       </div>
 
       {/* 8-Stage Interactive Horizontal Pipeline Diagram */}
       <div className="space-y-3 pt-2">
-        <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        <div className="text-xs font-mono font-bold text-[var(--text-secondary)] uppercase tracking-wider">
           MLOps 8-Stage Feedback Architecture Gating:
         </div>
 
@@ -212,30 +192,30 @@ export const MLOpsFeedbackPipeline: React.FC = () => {
             return (
               <div
                 key={stg.step}
-                className={`p-3.5 rounded-xl border transition-all space-y-2 relative ${
+                className={`p-4 rounded-xl border transition-all space-y-2 relative ${
                   isActive
-                    ? 'bg-purple-950/80 border-purple-400 ring-2 ring-purple-500 scale-105 shadow-xl'
+                    ? 'bg-[var(--brand-primary)]/15 border-[var(--brand-primary)] ring-2 ring-[var(--brand-primary)] scale-105 shadow-xl'
                     : isCompleted
-                    ? `${stg.bgColor} ${stg.borderColor} text-slate-100`
-                    : 'bg-[#090D14] border-[#1E293B] opacity-50'
+                    ? 'bg-[var(--bg-canvas)] border-[var(--border-color)] hover:border-[var(--brand-primary)]/50'
+                    : 'bg-[var(--bg-canvas)]/50 border-[var(--border-color)]/50 opacity-40'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold text-slate-400">STAGE {stg.step}</span>
+                  <span className="text-[10px] font-mono font-bold text-[var(--text-secondary)]">STAGE {stg.step}</span>
                   {isCompleted ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                   ) : (
-                    <span className="w-2 h-2 rounded-full bg-slate-600" />
+                    <span className="w-2 h-2 rounded-full bg-[var(--border-color)] shrink-0" />
                   )}
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <IconComponent className={`w-4 h-4 ${stg.color}`} />
-                  <h4 className="text-xs font-bold text-slate-100 truncate">{stg.name}</h4>
+                  <IconComponent className={`w-4 h-4 shrink-0 ${stg.color}`} />
+                  <h4 className="text-xs font-bold font-sans text-[var(--text-primary)] truncate">{stg.name}</h4>
                 </div>
 
-                <div className="text-[11px] font-mono font-semibold text-emerald-400">{stg.subtitle}</div>
-                <p className="text-[10px] text-slate-400 leading-normal">{stg.details}</p>
+                <div className="text-[11px] font-mono font-extrabold text-emerald-500">{stg.subtitle}</div>
+                <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-mono">{stg.details}</p>
               </div>
             );
           })}
