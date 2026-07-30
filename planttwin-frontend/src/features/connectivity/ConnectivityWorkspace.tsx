@@ -65,6 +65,38 @@ export const ConnectivityWorkspace: React.FC = () => {
     }, 600);
   };
 
+  const handleTriggerTempAlert = () => {
+    setOpcNodes((prev) =>
+      prev.map((node) => {
+        if (node.nodeId.includes('Temperature')) return { ...node, val: '142.8', quality: 'UNCERTAIN_WARNING' };
+        return node;
+      })
+    );
+
+    ingestCSVData([
+      { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Reactor-001', parameter: 'Temperature (°C)', value: '142.8', status: 'CRITICAL' }
+    ]);
+
+    setOpcStatusMsg('🔥 Alert #1 Ingested via OPC-UA: High Temperature Excursion on Reactor-001 Vessel (142.8 °C)! Check Telemetry, Operations, Alarms & Equipment Workspaces.');
+    setTimeout(() => setOpcStatusMsg(null), 6000);
+  };
+
+  const handleTriggerVibAlert = () => {
+    setOpcNodes((prev) =>
+      prev.map((node) => {
+        if (node.nodeId.includes('Vibration')) return { ...node, val: '1.85', quality: 'BAD_ALARM' };
+        return node;
+      })
+    );
+
+    ingestCSVData([
+      { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Pump-002', parameter: 'Vibration (mm/s)', value: '1.85', status: 'CRITICAL' }
+    ]);
+
+    setOpcStatusMsg('⚡ Alert #2 Ingested via OPC-UA: Bearing Vibration Threshold Surged on Pump-002 (1.85 mm/s)! Check Telemetry, Operations, Alarms & Equipment Workspaces.');
+    setTimeout(() => setOpcStatusMsg(null), 6000);
+  };
+
   const handleSimulateOpcSurge = () => {
     setOpcNodes((prev) =>
       prev.map((node) => {
@@ -80,7 +112,7 @@ export const ConnectivityWorkspace: React.FC = () => {
       { rowNum: 2, timestamp: new Date().toLocaleTimeString(), assetTag: 'Pump-002', parameter: 'Vibration (mm/s)', value: '1.85', status: 'CRITICAL' },
     ]);
 
-    setOpcStatusMsg('🚨 OPC-UA Thermal & Vibration Surge Signal Ingested! Live telemetry & alarms updated across all 11 workspaces!');
+    setOpcStatusMsg('🚨 Dual Alert Ingested via OPC-UA: High Temp (142.8°C) + High Vib (1.85 mm/s)! Live telemetry & alarms updated across all 11 workspaces!');
     setTimeout(() => setOpcStatusMsg(null), 6000);
   };
 
@@ -383,25 +415,43 @@ export const ConnectivityWorkspace: React.FC = () => {
                 className="w-full p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-mono"
               />
             </div>
-            <div className="flex items-end space-x-2">
+            <div className="flex flex-wrap items-center gap-2 pt-2">
               <button
                 onClick={handleTestOpcConnection}
                 disabled={opcIsLoading}
-                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold transition-all shadow-md flex items-center justify-center space-x-1.5"
+                className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold transition-all shadow-md flex items-center justify-center space-x-1 text-xs shrink-0"
               >
-                <RefreshCw className={`w-4 h-4 ${opcIsLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${opcIsLoading ? 'animate-spin' : ''}`} />
                 <span>{opcIsLoading ? 'Connecting...' : 'Test Connection'}</span>
               </button>
+
+              <button
+                onClick={handleTriggerTempAlert}
+                className="py-2 px-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1"
+                title="Ingest High Temp Alert (142.8 °C) on Reactor-001"
+              >
+                <span>🔥 Temp Alert (#1)</span>
+              </button>
+
+              <button
+                onClick={handleTriggerVibAlert}
+                className="py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1"
+                title="Ingest High Bearing Vibration Alert (1.85 mm/s) on Pump-002"
+              >
+                <span>⚡ Vib Alert (#2)</span>
+              </button>
+
               <button
                 onClick={handleSimulateOpcSurge}
-                className="py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-md text-[11px] shrink-0"
-                title="Ingest High Temp/Vibration Surge Signal to All Workspaces"
+                className="py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1"
+                title="Ingest Dual Signal Surge to All Workspaces"
               >
-                Simulate Surge
+                <span>🚨 Dual Surge</span>
               </button>
+
               <button
                 onClick={handleStopOpcStream}
-                className="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40 font-bold transition-all shadow-md text-[11px] shrink-0 flex items-center space-x-1"
+                className="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40 font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1"
                 title="Stop OPC-UA Stream & Restore Nominal Baseline Across All Workspaces"
               >
                 <XCircle className="w-3.5 h-3.5 text-amber-400" />
