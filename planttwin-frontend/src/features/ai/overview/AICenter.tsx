@@ -47,7 +47,7 @@ interface FeedbackItem {
 }
 
 export const AICenter: React.FC = () => {
-  const { systemHealthScore, rulDays, activeAlerts } = usePlantTelemetry();
+  const { systemHealthScore, rulDays, activeAlerts, equipmentList: contextEquipmentList } = usePlantTelemetry();
   const [activeTab, setActiveTab] = useState<'health' | 'anomaly' | 'rul' | 'xai' | 'cases' | 'registry' | 'feedback'>('feedback');
   const [isRetraining, setIsRetraining] = useState(false);
   const [retrainMsg, setRetrainMsg] = useState<string | null>(null);
@@ -169,12 +169,19 @@ export const AICenter: React.FC = () => {
     }, 1500);
   };
 
-  const equipmentList = [
-    { tag: 'Reactor-001', name: 'Reactor-001 Vessel', score: systemHealthScore, rul: `${rulDays} Days`, status: systemHealthScore < 70 ? 'WARNING' : 'HEALTHY' },
-    { tag: 'Pump-002', name: 'Pump-002 Centrifugal', score: 88.5, rul: '142 Days', status: 'HEALTHY' },
-    { tag: 'Compressor-001', name: 'Compressor-001 Gas', score: 94.1, rul: '210 Days', status: 'HEALTHY' },
-    { tag: 'Exchanger-101', name: 'Heat Exchanger-101', score: 91.0, rul: '180 Days', status: 'HEALTHY' },
-  ];
+  const equipmentList = contextEquipmentList && contextEquipmentList.length > 0
+    ? contextEquipmentList.map(eq => ({
+        tag: eq.asset_tag,
+        name: eq.name,
+        score: eq.health_score,
+        rul: `${eq.health_score < 50 ? 14 : eq.health_score < 70 ? 45 : 142} Days`,
+        status: eq.status === 'Critical' ? 'CRITICAL' : eq.status === 'Warning' ? 'WARNING' : 'HEALTHY',
+      }))
+    : [
+        { tag: 'Reactor-001', name: 'Reactor-001 Vessel', score: systemHealthScore, rul: `${rulDays} Days`, status: systemHealthScore < 70 ? 'WARNING' : 'HEALTHY' },
+        { tag: 'Pump-002', name: 'Pump-002 Centrifugal', score: 88.5, rul: '142 Days', status: 'HEALTHY' },
+        { tag: 'Compressor-001', name: 'Compressor-001 Gas', score: 94.1, rul: '210 Days', status: 'HEALTHY' },
+      ];
 
   // Calculate feedback metrics
   const totalReviewed = feedbackList.filter(f => f.verdict !== 'PENDING').length;

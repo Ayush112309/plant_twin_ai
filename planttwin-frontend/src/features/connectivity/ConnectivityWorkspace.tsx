@@ -24,6 +24,7 @@ import {
   Table,
   FileSpreadsheet,
   X,
+  XCircle,
 } from 'lucide-react';
 import SiemensPLCSIM from './siemens/SiemensPLCSIM';
 import usePermissions from '../../app/permissions/usePermissions';
@@ -32,7 +33,7 @@ import apiClient from '../../lib/api/client';
 
 export const ConnectivityWorkspace: React.FC = () => {
   const permissions = usePermissions();
-  const { ingestCSVData } = usePlantTelemetry();
+  const { ingestCSVData, resetNominalState } = usePlantTelemetry();
   const [activeDriver, setActiveDriver] = useState<'siemens' | 'opcua' | 'mqtt' | 'rest' | 'csv' | 'mapping'>('siemens');
 
   // OPC-UA Interactive Testing State
@@ -80,6 +81,23 @@ export const ConnectivityWorkspace: React.FC = () => {
     ]);
 
     setOpcStatusMsg('🚨 OPC-UA Thermal & Vibration Surge Signal Ingested! Live telemetry & alarms updated across all 11 workspaces!');
+    setTimeout(() => setOpcStatusMsg(null), 6000);
+  };
+
+  const handleStopOpcStream = () => {
+    setOpcIsConnected(false);
+    setOpcIsSubscribed(false);
+    setOpcNodes((prev) =>
+      prev.map((node) => {
+        if (node.nodeId.includes('Temperature')) return { ...node, val: '84.5', quality: 'GOOD_100' };
+        if (node.nodeId.includes('Vibration')) return { ...node, val: '0.24', quality: 'GOOD_100' };
+        return { ...node, quality: 'GOOD_100' };
+      })
+    );
+
+    resetNominalState();
+
+    setOpcStatusMsg('🛑 OPC-UA Binary Driver Disconnected — Telemetry stream paused and plant baseline restored across all workspaces!');
     setTimeout(() => setOpcStatusMsg(null), 6000);
   };
 
@@ -372,14 +390,22 @@ export const ConnectivityWorkspace: React.FC = () => {
                 className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold transition-all shadow-md flex items-center justify-center space-x-1.5"
               >
                 <RefreshCw className={`w-4 h-4 ${opcIsLoading ? 'animate-spin' : ''}`} />
-                <span>{opcIsLoading ? 'Connecting...' : 'Test OPC Connection'}</span>
+                <span>{opcIsLoading ? 'Connecting...' : 'Test Connection'}</span>
               </button>
               <button
                 onClick={handleSimulateOpcSurge}
                 className="py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-md text-[11px] shrink-0"
                 title="Ingest High Temp/Vibration Surge Signal to All Workspaces"
               >
-                Simulate Signal Surge
+                Simulate Surge
+              </button>
+              <button
+                onClick={handleStopOpcStream}
+                className="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40 font-bold transition-all shadow-md text-[11px] shrink-0 flex items-center space-x-1"
+                title="Stop OPC-UA Stream & Restore Nominal Baseline Across All Workspaces"
+              >
+                <XCircle className="w-3.5 h-3.5 text-amber-400" />
+                <span>Stop Stream</span>
               </button>
             </div>
           </div>

@@ -54,6 +54,7 @@ interface PlantTelemetryContextType {
   systemHealthScore: number;
   ingestCSVData: (rows: any[]) => void;
   updateSiemensTag: (tagAddress: string, value: number) => void;
+  resetNominalState: () => void;
 }
 
 const initialTelemetryStream: TelemetryPoint[] = [
@@ -296,6 +297,23 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
     }
   };
 
+  const resetNominalState = () => {
+    setEquipmentList([
+      { id: 'e1', name: 'Centrifugal Pump-002', asset_tag: 'Pump-002', equipment_type: 'Pump', status: 'Healthy', health_score: 94.2, location: 'Refinery Area A', temp: 68.4, vibration: 0.18 },
+      { id: 'e2', name: 'Reactor Vessel-001', asset_tag: 'Reactor-001', equipment_type: 'Reactor', status: 'Healthy', health_score: 98.5, location: 'Chemical Processing Line 1', temp: 84.5, vibration: 0.18 },
+      { id: 'e3', name: 'Gas Compressor-001', asset_tag: 'Compressor-001', equipment_type: 'Compressor', status: 'Healthy', health_score: 98.0, location: 'Compressor House B', temp: 45.2, vibration: 0.08 },
+    ]);
+    setActiveAlerts([]);
+    setSystemHealthScore(94.5);
+    setRulDays(142);
+    setDigitalTwinState({
+      motor_rpm: 1450,
+      vibration_amplitude: 0.18,
+      winding_temp_c: 68.4,
+      lubrication_pressure: 4.2,
+    });
+  };
+
   return (
     <PlantTelemetryContext.Provider
       value={{
@@ -308,6 +326,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
         systemHealthScore,
         ingestCSVData,
         updateSiemensTag,
+        resetNominalState,
       }}
     >
       {children}

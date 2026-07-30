@@ -12,6 +12,7 @@ import apiClient from '../../../lib/api/client';
 import PIDDiagramViewer from '../../../components/common/PIDDiagramViewer';
 import PlantGISMap from '../../../components/maps/PlantGISMap';
 import AssetEventTimeline from '../../../components/common/AssetEventTimeline';
+import { usePlantTelemetry } from '../../../app/contexts/PlantTelemetryContext';
 
 export interface AssetEquipment {
   id: string;
@@ -25,14 +26,15 @@ export interface AssetEquipment {
 }
 
 export const EquipmentWorkspace: React.FC = () => {
+  const { equipmentList: contextEquipmentList } = usePlantTelemetry();
   const [equipmentList, setEquipmentList] = useState<AssetEquipment[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<AssetEquipment>({
     id: 'Reactor-001',
     name: 'Reactor-001 Vessel',
     asset_tag: 'EQ-RX-001',
     equipment_type: 'Reactor Vessel',
-    status: 'CRITICAL',
-    health_score: 42,
+    status: 'RUNNING',
+    health_score: 98.5,
   });
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -85,6 +87,24 @@ export const EquipmentWorkspace: React.FC = () => {
   useEffect(() => {
     fetchEquipment();
   }, []);
+
+  useEffect(() => {
+    if (contextEquipmentList && contextEquipmentList.length > 0) {
+      const mapped: AssetEquipment[] = contextEquipmentList.map((item) => ({
+        id: item.asset_tag || item.id,
+        name: item.name,
+        asset_tag: item.asset_tag.startsWith('EQ-') ? item.asset_tag : `EQ-${item.asset_tag}`,
+        equipment_type: item.equipment_type,
+        status: item.status === 'Critical' ? 'CRITICAL' : item.status === 'Warning' ? 'WARNING' : 'RUNNING',
+        health_score: item.health_score,
+      }));
+      setEquipmentList(mapped);
+      setSelectedAsset((prev) => {
+        const match = mapped.find((m) => m.id === prev.id || m.name.includes(prev.id));
+        return match || mapped[0];
+      });
+    }
+  }, [contextEquipmentList]);
 
   const handleCreateAsset = async (e: React.FormEvent) => {
     e.preventDefault();
