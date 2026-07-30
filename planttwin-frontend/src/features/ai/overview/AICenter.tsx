@@ -48,7 +48,7 @@ interface FeedbackItem {
 
 export const AICenter: React.FC = () => {
   const { systemHealthScore, rulDays, activeAlerts, equipmentList: contextEquipmentList } = usePlantTelemetry();
-  const [activeTab, setActiveTab] = useState<'health' | 'anomaly' | 'rul' | 'xai' | 'cases' | 'registry' | 'feedback'>('feedback');
+  const [activeTab, setActiveTab] = useState<'health' | 'anomaly' | 'rul' | 'rca' | 'xai' | 'cases' | 'registry' | 'feedback'>('feedback');
   const [isRetraining, setIsRetraining] = useState(false);
   const [retrainMsg, setRetrainMsg] = useState<string | null>(null);
 
@@ -278,6 +278,18 @@ export const AICenter: React.FC = () => {
         </button>
 
         <button
+          onClick={() => setActiveTab('rca')}
+          className={`px-3.5 py-2 rounded-xl transition-all inline-flex items-center space-x-2 shrink-0 ${
+            activeTab === 'rca'
+              ? 'bg-[var(--brand-primary)] text-white border border-[var(--brand-primary)] shadow-md font-extrabold'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]'
+          }`}
+        >
+          <Layers className="w-3.5 h-3.5 shrink-0" />
+          <span>Root Cause Analysis (RCA)</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('xai')}
           className={`px-3.5 py-2 rounded-xl transition-all inline-flex items-center space-x-2 shrink-0 ${
             activeTab === 'xai'
@@ -286,7 +298,7 @@ export const AICenter: React.FC = () => {
           }`}
         >
           <Sparkles className="w-3.5 h-3.5 shrink-0" />
-          <span>Root Cause & XAI</span>
+          <span>Explainable AI (XAI)</span>
         </button>
 
         <button
@@ -599,25 +611,132 @@ export const AICenter: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 4: Root Cause & XAI (Advanced Explainable AI Suite) */}
+      {/* Tab 4: Root Cause Analysis (RCA & Causal DAG) */}
+      {activeTab === 'rca' && (
+        <div className="space-y-6 font-mono text-xs">
+          {/* RCA Header Bar */}
+          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-color)] pb-3">
+              <div>
+                <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans flex items-center space-x-2">
+                  <Layers className="w-4 h-4 text-purple-400 shrink-0" />
+                  <span>Root Cause Analysis (Causal DAG & Fault Tree Analysis)</span>
+                </h3>
+                <p className="text-[var(--text-secondary)] text-[11px]">Upstream root cause identification and causal event propagation mapping</p>
+              </div>
+
+              <span className="px-3 py-1 rounded-xl bg-purple-500/10 text-purple-400 font-bold border border-purple-500/30 text-[10px]">
+                Bayesian Causal Network Engine
+              </span>
+            </div>
+
+            {/* Causal DAG Tree Visualizer */}
+            <div className="p-5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-3 shadow-md">
+              <div className="font-extrabold text-sm text-[var(--text-primary)] font-sans flex items-center space-x-2">
+                <Layers className="w-4 h-4 text-purple-400 shrink-0" />
+                <span>Causal DAG Dependency Tree (Root Cause Propagation Path)</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-[10px] pt-1">
+                <div className="p-3 bg-[var(--bg-card)] rounded-xl border border-purple-500/40 space-y-1 shadow-sm">
+                  <div className="text-purple-400 font-bold uppercase">1. Root Trigger</div>
+                  <div className="font-extrabold text-[var(--text-primary)]">Coolant Bypass Valve Stiction</div>
+                  <div className="text-[9px] text-[var(--text-secondary)]">Probability: 88.4%</div>
+                </div>
+
+                <div className="flex items-center justify-center text-purple-400 font-bold">➔</div>
+
+                <div className="p-3 bg-[var(--bg-card)] rounded-xl border border-rose-500/40 space-y-1 shadow-sm">
+                  <div className="text-rose-400 font-bold uppercase">2. Thermal Drift</div>
+                  <div className="font-extrabold text-[var(--text-primary)]">Inlet Temp Surge (142.8 °C)</div>
+                  <div className="text-[9px] text-[var(--text-secondary)]">Variance: +14.2 °C</div>
+                </div>
+
+                <div className="flex items-center justify-center text-amber-400 font-bold">➔</div>
+
+                <div className="p-3 bg-[var(--bg-card)] rounded-xl border border-amber-500/40 space-y-1 shadow-sm">
+                  <div className="text-amber-400 font-bold uppercase">3. Mechanical Degradation</div>
+                  <div className="font-extrabold text-[var(--text-primary)]">Bearing Vib Spike (1.85 mm/s)</div>
+                  <div className="text-[9px] text-[var(--text-secondary)]">ISO Limit: 1.50 mm/s</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Fault Tree Analysis (FTA) Breakdown Table */}
+            <div className="p-5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-3 shadow-md">
+              <h4 className="font-extrabold text-sm text-[var(--text-primary)] font-sans">Fault Tree Analysis (FTA) Probability Matrix</h4>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-[11px]">
+                  <thead>
+                    <tr className="border-b border-[var(--border-color)] text-[var(--text-secondary)] uppercase text-[10px]">
+                      <th className="py-2 px-3 font-bold">Subsystem Node</th>
+                      <th className="py-2 px-3 font-bold">Fault Description</th>
+                      <th className="py-2 px-3 font-bold">Root Cause Contribution</th>
+                      <th className="py-2 px-3 font-bold">Confidence</th>
+                      <th className="py-2 px-3 font-bold">Corrective Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border-color)] text-[var(--text-primary)]">
+                    <tr>
+                      <td className="py-2.5 px-3 font-bold text-rose-400">Coolant Loop (VALVE-104)</td>
+                      <td className="py-2.5 px-3">Mechanical Stiction in Valve Actuator</td>
+                      <td className="py-2.5 px-3 font-extrabold text-rose-400">42.5% Primary</td>
+                      <td className="py-2.5 px-3 font-mono text-emerald-400">96.8%</td>
+                      <td className="py-2.5 px-3">
+                        <button
+                          onClick={() => {
+                            setRetrainMsg('🚨 Emergency Work Order dispatched for Coolant Valve Actuator Calibrator!');
+                            setTimeout(() => setRetrainMsg(null), 4000);
+                          }}
+                          className="py-1 px-2.5 rounded bg-rose-600 hover:bg-rose-500 text-white font-bold text-[10px]"
+                        >
+                          Dispatch Work Order
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2.5 px-3 font-bold text-amber-400">Drive Assembly (PUMP-002)</td>
+                      <td className="py-2.5 px-3">Drive End Bearing Frictional Fatigue</td>
+                      <td className="py-2.5 px-3 font-extrabold text-amber-400">38.0% Secondary</td>
+                      <td className="py-2.5 px-3 font-mono text-emerald-400">92.4%</td>
+                      <td className="py-2.5 px-3">
+                        <button
+                          onClick={() => {
+                            setRetrainMsg('🚨 Emergency Work Order dispatched for Pump-002 Bearing Replacement!');
+                            setTimeout(() => setRetrainMsg(null), 4000);
+                          }}
+                          className="py-1 px-2.5 rounded bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-[10px]"
+                        >
+                          Dispatch Work Order
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 5: Explainable AI (SHAP & Counterfactual Simulator) */}
       {activeTab === 'xai' && (
         <div className="space-y-6 font-mono text-xs">
-          {/* Header Bar */}
+          {/* XAI Header Bar */}
           <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-color)] pb-3">
               <div>
                 <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans flex items-center space-x-2">
                   <Sparkles className="w-4 h-4 text-purple-400 shrink-0" />
-                  <span>Explainable AI (SHAP / LIME / Counterfactual Simulator & Causal DAG)</span>
+                  <span>Explainable AI (SHAP / LIME & Counterfactual Simulator)</span>
                 </h3>
-                <p className="text-[var(--text-secondary)] text-[11px]">Deconstruct machine learning predictions into human-interpretable root causes & interactive what-if scenarios</p>
+                <p className="text-[var(--text-secondary)] text-[11px]">Deconstruct machine learning predictions into feature attributions & interactive what-if scenarios</p>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <span className="px-3 py-1 rounded-xl bg-purple-500/10 text-purple-400 font-bold border border-purple-500/30 text-[10px]">
-                  XGBoost Kernel Explainer v0.42
-                </span>
-              </div>
+              <span className="px-3 py-1 rounded-xl bg-purple-500/10 text-purple-400 font-bold border border-purple-500/30 text-[10px]">
+                XGBoost Kernel Explainer v0.42
+              </span>
             </div>
 
             {/* Interactive Counterfactual "What-If" Simulator Panel */}
@@ -688,31 +807,6 @@ export const AICenter: React.FC = () => {
                   <div className="text-xs font-bold text-emerald-400 mt-0.5">
                     Reducing Temp to 85°C & Vib to 0.24mm/s restores RUL to <strong>142 Days (HEALTHY)</strong>.
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Causal DAG Tree Visualizer */}
-            <div className="p-5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-3 shadow-md">
-              <div className="font-extrabold text-sm text-[var(--text-primary)] font-sans flex items-center space-x-2">
-                <Layers className="w-4 h-4 text-purple-400 shrink-0" />
-                <span>Causal DAG Dependency Tree (Root Cause Propagation Path)</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-[10px] pt-1">
-                <div className="p-3 bg-[var(--bg-card)] rounded-xl border border-purple-500/30 space-y-1">
-                  <div className="text-purple-400 font-bold uppercase">Root Trigger</div>
-                  <div className="font-extrabold text-[var(--text-primary)]">Coolant Bypass Valve Stiction</div>
-                </div>
-                <div className="flex items-center justify-center text-purple-400 font-bold">➔</div>
-                <div className="p-3 bg-[var(--bg-card)] rounded-xl border border-rose-500/30 space-y-1">
-                  <div className="text-rose-400 font-bold uppercase">Thermal Drift</div>
-                  <div className="font-extrabold text-[var(--text-primary)]">Inlet Temp Surge (142.8 °C)</div>
-                </div>
-                <div className="flex items-center justify-center text-amber-400 font-bold">➔</div>
-                <div className="p-3 bg-[var(--bg-card)] rounded-xl border border-amber-500/30 space-y-1">
-                  <div className="text-amber-400 font-bold uppercase">Mechanical Failure</div>
-                  <div className="font-extrabold text-[var(--text-primary)]">Bearing Vib Spike (1.85 mm/s)</div>
                 </div>
               </div>
             </div>
