@@ -434,6 +434,13 @@ export const ConnectivityWorkspace: React.FC = () => {
     reader.readAsText(file);
   };
 
+  const handleStopCSVStream = () => {
+    setParsedCSV(null);
+    resetNominalState();
+    setUploadMsg('🛑 CSV Batch Telemetry Stream Paused — Nominal baseline restored across all 11 workspaces!');
+    setTimeout(() => setUploadMsg(null), 6000);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       processFile(e.target.files[0]);
@@ -1097,6 +1104,15 @@ export const ConnectivityWorkspace: React.FC = () => {
               </button>
 
               <button
+                onClick={handleStopCSVStream}
+                className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40 font-bold text-xs inline-flex items-center space-x-1.5 shrink-0 transition-all shadow-md"
+                title="Stop CSV Telemetry Stream & Restore Nominal Baseline Across All Workspaces"
+              >
+                <XCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>🛑 Stop CSV Stream</span>
+              </button>
+
+              <button
                 onClick={handleDownloadSampleTemplate}
                 className="px-3.5 py-2 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-bold text-xs hover:bg-[var(--bg-card-hover)] inline-flex items-center space-x-2 shrink-0 transition-all shadow-sm"
               >
@@ -1190,7 +1206,7 @@ export const ConnectivityWorkspace: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => setParsedCSV(null)}
+                  onClick={handleStopCSVStream}
                   className="px-3 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold text-xs inline-flex items-center space-x-1.5"
                 >
                   <Trash2 className="w-3.5 h-3.5 text-rose-500" />
