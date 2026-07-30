@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import usePermissions from '../../../app/permissions/usePermissions';
 import apiClient from '../../../lib/api/client';
+import { usePlantTelemetry } from '../../../app/contexts/PlantTelemetryContext';
 
 export interface WorkOrderItem {
   id: string;
@@ -59,6 +60,7 @@ const DEFAULT_WORK_ORDERS: WorkOrderItem[] = [
 ];
 
 export const WorkOrdersWorkspace: React.FC = () => {
+  const { activeAlerts } = usePlantTelemetry();
   const permissions = usePermissions();
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilter, setPriorityFilter] = useState<'ALL' | 'CRITICAL' | 'HIGH' | 'MEDIUM'>('ALL');
@@ -86,6 +88,27 @@ export const WorkOrdersWorkspace: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('planttwin_work_orders', JSON.stringify(workOrders));
   }, [workOrders]);
+
+  // Sync activeAlerts from OPC-UA / SCADA into Work Orders roster
+  useEffect(() => {
+    if (activeAlerts && activeAlerts.length > 0) {
+      const contextWOs: WorkOrderItem[] = activeAlerts.map((alt) => ({
+        id: `WO-OPC-${alt.id.slice(-4).toUpperCase()}`,
+        title: `Emergency Dispatch: ${alt.title}`,
+        priority: alt.severity === 'CRITICAL' ? 'CRITICAL' : 'HIGH',
+        status: 'OPEN',
+        assignee: 'John Doe (On-Call Lead Tech)',
+        asset: alt.asset_tag,
+        createdDate: new Date().toISOString().substring(0, 16).replace('T', ' '),
+      }));
+
+      setWorkOrders((prev) => {
+        const existingIds = new Set(prev.map((w) => w.id));
+        const newUnique = contextWOs.filter((wo) => !existingIds.has(wo.id));
+        return [...newUnique, ...prev];
+      });
+    }
+  }, [activeAlerts]);
 
   const handleStatusChange = (id: string, newStatus: 'OPEN' | 'IN_PROGRESS' | 'COMPLETED') => {
     setWorkOrders((prev) => {
