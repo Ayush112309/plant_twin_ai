@@ -130,6 +130,12 @@ ML-101,Isolation Forest,98.4%,45,2026-07-27
     }, 500);
   };
 
+  const handlePrintWorkspace = () => {
+    setTimeout(() => {
+      window.print();
+    }, 150);
+  };
+
   return (
     <div className="space-y-6 pt-2">
       {/* Top Page Header Bar with Monochrome Neutral Icon */}
@@ -155,8 +161,8 @@ ML-101,Isolation Forest,98.4%,45,2026-07-27
 
         <div className="flex items-center space-x-2 shrink-0">
           <button
-            onClick={() => window.print()}
-            className="btn-nexus-secondary bg-slate-900 border-slate-800 text-slate-200 text-xs inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl font-mono font-bold shrink-0"
+            onClick={handlePrintWorkspace}
+            className="btn-nexus-secondary bg-slate-900 border-slate-800 text-slate-200 text-xs inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl font-mono font-bold shrink-0 hover:border-emerald-500"
           >
             <Printer className="w-4 h-4 text-slate-400 shrink-0" />
             <span>Print Workspace</span>

@@ -300,3 +300,66 @@ body.layout-compact .py-3.5 {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ==========================================================================
+   Comprehensive Print Engine Stylesheet
+   Fixes browser window.print() page calculation and infinite preview loading
+   ========================================================================== */
+@media print {
+  /* 1. Hide non-printable app layout UI: Header, Sidebar, Floating Copilot Widget, Buttons */
+  header,
+  aside,
+  nav,
+  button,
+  .no-print,
+  [title*="Copilot"],
+  [class*="CopilotFloatingWidget"],
+  .fixed {
+    display: none !important;
+  }
+
+  /* 2. Reset Document Containers & Page Breaks */
+  html, body, #root, #root > div, main {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 3. Reset main workspace container margin & padding for print page flow */
+  main {
+    margin-left: 0 !important;
+    padding: 1cm !important;
+  }
+
+  /* 4. Force high-contrast white background and crisp dark text for cards */
+  .p-5, .p-6, div[class*="rounded"], .industrial-card {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 1px solid #CBD5E1 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* 5. Force dark text colors on all headers and text */
+  h1, h2, h3, h4, h5, h6, p, span, td, th, div, label {
+    color: #0F172A !important;
+    text-shadow: none !important;
+  }
+
+  /* 6. Ensure Recharts SVG charts & Canvas render cleanly on printed sheets */
+  .recharts-wrapper, svg, canvas {
+    max-width: 100% !important;
+    height: auto !important;
+    background: transparent !important;
+  }
+}
