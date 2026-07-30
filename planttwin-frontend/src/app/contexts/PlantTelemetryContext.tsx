@@ -53,7 +53,8 @@ interface PlantTelemetryContextType {
   rulDays: number;
   systemHealthScore: number;
   isOpcStreaming: boolean;
-  ingestCSVData: (rows: any[]) => void;
+  activeProtocol: string;
+  ingestCSVData: (rows: any[], protocolName?: string) => void;
   updateSiemensTag: (tagAddress: string, value: number) => void;
   resetNominalState: () => void;
 }
@@ -151,6 +152,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
   const [rulDays, setRulDays] = useState(142);
   const [systemHealthScore, setSystemHealthScore] = useState(88.5);
   const [isOpcStreaming, setIsOpcStreaming] = useState(true);
+  const [activeProtocol, setActiveProtocol] = useState('OPC-UA / SCADA');
 
   // Live Auto-Updating Telemetry Ticker (Ticks values every 2.5s across all 11 workspaces when OPC-UA streaming is active)
   useEffect(() => {
@@ -194,6 +196,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
 
   const updateSiemensTag = (tagAddress: string, value: number) => {
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    setActiveProtocol('Siemens S7 PLC');
 
     setDigitalTwinState((prev) => {
       if (tagAddress.includes('DBD4') || tagAddress.includes('Temp')) {
@@ -210,17 +213,13 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
 
     setTelemetryStream((prev) => {
       const last = prev[prev.length - 1] || { temp: 84.5, vibration: 0.24, pressure: 524, flow: 1250 };
-      const isTemp = tagAddress.includes('Temp') || tagAddress.includes('DBD4');
-      const isVib = tagAddress.includes('Vib') || tagAddress.includes('DBD8');
-
       const newPoint: TelemetryPoint = {
         timestamp: timeStr,
-        temp: isTemp ? value : last.temp,
-        vibration: isVib ? value : last.vibration,
+        temp: tagAddress.includes('DBD4') || tagAddress.includes('Temp') ? value : last.temp,
+        vibration: tagAddress.includes('DBD8') || tagAddress.includes('Vib') ? value : last.vibration,
         pressure: last.pressure,
         flow: last.flow,
       };
-
       return [...prev.slice(1), newPoint];
     });
 
@@ -239,8 +238,14 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
     }
   };
 
-  const ingestCSVData = (rows: any[]) => {
-    if (!rows || rows.length === 0) return;
+  const ingestCSVData = (rows: any[], protocolName?: string) => {
+    const proto = protocolName || 'MQTT / Sparkplug B';
+    setActiveProtocol(proto);
+
+    if (!rows || rows.length === 0) {
+      setIsOpcStreaming(true);
+      return;
+    }
 
     const newPoints: TelemetryPoint[] = [];
     let hasCritical = false;
@@ -287,8 +292,8 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
 
       // Push active alerts
       const newCriticalAlert: AlertItem = {
-        id: `a-opcua-${Date.now()}`,
-        title: '🚨 OPC-UA Ingested Thermal & Vibration Outage Spike',
+        id: `a-scada-${Date.now()}`,
+        title: `🚨 ${proto} Ingested Outage Spike`,
         asset_tag: 'Reactor-001 / Pump-002',
         severity: 'CRITICAL',
         timestamp: 'Just now',
@@ -311,6 +316,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
   };
 
   const resetNominalState = () => {
+    setActiveProtocol('OPC-UA / SCADA');
     setEquipmentList([
       { id: 'e1', name: 'Centrifugal Pump-002', asset_tag: 'Pump-002', equipment_type: 'Pump', status: 'Healthy', health_score: 94.2, location: 'Refinery Area A', temp: 68.4, vibration: 0.18 },
       { id: 'e2', name: 'Reactor Vessel-001', asset_tag: 'Reactor-001', equipment_type: 'Reactor', status: 'Healthy', health_score: 98.5, location: 'Chemical Processing Line 1', temp: 84.5, vibration: 0.18 },
@@ -347,6 +353,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
         rulDays,
         systemHealthScore,
         isOpcStreaming,
+        activeProtocol,
         ingestCSVData,
         updateSiemensTag,
         resetNominalState,

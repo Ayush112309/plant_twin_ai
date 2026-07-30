@@ -18,7 +18,7 @@ import IndustrialCharts from '../../../lib/charts/IndustrialCharts';
 import { usePlantTelemetry } from '../../../app/contexts/PlantTelemetryContext';
 
 export const TelemetryWorkspace: React.FC = () => {
-  const { telemetryStream, isOpcStreaming } = usePlantTelemetry();
+  const { telemetryStream, isOpcStreaming, activeProtocol } = usePlantTelemetry();
   const [selectedTag, setSelectedTag] = useState<'ALL' | 'TEMP' | 'VIB' | 'PRESSURE'>('ALL');
   const [isExporting, setIsExporting] = useState(false);
 
@@ -227,7 +227,7 @@ export const TelemetryWorkspace: React.FC = () => {
             {isReplayActive
               ? '📼 Incident Replay Mode Active (May 15 Outage Scrubber)'
               : isOpcStreaming
-              ? '📡 Live SCADA & OPC-UA Real-Time Stream (1,250 Hz Active)'
+              ? `📡 Live SCADA & ${activeProtocol} Stream (1,250 Hz Active)`
               : '⏸️ SCADA Telemetry Stream Paused — Nominal Baseline Active'}
           </span>
         </div>
