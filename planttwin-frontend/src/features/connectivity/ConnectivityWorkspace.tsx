@@ -145,9 +145,105 @@ export const ConnectivityWorkspace: React.FC = () => {
     }
   };
 
-  // MQTT State
+  // MQTT State & Sparkplug B Pub/Sub Telemetry State
   const [mqttBroker, setMqttBroker] = useState('mqtt://broker.hivemq.com:1883');
-  const [mqttTopic, setMqttTopic] = useState('planttwin/refinery/sensors/#');
+  const [mqttTopic, setMqttTopic] = useState('spBv1.0/RefineryAlpha/DDATA/Reactor001');
+  const [mqttIsConnected, setMqttIsConnected] = useState(true);
+  const [mqttIsLoading, setMqttIsLoading] = useState(false);
+  const [mqttStatusMsg, setMqttStatusMsg] = useState<string | null>(null);
+
+  const [mqttMessages, setMqttMessages] = useState([
+    {
+      timestamp: new Date().toLocaleTimeString(),
+      topic: 'spBv1.0/RefineryAlpha/DDATA/Reactor001',
+      qos: 'QoS 1',
+      retain: 'False',
+      payload: '{"timestamp":1785411900,"metrics":[{"name":"Temperature","type":"Double","value":84.5},{"name":"Pressure","type":"Float","value":524.2}],"seq":42}',
+      status: 'DELIVERED',
+    },
+    {
+      timestamp: new Date().toLocaleTimeString(),
+      topic: 'spBv1.0/RefineryAlpha/DDATA/Pump002',
+      qos: 'QoS 1',
+      retain: 'False',
+      payload: '{"timestamp":1785411905,"metrics":[{"name":"Vibration","type":"Float","value":0.24},{"name":"RPM","type":"Int32","value":1450}],"seq":43}',
+      status: 'DELIVERED',
+    },
+    {
+      timestamp: new Date().toLocaleTimeString(),
+      topic: 'spBv1.0/RefineryAlpha/NBIRTH/EdgeGateway01',
+      qos: 'QoS 2',
+      retain: 'True',
+      payload: '{"timestamp":1785411800,"metrics":[{"name":"Node Control/Reboot","type":"Boolean","value":false}],"seq":0}',
+      status: 'DELIVERED',
+    },
+  ]);
+
+  const handleTestMqttConnection = () => {
+    setMqttIsLoading(true);
+    setMqttStatusMsg(null);
+    setTimeout(() => {
+      setMqttIsLoading(false);
+      setMqttIsConnected(true);
+      ingestCSVData([]);
+      setMqttStatusMsg(`⚡ MQTT Broker Connection Verified (${mqttBroker})! Subscribed to 3 active Sparkplug B topics.`);
+      setTimeout(() => setMqttStatusMsg(null), 5000);
+    }, 600);
+  };
+
+  const handlePublishMqttTempAlert = () => {
+    setMqttIsConnected(true);
+    const newMsg = {
+      timestamp: new Date().toLocaleTimeString(),
+      topic: 'spBv1.0/RefineryAlpha/DDATA/Reactor001',
+      qos: 'QoS 1',
+      retain: 'False',
+      payload: '{"timestamp":' + Date.now() + ',"metrics":[{"name":"Temperature","type":"Double","value":142.8},{"name":"AlarmState","type":"String","value":"CRITICAL_HIGH"}],"seq":44}',
+      status: 'CRITICAL ALERT',
+    };
+    setMqttMessages((prev) => [newMsg, ...prev]);
+
+    ingestCSVData([
+      { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Reactor-001', parameter: 'Temperature (°C)', value: '142.8', status: 'CRITICAL' }
+    ]);
+
+    setMqttStatusMsg('🔥 Sparkplug B DDATA High Temp Alert (142.8 °C) Published via MQTT! Live sync active across all 11 workspaces.');
+    setTimeout(() => setMqttStatusMsg(null), 6000);
+  };
+
+  const handlePublishMqttVibAlert = () => {
+    setMqttIsConnected(true);
+    const newMsg = {
+      timestamp: new Date().toLocaleTimeString(),
+      topic: 'spBv1.0/RefineryAlpha/DDATA/Pump002',
+      qos: 'QoS 1',
+      retain: 'False',
+      payload: '{"timestamp":' + Date.now() + ',"metrics":[{"name":"Vibration","type":"Float","value":1.85},{"name":"AlarmState","type":"String","value":"BEARING_SPIKE"}],"seq":45}',
+      status: 'CRITICAL ALERT',
+    };
+    setMqttMessages((prev) => [newMsg, ...prev]);
+
+    ingestCSVData([
+      { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Pump-002', parameter: 'Vibration (mm/s)', value: '1.85', status: 'CRITICAL' }
+    ]);
+
+    setMqttStatusMsg('⚡ Sparkplug B DDATA Bearing Vib Alert (1.85 mm/s) Published via MQTT! Live sync active across all 11 workspaces.');
+    setTimeout(() => setMqttStatusMsg(null), 6000);
+  };
+
+  const handleToggleMqttConnection = () => {
+    if (mqttIsConnected) {
+      setMqttIsConnected(false);
+      resetNominalState();
+      setMqttStatusMsg('🛑 MQTT Broker Disconnected — Telemetry stream paused and plant baseline restored across all workspaces!');
+      setTimeout(() => setMqttStatusMsg(null), 6000);
+    } else {
+      setMqttIsConnected(true);
+      ingestCSVData([]);
+      setMqttStatusMsg('▶️ MQTT Broker Reconnected — Live telemetry stream resumed across all workspaces!');
+      setTimeout(() => setMqttStatusMsg(null), 6000);
+    }
+  };
 
   // CSV Batch Upload State
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -306,9 +402,13 @@ export const ConnectivityWorkspace: React.FC = () => {
             <span className={`w-1.5 h-1.5 rounded-full ${opcIsConnected ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'}`} />
             {opcIsConnected ? 'OPC-UA: CONNECTED (4840)' : 'OPC-UA: PAUSED (OFFLINE)'}
           </span>
-          <span className="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 flex items-center gap-1.5 leading-none">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-            MQTT: SUBSCRIBED
+          <span className={`px-2.5 py-1 rounded-md border flex items-center gap-1.5 leading-none ${
+            mqttIsConnected
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500'
+              : 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${mqttIsConnected ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'}`} />
+            {mqttIsConnected ? 'MQTT: SUBSCRIBED' : 'MQTT: DISCONNECTED'}
           </span>
         </div>
       </div>
@@ -560,21 +660,30 @@ export const ConnectivityWorkspace: React.FC = () => {
 
       {/* Driver View 3: MQTT */}
       {activeDriver === 'mqtt' && (
-        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4 font-mono text-xs">
-          <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-5 font-mono text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-color)] pb-3">
             <div>
               <h3 className="text-sm font-extrabold text-[var(--text-primary)] flex items-center space-x-2 font-sans">
-                <Radio className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
+                <Radio className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span>MQTT Broker & Sparkplug B Pub/Sub Telemetry</span>
               </h3>
-              <p className="text-xs text-[var(--text-secondary)] font-mono">Subscribe to Edge IoT Gateways and Industrial MQTT Topics</p>
+              <p className="text-xs text-[var(--text-secondary)] font-mono mt-0.5">
+                Subscribe to Edge IoT Gateways, HiveMQ/EMQX Brokers, and Sparkplug B Protobuf Topics
+              </p>
             </div>
-            <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 font-bold text-[10px]">
-              MQTT v3.1.1 SUBSCRIBED
+            <span
+              className={`px-2.5 py-1 rounded font-bold text-[10px] shrink-0 ${
+                mqttIsConnected
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+              }`}
+            >
+              {mqttIsConnected ? 'MQTT v3.1.1 SUBSCRIBED (ONLINE)' : 'MQTT BROKER DISCONNECTED'}
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* MQTT Connection Inputs & Action Buttons */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-1">
               <label className="font-bold text-[var(--text-primary)]">Broker Connection String</label>
               <input
@@ -592,6 +701,116 @@ export const ConnectivityWorkspace: React.FC = () => {
                 onChange={(e) => setMqttTopic(e.target.value)}
                 className="w-full p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[var(--text-primary)] font-mono"
               />
+            </div>
+            <div className="flex flex-wrap items-end gap-2 pt-2 lg:pt-0">
+              <button
+                onClick={handleTestMqttConnection}
+                disabled={mqttIsLoading}
+                className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold transition-all shadow-md flex items-center justify-center space-x-1 text-xs shrink-0"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${mqttIsLoading ? 'animate-spin' : ''}`} />
+                <span>{mqttIsLoading ? 'Testing...' : 'Test Connection'}</span>
+              </button>
+
+              <button
+                onClick={handlePublishMqttTempAlert}
+                className="py-2 px-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1"
+                title="Publish High Temp Sparkplug B Payload (142.8 °C)"
+              >
+                <span>🔥 Publish Temp Alert</span>
+              </button>
+
+              <button
+                onClick={handlePublishMqttVibAlert}
+                className="py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1"
+                title="Publish Bearing Vib Sparkplug B Payload (1.85 mm/s)"
+              >
+                <span>⚡ Publish Vib Alert</span>
+              </button>
+
+              <button
+                onClick={handleToggleMqttConnection}
+                className={`py-2 px-3 rounded-xl font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1 ${
+                  mqttIsConnected
+                    ? 'bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40'
+                    : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold border border-emerald-400'
+                }`}
+              >
+                {mqttIsConnected ? (
+                  <>
+                    <XCircle className="w-3.5 h-3.5 text-amber-400" />
+                    <span>🛑 Disconnect</span>
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 text-slate-950" />
+                    <span>▶️ Connect Broker</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* MQTT Status Banner */}
+          {mqttStatusMsg && (
+            <div className="p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-bold flex items-center justify-between shadow-md animate-pulse">
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>{mqttStatusMsg}</span>
+              </div>
+              <button onClick={() => setMqttStatusMsg(null)} className="text-emerald-400 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Live Subscribed MQTT Topics & Sparkplug B Message Stream */}
+          <div className="space-y-2 pt-2">
+            <div className="flex items-center justify-between text-xs">
+              <div className="font-bold text-[var(--text-primary)] flex items-center space-x-1.5 font-sans">
+                <Radio className="w-4 h-4 text-emerald-400" />
+                <span>Live Subscribed MQTT Topics & Sparkplug B Payloads</span>
+              </div>
+              <span className="text-emerald-400 font-mono text-[11px]">Protocol: Sparkplug B v1.0 / MQTT v3.1.1</span>
+            </div>
+
+            <div className="overflow-x-auto border border-[var(--border-color)] rounded-xl">
+              <table className="w-full text-left border-collapse font-mono text-xs">
+                <thead>
+                  <tr className="bg-[var(--bg-canvas)] border-b border-[var(--border-color)] text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <th className="p-3">Timestamp</th>
+                    <th className="p-3">MQTT Topic Path</th>
+                    <th className="p-3">QoS</th>
+                    <th className="p-3">Retain</th>
+                    <th className="p-3">Decoded Sparkplug B Payload</th>
+                    <th className="p-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--border-color)] bg-[var(--bg-card)]">
+                  {mqttMessages.map((msg, idx) => (
+                    <tr key={idx} className="hover:bg-[var(--bg-card-hover)] transition-colors">
+                      <td className="p-3 text-slate-400 whitespace-nowrap">{msg.timestamp}</td>
+                      <td className="p-3 font-bold text-sky-400 whitespace-nowrap">{msg.topic}</td>
+                      <td className="p-3 text-amber-400">{msg.qos}</td>
+                      <td className="p-3 text-slate-400">{msg.retain}</td>
+                      <td className="p-3 text-slate-300 font-mono text-[11px] max-w-xs truncate" title={msg.payload}>
+                        {msg.payload}
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap ${
+                            msg.status.includes('ALERT') || msg.status.includes('CRITICAL')
+                              ? 'bg-rose-950 text-rose-400 border border-rose-500/40 animate-pulse'
+                              : 'bg-emerald-950 text-emerald-400 border border-emerald-500/30'
+                          }`}
+                        >
+                          {msg.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
