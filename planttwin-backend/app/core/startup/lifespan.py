@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.core.logging.logger import setup_logging, logger
 from app.core.cache.redis_client import redis_manager
+from app.core.config.settings import settings
 
 
 @asynccontextmanager
