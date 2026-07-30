@@ -286,9 +286,13 @@ export const ConnectivityWorkspace: React.FC = () => {
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
             Siemens S7: ONLINE (102)
           </span>
-          <span className="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 flex items-center gap-1.5 leading-none">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-            OPC-UA: CONNECTED (4840)
+          <span className={`px-2.5 py-1 rounded-md border flex items-center gap-1.5 leading-none ${
+            opcIsConnected
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500'
+              : 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${opcIsConnected ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'}`} />
+            {opcIsConnected ? 'OPC-UA: CONNECTED (4840)' : 'OPC-UA: PAUSED (OFFLINE)'}
           </span>
           <span className="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 flex items-center gap-1.5 leading-none">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
@@ -390,8 +394,12 @@ export const ConnectivityWorkspace: React.FC = () => {
                 Connect to Industrial OPC-UA Servers, browse address spaces, and stream SCADA telemetry signals
               </p>
             </div>
-            <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold text-[10px] shrink-0">
-              OPC-UA v1.04 ACTIVE (CONNECTED)
+            <span className={`px-2.5 py-1 rounded font-bold text-[10px] shrink-0 ${
+              opcIsConnected
+                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+            }`}>
+              {opcIsConnected ? 'OPC-UA v1.04 ACTIVE (CONNECTED)' : 'OPC-UA STREAM PAUSED (OFFLINE)'}
             </span>
           </div>
 

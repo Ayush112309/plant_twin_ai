@@ -113,12 +113,12 @@ export const TelemetryWorkspace: React.FC = () => {
               className={`px-2 py-0.5 rounded text-[9px] font-bold ${
                 currentTemp > 100
                   ? 'bg-rose-950 text-rose-400 border border-rose-500/40 animate-pulse'
-                  : currentTemp > 80
+                  : currentTemp > 92
                   ? 'bg-amber-950 text-amber-400 border border-amber-500/40'
                   : 'bg-emerald-950 text-emerald-400 border border-emerald-500/40'
               }`}
             >
-              {currentTemp > 100 ? '🚨 EXCURSION' : currentTemp > 80 ? '⚠️ ELEVATED' : 'NORMAL'}
+              {currentTemp > 100 ? '🚨 EXCURSION' : currentTemp > 92 ? '⚠️ ELEVATED' : 'NOMINAL'}
             </span>
           </div>
           <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
