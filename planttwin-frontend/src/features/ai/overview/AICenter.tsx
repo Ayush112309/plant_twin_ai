@@ -575,48 +575,143 @@ export const AICenter: React.FC = () => {
         <AICaseLibraryWorkspace />
       )}
 
-      {/* Tab 6: Model Registry */}
+      {/* Tab 6: Model Registry & Feature Store */}
       {activeTab === 'registry' && (
-        <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-6 font-mono text-xs">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans">MLflow Model Registry & Feature Store</h3>
-              <p className="text-[var(--text-secondary)]">Deployed model artifacts, hyperparameters, and feature pipelines</p>
+        <div className="space-y-6 font-mono text-xs">
+          {/* Production Models Section */}
+          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--border-color)] pb-3">
+              <div>
+                <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans">MLflow Model Registry & Lineage</h3>
+                <p className="text-[var(--text-secondary)]">Deployed production artifacts, hyperparameters, and candidate models</p>
+              </div>
+              <span className="px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/30 text-[10px]">
+                3 Production Models Active
+              </span>
             </div>
-            <span className="px-3 py-1 rounded bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/30">
-              3 Production Models Active
-            </span>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-3 shadow-md">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[var(--text-primary)] text-sm font-sans">xgboost-rul-v2.4.0</span>
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
+                    PRODUCTION
+                  </span>
+                </div>
+                <div className="text-[var(--text-secondary)] text-[11px] space-y-1">
+                  <div>Model Type: <strong className="text-[var(--text-primary)]">XGBoost Regressor</strong></div>
+                  <div>Accuracy: <strong className="text-emerald-400">98.4%</strong> | F1-Score: <strong className="text-emerald-400">0.976</strong></div>
+                  <div>Latency: <strong className="text-sky-400">3.8 ms</strong> | Memory Footprint: <strong className="text-slate-300">14.2 MB</strong></div>
+                </div>
+                <div className="p-2.5 bg-[var(--bg-card)] rounded-lg text-[10px] text-[var(--text-secondary)] border border-[var(--border-color)]">
+                  Hyperparameters: max_depth=6, n_estimators=300, learning_rate=0.03 | Trained on 45,000 SCADA telemetry records
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-3 shadow-md">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[var(--text-primary)] text-sm font-sans">isolation-forest-anomaly-v2.4.0</span>
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
+                    PRODUCTION
+                  </span>
+                </div>
+                <div className="text-[var(--text-secondary)] text-[11px] space-y-1">
+                  <div>Model Type: <strong className="text-[var(--text-primary)]">Isolation Forest Outlier Detector</strong></div>
+                  <div>Precision: <strong className="text-emerald-400">96.2%</strong> | Recall: <strong className="text-emerald-400">94.8%</strong></div>
+                  <div>Latency: <strong className="text-sky-400">4.2 ms</strong> | Contamination: <strong className="text-amber-400">0.05</strong></div>
+                </div>
+                <div className="p-2.5 bg-[var(--bg-card)] rounded-lg text-[10px] text-[var(--text-secondary)] border border-[var(--border-color)]">
+                  Hyperparameters: n_estimators=200, max_samples=auto | Real-time stream scoring active
+                </div>
+              </div>
+            </div>
+
+            {/* Candidate Model Promotion Banner */}
+            <div className="p-4 bg-purple-950/40 border border-purple-500/30 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <div className="font-extrabold text-purple-300 font-sans flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-purple-400 shrink-0" />
+                  <span>Candidate Model Ready: lstm-telemetry-forecaster-v3.0-rc1</span>
+                </div>
+                <p className="text-[11px] text-purple-200">
+                  Passed automated validation against 10k SCADA test set. Validation Loss: 0.012 (14% accuracy improvement over XGBoost baseline).
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setRetrainMsg('🚀 Candidate Model lstm-telemetry-forecaster-v3.0-rc1 Promoted to Production Registry!');
+                  setTimeout(() => setRetrainMsg(null), 5000);
+                }}
+                className="py-2 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition-all shadow-md shrink-0 whitespace-nowrap"
+              >
+                🚀 Promote to Production
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="p-4 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-[var(--text-primary)]">xgboost-rul-v2.4.0</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
-                  PRODUCTION
-                </span>
+          {/* Feature Store Table */}
+          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+              <div>
+                <h3 className="text-sm font-extrabold text-[var(--text-primary)] font-sans flex items-center space-x-2">
+                  <Database className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span>Feast Industrial Feature Store (Offline & Online Ingestion)</span>
+                </h3>
+                <p className="text-[var(--text-secondary)] text-[11px]">Real-time feature view entities and aggregations</p>
               </div>
-              <p className="text-[var(--text-secondary)] text-[11px]">
-                XGBoost Regressor • Accuracy: <span className="text-emerald-500 font-bold">98.4%</span> • F1-Score: <span className="text-emerald-500 font-bold">0.976</span>
-              </p>
-              <div className="text-[10px] text-[var(--text-secondary)]">
-                Hyperparameters: max_depth=6, n_estimators=300, learning_rate=0.03 | Trained on 45k records
-              </div>
+              <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/30">
+                4 Active Feature Views
+              </span>
             </div>
 
-            <div className="p-4 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-[var(--text-primary)]">isolation-forest-anomaly-v2.4.0</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
-                  PRODUCTION
-                </span>
-              </div>
-              <p className="text-[var(--text-secondary)] text-[11px]">
-                Isolation Forest Outlier Detector • Precision: <span className="text-emerald-500 font-bold">96.2%</span>
-              </p>
-              <div className="text-[10px] text-[var(--text-secondary)]">
-                Hyperparameters: contamination=0.05, n_estimators=200 | Latency: 4.2ms
-              </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-[11px]">
+                <thead>
+                  <tr className="border-b border-[var(--border-color)] text-[var(--text-secondary)] uppercase text-[10px]">
+                    <th className="py-2 px-3 font-bold">Feature Name</th>
+                    <th className="py-2 px-3 font-bold">Entity</th>
+                    <th className="py-2 px-3 font-bold">Data Type</th>
+                    <th className="py-2 px-3 font-bold">Transformation Window</th>
+                    <th className="py-2 px-3 font-bold">Source Tag</th>
+                    <th className="py-2 px-3 font-bold">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--border-color)] text-[var(--text-primary)]">
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-emerald-400">sensor_temp_mean_10m</td>
+                    <td className="py-2.5 px-3">Reactor-001</td>
+                    <td className="py-2.5 px-3 font-mono text-sky-400">Float64</td>
+                    <td className="py-2.5 px-3">10-Minute Moving Average</td>
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)]">DB100.DBD4</td>
+                    <td className="py-2.5 px-3"><span className="text-emerald-400 font-bold">ONLINE (1ms)</span></td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-amber-400">vibration_rms_peak</td>
+                    <td className="py-2.5 px-3">Pump-002</td>
+                    <td className="py-2.5 px-3 font-mono text-sky-400">Float64</td>
+                    <td className="py-2.5 px-3">5-Minute Peak Amplitude</td>
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)]">DB100.DBD0</td>
+                    <td className="py-2.5 px-3"><span className="text-emerald-400 font-bold">ONLINE (1ms)</span></td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-rose-400">pressure_rate_of_change_dt</td>
+                    <td className="py-2.5 px-3">Hydrocracker Header</td>
+                    <td className="py-2.5 px-3 font-mono text-sky-400">Float64</td>
+                    <td className="py-2.5 px-3">1-Minute Instant Derivative (dP/dt)</td>
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)]">ns=2;s=RefineryAlpha...</td>
+                    <td className="py-2.5 px-3"><span className="text-emerald-400 font-bold">ONLINE (1ms)</span></td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 px-3 font-bold text-purple-400">acoustic_harmonic_ratio</td>
+                    <td className="py-2.5 px-3">Compressor-001</td>
+                    <td className="py-2.5 px-3 font-mono text-sky-400">Float64</td>
+                    <td className="py-2.5 px-3">FFT Spectrum High-Harmonic Ratio</td>
+                    <td className="py-2.5 px-3 text-[var(--text-secondary)]">spBv1.0/Compressor...</td>
+                    <td className="py-2.5 px-3"><span className="text-emerald-400 font-bold">ONLINE (1ms)</span></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
