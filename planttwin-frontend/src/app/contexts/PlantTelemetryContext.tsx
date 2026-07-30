@@ -239,7 +239,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
   };
 
   const ingestCSVData = (rows: any[], protocolName?: string) => {
-    const proto = protocolName || 'MQTT / Sparkplug B';
+    const proto = protocolName || 'OPC-UA / SCADA';
     setActiveProtocol(proto);
 
     if (!rows || rows.length === 0) {

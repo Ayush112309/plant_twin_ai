@@ -60,7 +60,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     setTimeout(() => {
       setOpcIsLoading(false);
       setOpcIsConnected(true);
-      ingestCSVData([]);
+      ingestCSVData([], 'OPC-UA / SCADA');
       setOpcStatusMsg(`⚡ OPC-UA Binary Connection Verified (${opcServerUrl})! Discovered 6 Active Subscribed Nodes, 0 Dropouts. Cross-workspace live sync active!`);
       setTimeout(() => setOpcStatusMsg(null), 5000);
     }, 600);
@@ -77,7 +77,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
     ingestCSVData([
       { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Reactor-001', parameter: 'Temperature (°C)', value: '142.8', status: 'CRITICAL' }
-    ]);
+    ], 'OPC-UA / SCADA');
 
     setOpcStatusMsg('🔥 Alert #1 Ingested via OPC-UA: High Temperature Excursion on Reactor-001 Vessel (142.8 °C)! Check Telemetry, Operations, Alarms & Equipment Workspaces.');
     setTimeout(() => setOpcStatusMsg(null), 6000);
@@ -94,7 +94,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
     ingestCSVData([
       { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Pump-002', parameter: 'Vibration (mm/s)', value: '1.85', status: 'CRITICAL' }
-    ]);
+    ], 'OPC-UA / SCADA');
 
     setOpcStatusMsg('⚡ Alert #2 Ingested via OPC-UA: Bearing Vibration Threshold Surged on Pump-002 (1.85 mm/s)! Check Telemetry, Operations, Alarms & Equipment Workspaces.');
     setTimeout(() => setOpcStatusMsg(null), 6000);
@@ -114,7 +114,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     ingestCSVData([
       { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Reactor-001', parameter: 'Temperature (°C)', value: '142.8', status: 'CRITICAL' },
       { rowNum: 2, timestamp: new Date().toLocaleTimeString(), assetTag: 'Pump-002', parameter: 'Vibration (mm/s)', value: '1.85', status: 'CRITICAL' },
-    ]);
+    ], 'OPC-UA / SCADA');
 
     setOpcStatusMsg('🚨 Dual Alert Ingested via OPC-UA: High Temp (142.8°C) + High Vib (1.85 mm/s)! Live telemetry & alarms updated across all 11 workspaces!');
     setTimeout(() => setOpcStatusMsg(null), 6000);
@@ -139,7 +139,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     } else {
       setOpcIsConnected(true);
       setOpcIsSubscribed(true);
-      ingestCSVData([]);
+      ingestCSVData([], 'OPC-UA / SCADA');
       setOpcStatusMsg('▶️ OPC-UA Binary Driver Reconnected — Live telemetry stream resumed across all workspaces!');
       setTimeout(() => setOpcStatusMsg(null), 6000);
     }
@@ -185,7 +185,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     setTimeout(() => {
       setMqttIsLoading(false);
       setMqttIsConnected(true);
-      ingestCSVData([]);
+      ingestCSVData([], 'MQTT / Sparkplug B');
       setMqttStatusMsg(`⚡ MQTT Broker Connection Verified (${mqttBroker})! Subscribed to 3 active Sparkplug B topics.`);
       setTimeout(() => setMqttStatusMsg(null), 5000);
     }, 600);
@@ -205,7 +205,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
     ingestCSVData([
       { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Reactor-001', parameter: 'Temperature (°C)', value: '142.8', status: 'CRITICAL' }
-    ]);
+    ], 'MQTT / Sparkplug B');
 
     setMqttStatusMsg('🔥 Sparkplug B DDATA High Temp Alert (142.8 °C) Published via MQTT! Live sync active across all 11 workspaces.');
     setTimeout(() => setMqttStatusMsg(null), 6000);
@@ -225,7 +225,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
     ingestCSVData([
       { rowNum: 1, timestamp: new Date().toLocaleTimeString(), assetTag: 'Pump-002', parameter: 'Vibration (mm/s)', value: '1.85', status: 'CRITICAL' }
-    ]);
+    ], 'MQTT / Sparkplug B');
 
     setMqttStatusMsg('⚡ Sparkplug B DDATA Bearing Vib Alert (1.85 mm/s) Published via MQTT! Live sync active across all 11 workspaces.');
     setTimeout(() => setMqttStatusMsg(null), 6000);
@@ -239,7 +239,7 @@ export const ConnectivityWorkspace: React.FC = () => {
       setTimeout(() => setMqttStatusMsg(null), 6000);
     } else {
       setMqttIsConnected(true);
-      ingestCSVData([]);
+      ingestCSVData([], 'MQTT / Sparkplug B');
       setMqttStatusMsg('▶️ MQTT Broker Reconnected — Live telemetry stream resumed across all workspaces!');
       setTimeout(() => setMqttStatusMsg(null), 6000);
     }
@@ -279,7 +279,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     setTimeout(() => {
       setRestIsLoading(false);
       setRestIsConnected(true);
-      ingestCSVData([]);
+      ingestCSVData([], 'REST Webhook API');
       setRestStatusMsg(`⚡ REST API Webhook Listener Verified (${restEndpointUrl})! 200 OK — Ready for HTTP POST JSON payloads.`);
       setTimeout(() => setRestStatusMsg(null), 5000);
     }, 600);
@@ -335,7 +335,7 @@ export const ConnectivityWorkspace: React.FC = () => {
       setTimeout(() => setRestStatusMsg(null), 6000);
     } else {
       setRestIsConnected(true);
-      ingestCSVData([]);
+      ingestCSVData([], 'REST Webhook API');
       setRestStatusMsg('▶️ REST Webhook Listener Resumed — Live telemetry stream resumed across all workspaces!');
       setTimeout(() => setRestStatusMsg(null), 6000);
     }
