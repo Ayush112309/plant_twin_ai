@@ -67,6 +67,7 @@ export const ConnectivityWorkspace: React.FC = () => {
   };
 
   const handleTriggerTempAlert = () => {
+    setOpcIsConnected(true);
     setOpcNodes((prev) =>
       prev.map((node) => {
         if (node.nodeId.includes('Temperature')) return { ...node, val: '142.8', quality: 'UNCERTAIN_WARNING' };
@@ -83,6 +84,7 @@ export const ConnectivityWorkspace: React.FC = () => {
   };
 
   const handleTriggerVibAlert = () => {
+    setOpcIsConnected(true);
     setOpcNodes((prev) =>
       prev.map((node) => {
         if (node.nodeId.includes('Vibration')) return { ...node, val: '1.85', quality: 'BAD_ALARM' };
@@ -99,6 +101,7 @@ export const ConnectivityWorkspace: React.FC = () => {
   };
 
   const handleSimulateOpcSurge = () => {
+    setOpcIsConnected(true);
     setOpcNodes((prev) =>
       prev.map((node) => {
         if (node.nodeId.includes('Temperature')) return { ...node, val: '142.8', quality: 'UNCERTAIN_WARNING' };
@@ -117,21 +120,29 @@ export const ConnectivityWorkspace: React.FC = () => {
     setTimeout(() => setOpcStatusMsg(null), 6000);
   };
 
-  const handleStopOpcStream = () => {
-    setOpcIsConnected(false);
-    setOpcIsSubscribed(false);
-    setOpcNodes((prev) =>
-      prev.map((node) => {
-        if (node.nodeId.includes('Temperature')) return { ...node, val: '84.5', quality: 'GOOD_100' };
-        if (node.nodeId.includes('Vibration')) return { ...node, val: '0.24', quality: 'GOOD_100' };
-        return { ...node, quality: 'GOOD_100' };
-      })
-    );
+  const handleToggleOpcStream = () => {
+    if (opcIsConnected) {
+      setOpcIsConnected(false);
+      setOpcIsSubscribed(false);
+      setOpcNodes((prev) =>
+        prev.map((node) => {
+          if (node.nodeId.includes('Temperature')) return { ...node, val: '84.5', quality: 'GOOD_100' };
+          if (node.nodeId.includes('Vibration')) return { ...node, val: '0.24', quality: 'GOOD_100' };
+          return { ...node, quality: 'GOOD_100' };
+        })
+      );
 
-    resetNominalState();
+      resetNominalState();
 
-    setOpcStatusMsg('🛑 OPC-UA Binary Driver Disconnected — Telemetry stream paused and plant baseline restored across all workspaces!');
-    setTimeout(() => setOpcStatusMsg(null), 6000);
+      setOpcStatusMsg('🛑 OPC-UA Binary Driver Disconnected — Telemetry stream paused and plant baseline restored across all workspaces!');
+      setTimeout(() => setOpcStatusMsg(null), 6000);
+    } else {
+      setOpcIsConnected(true);
+      setOpcIsSubscribed(true);
+      ingestCSVData([]);
+      setOpcStatusMsg('▶️ OPC-UA Binary Driver Reconnected — Live telemetry stream resumed across all workspaces!');
+      setTimeout(() => setOpcStatusMsg(null), 6000);
+    }
   };
 
   // MQTT State
@@ -459,12 +470,25 @@ export const ConnectivityWorkspace: React.FC = () => {
               </button>
 
               <button
-                onClick={handleStopOpcStream}
-                className="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40 font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1"
-                title="Stop OPC-UA Stream & Restore Nominal Baseline Across All Workspaces"
+                onClick={handleToggleOpcStream}
+                className={`py-2 px-3 rounded-xl font-bold transition-all shadow-md text-xs shrink-0 flex items-center space-x-1 ${
+                  opcIsConnected
+                    ? 'bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40'
+                    : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold border border-emerald-400'
+                }`}
+                title={opcIsConnected ? "Stop OPC-UA Stream & Freeze Telemetry" : "Resume OPC-UA Stream & Live Telemetry Ticker"}
               >
-                <XCircle className="w-3.5 h-3.5 text-amber-400" />
-                <span>Stop Stream</span>
+                {opcIsConnected ? (
+                  <>
+                    <XCircle className="w-3.5 h-3.5 text-amber-400" />
+                    <span>🛑 Stop Stream</span>
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 text-slate-950" />
+                    <span>▶️ Resume Stream</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
