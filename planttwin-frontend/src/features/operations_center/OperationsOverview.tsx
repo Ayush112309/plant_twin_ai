@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Building2,
   Cpu,
@@ -12,6 +13,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   XCircle,
+  Download,
+  Zap,
 } from 'lucide-react';
 import {
   LineChart,
@@ -30,10 +33,33 @@ import AlertInspectorModal from '../../components/dialogs/AlertInspectorModal';
 import { usePlantTelemetry } from '../../app/contexts/PlantTelemetryContext';
 
 export const OperationsOverview: React.FC = () => {
+  const navigate = useNavigate();
   const [timeRange, setTimeRange] = useState('7d');
   const [inspectorData, setInspectorData] = useState<MetricInspectorData | null>(null);
   const [alertInspectorFilter, setAlertInspectorFilter] = useState<'ALL' | 'CRITICAL' | 'WARNING' | 'NORMAL' | null>(null);
   const { systemHealthScore, activeAlerts, telemetryStream, equipmentList } = usePlantTelemetry();
+
+  const handleExportCSV = () => {
+    const headers = ['Timestamp', 'Equipment Name', 'Asset Tag', 'Temperature (°C)', 'Vibration (mm/s)', 'Status'];
+    const rows = equipmentList.map((eq) => [
+      new Date().toISOString(),
+      eq.name,
+      eq.asset_tag,
+      eq.temp,
+      eq.vibration,
+      eq.status,
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `PlantTwin_SCADA_Telemetry_Export_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const openMetricInspector = (metricName: string) => {
     switch (metricName) {
@@ -161,34 +187,45 @@ export const OperationsOverview: React.FC = () => {
           <p className="text-xs text-[var(--text-secondary)] mt-1">Real-time operational KPIs, live telemetry stream, and SCADA analytics</p>
         </div>
 
-        {/* Time Filter Controls */}
-        <div className="flex items-center space-x-2 bg-[var(--bg-card)] border border-[var(--border-color)] p-1.5 rounded-xl text-xs shadow-md">
-          <button className="flex items-center space-x-1.5 px-3 py-1 rounded-lg text-emerald-400 bg-emerald-950/60 font-bold border border-emerald-500/30 font-mono">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Real-time Sync Active</span>
-          </button>
+        {/* Action Controls & Export */}
+        <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => setTimeRange('7d')}
-            className={`px-3 py-1 rounded-lg transition-colors font-mono font-bold ${
-              timeRange === '7d' ? 'text-[var(--brand-primary)] bg-[var(--bg-canvas)] border border-[var(--border-color)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-            }`}
+            onClick={handleExportCSV}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold font-mono bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--brand-primary)] transition-all shadow-md"
           >
-            Last 7 Days
+            <Download className="w-3.5 h-3.5 text-teal-400" />
+            <span>Export SCADA CSV</span>
           </button>
+
+          <div className="flex items-center space-x-2 bg-[var(--bg-card)] border border-[var(--border-color)] p-1 rounded-xl text-xs shadow-md">
+            <button className="flex items-center space-x-1.5 px-3 py-1 rounded-lg text-emerald-400 bg-emerald-950/60 font-bold border border-emerald-500/30 font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Real-time Sync Active</span>
+            </button>
+            <button
+              onClick={() => setTimeRange('7d')}
+              className={`px-3 py-1 rounded-lg transition-colors font-mono font-bold ${
+                timeRange === '7d' ? 'text-[var(--brand-primary)] bg-[var(--bg-canvas)] border border-[var(--border-color)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              Last 7 Days
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Top 5 KPI Cards with Monochrome Icons & Strict 3-Color Severity Display */}
+      {/* Top 5 KPI Cards with Interactive Routing & Inspection */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         
         {/* Card 1: PLANTS */}
         <div
-          onClick={() => openMetricInspector('health')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] transition-all"
+          onClick={() => navigate('/explorer')}
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-teal-500/50 transition-all group"
+          title="Open ISA-95 Plant Hierarchy Explorer"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">PLANTS</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
+            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md group-hover:border-teal-500/60 group-hover:text-teal-400 transition-colors">
               <Building2 className="w-4 h-4" />
             </div>
           </div>
@@ -206,12 +243,13 @@ export const OperationsOverview: React.FC = () => {
 
         {/* Card 2: REGISTERED EQUIPMENT */}
         <div
-          onClick={() => openMetricInspector('temperature')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] transition-all"
+          onClick={() => navigate('/equipment')}
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-sky-500/50 transition-all group"
+          title="Open Industrial Equipment Workspace"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">EQUIPMENT</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
+            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md group-hover:border-sky-500/60 group-hover:text-sky-400 transition-colors">
               <Cpu className="w-4 h-4" />
             </div>
           </div>
@@ -229,12 +267,13 @@ export const OperationsOverview: React.FC = () => {
 
         {/* Card 3: ACTIVE WORKFLOWS */}
         <div
-          onClick={() => openMetricInspector('health')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] transition-all"
+          onClick={() => navigate('/work-orders')}
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-purple-500/50 transition-all group"
+          title="Open Work Orders & Workflow Automation"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">WORKFLOWS</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
+            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md group-hover:border-purple-500/60 group-hover:text-purple-400 transition-colors">
               <Workflow className="w-4 h-4" />
             </div>
           </div>
@@ -253,11 +292,12 @@ export const OperationsOverview: React.FC = () => {
         {/* Card 4: ACTIVE ALERTS (INTERACTIVE SEVERITY INSPECTION) */}
         <div
           onClick={() => setAlertInspectorFilter('ALL')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-amber-500/50 transition-all"
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-amber-500/50 transition-all group"
+          title="Open ISA-18.2 Active Alert Inspector"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">ACTIVE ALERTS</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
+            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md group-hover:border-amber-500/60 group-hover:text-amber-400 transition-colors">
               <Bell className="w-4 h-4" />
             </div>
           </div>
@@ -312,11 +352,12 @@ export const OperationsOverview: React.FC = () => {
         {/* Card 5: SYSTEM HEALTH */}
         <div
           onClick={() => openMetricInspector('health')}
-          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] transition-all"
+          className="industrial-card p-4 flex flex-col justify-between cursor-pointer industrial-card-hover bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-emerald-500/50 transition-all group"
+          title="Open System Health & Diagnostic Inspector"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-secondary)]">SYSTEM HEALTH</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md">
+            <div className="w-8 h-8 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300 shadow-md group-hover:border-emerald-500/60 group-hover:text-emerald-400 transition-colors">
               <Activity className="w-4 h-4" />
             </div>
           </div>
