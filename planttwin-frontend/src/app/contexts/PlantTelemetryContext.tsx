@@ -52,6 +52,7 @@ interface PlantTelemetryContextType {
   };
   rulDays: number;
   systemHealthScore: number;
+  isOpcStreaming: boolean;
   ingestCSVData: (rows: any[]) => void;
   updateSiemensTag: (tagAddress: string, value: number) => void;
   resetNominalState: () => void;
@@ -149,6 +150,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
   });
   const [rulDays, setRulDays] = useState(142);
   const [systemHealthScore, setSystemHealthScore] = useState(88.5);
+  const [isOpcStreaming, setIsOpcStreaming] = useState(true);
 
   // Live Auto-Updating Telemetry Ticker (Ticks values every 2.5s across all 11 workspaces)
   useEffect(() => {
@@ -294,6 +296,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
       setActiveAlerts((prev) => [newCriticalAlert, ...prev]);
       setSystemHealthScore(58.0);
       setRulDays(14);
+      setIsOpcStreaming(true);
       setDigitalTwinState((prev) => ({
         ...prev,
         winding_temp_c: 142.8,
@@ -301,6 +304,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
       }));
     } else {
       setSystemHealthScore(92.4);
+      setIsOpcStreaming(true);
     }
   };
 
@@ -313,6 +317,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
     setActiveAlerts([]);
     setSystemHealthScore(94.5);
     setRulDays(142);
+    setIsOpcStreaming(false);
     setDigitalTwinState({
       motor_rpm: 1450,
       vibration_amplitude: 0.18,
@@ -331,6 +336,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
         digitalTwinState,
         rulDays,
         systemHealthScore,
+        isOpcStreaming,
         ingestCSVData,
         updateSiemensTag,
         resetNominalState,

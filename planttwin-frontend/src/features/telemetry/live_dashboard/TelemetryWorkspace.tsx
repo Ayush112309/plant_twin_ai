@@ -18,7 +18,7 @@ import IndustrialCharts from '../../../lib/charts/IndustrialCharts';
 import { usePlantTelemetry } from '../../../app/contexts/PlantTelemetryContext';
 
 export const TelemetryWorkspace: React.FC = () => {
-  const { telemetryStream } = usePlantTelemetry();
+  const { telemetryStream, isOpcStreaming } = usePlantTelemetry();
   const [selectedTag, setSelectedTag] = useState<'ALL' | 'TEMP' | 'VIB' | 'PRESSURE'>('ALL');
   const [isExporting, setIsExporting] = useState(false);
 
@@ -78,8 +78,12 @@ export const TelemetryWorkspace: React.FC = () => {
               <h1 className="text-2xl font-extrabold text-[var(--text-primary)] tracking-tight font-sans leading-tight">
                 Live SCADA Telemetry & Historian
               </h1>
-              <span className="inline-flex items-center text-[10px] font-mono font-extrabold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/30 shrink-0 leading-none">
-                1,250 HZ STREAMING
+              <span className={`inline-flex items-center text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-md border shrink-0 leading-none ${
+                isOpcStreaming
+                  ? 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30'
+                  : 'text-amber-400 bg-amber-500/10 border-amber-500/30'
+              }`}>
+                {isOpcStreaming ? '1,250 HZ STREAMING' : 'PAUSED (NOMINAL BASELINE)'}
               </span>
             </div>
             <p className="text-xs text-[var(--text-secondary)] mt-1 font-mono leading-relaxed">
@@ -218,9 +222,13 @@ export const TelemetryWorkspace: React.FC = () => {
       {/* Telemetry Stream Mode Switcher */}
       <div className="flex items-center justify-between p-3 rounded-2xl bg-[var(--bg-canvas)] border border-[var(--border-color)] font-mono text-xs shadow-sm">
         <div className="flex items-center space-x-2">
-          <span className={`w-2.5 h-2.5 rounded-full ${!isReplayActive ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'}`} />
+          <span className={`w-2.5 h-2.5 rounded-full ${!isReplayActive && isOpcStreaming ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'}`} />
           <span className="font-bold text-[var(--text-primary)]">
-            {!isReplayActive ? '📡 Live SCADA & OPC-UA Real-Time Stream (1,250 Hz Active)' : '📼 Incident Replay Mode Active (May 15 Outage Scrubber)'}
+            {isReplayActive
+              ? '📼 Incident Replay Mode Active (May 15 Outage Scrubber)'
+              : isOpcStreaming
+              ? '📡 Live SCADA & OPC-UA Real-Time Stream (1,250 Hz Active)'
+              : '⏸️ SCADA Telemetry Stream Paused — Nominal Baseline Active'}
           </span>
         </div>
         {isReplayActive && (
