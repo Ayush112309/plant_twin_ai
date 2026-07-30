@@ -19,6 +19,9 @@ import {
   Bell,
   Cpu,
   X,
+  Mail,
+  Smartphone,
+  Send,
 } from 'lucide-react';
 import apiClient from '../../../lib/api/client';
 import { usePlantTelemetry } from '../../../app/contexts/PlantTelemetryContext';
@@ -46,6 +49,16 @@ export const AlarmManagement: React.FC = () => {
   const [triggerSource, setTriggerSource] = useState('Reactor-001 Vessel');
   const [triggerSeverity, setTriggerSeverity] = useState<'CRITICAL' | 'HIGH' | 'WARNING'>('CRITICAL');
   const [triggerVal, setTriggerVal] = useState('890.2 °C');
+
+  // Notification Channel Options State
+  const [notifyEmail, setNotifyEmail] = useState(true);
+  const [emailRecipient, setEmailRecipient] = useState(
+    localStorage.getItem('planttwin_registered_email') || 'plant.manager@planttwin.ai'
+  );
+  const [notifySMS, setNotifySMS] = useState(true);
+  const [smsPhoneNumber, setSmsPhoneNumber] = useState('+1 (555) 019-2834');
+  const [notifyInApp, setNotifyInApp] = useState(true);
+  const [dispatchStatusMsg, setDispatchStatusMsg] = useState<string | null>(null);
 
   // Alarms State
   const [alarms, setAlarms] = useState<AlarmItem[]>([
@@ -136,6 +149,15 @@ export const AlarmManagement: React.FC = () => {
 
     setAlarms([newAlarmObj, ...alarms]);
     setShowTriggerModal(false);
+
+    const channelsDispatched = [];
+    if (notifyEmail) channelsDispatched.push(`📧 Email: ${emailRecipient}`);
+    if (notifySMS) channelsDispatched.push(`📱 SMS: ${smsPhoneNumber}`);
+    if (notifyInApp) channelsDispatched.push(`🔔 In-App Console`);
+
+    const dispatchMsg = `🚨 SCADA Alarm ${generatedId} Triggered! Dispatched via ${channelsDispatched.join(' | ')}`;
+    setDispatchStatusMsg(dispatchMsg);
+    setTimeout(() => setDispatchStatusMsg(null), 6000);
   };
 
   // Strict 3 Status Colors Badge Selector
@@ -511,18 +533,34 @@ export const AlarmManagement: React.FC = () => {
         </div>
       )}
 
+      {/* Dispatch Success Alert Banner */}
+      {dispatchStatusMsg && (
+        <div className="p-4 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-mono font-bold flex items-center justify-between shadow-lg animate-pulse">
+          <div className="flex items-center space-x-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{dispatchStatusMsg}</span>
+          </div>
+          <button onClick={() => setDispatchStatusMsg(null)} className="text-emerald-400 hover:text-white">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Evaluate Alarm Trigger Modal */}
       {showTriggerModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] w-full max-w-md space-y-5 font-mono shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="p-6 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] w-full max-w-md space-y-4 font-mono shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-3">
-              <h3 className="text-sm font-bold text-[var(--text-primary)]">Evaluate SCADA Alarm Trigger</h3>
+              <div className="flex items-center space-x-2">
+                <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0" />
+                <h3 className="text-sm font-bold text-[var(--text-primary)]">Evaluate SCADA Alarm Trigger</h3>
+              </div>
               <button onClick={() => setShowTriggerModal(false)} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSimulateTrigger} className="space-y-4 text-xs">
+            <form onSubmit={handleSimulateTrigger} className="space-y-3.5 text-xs">
               <div>
                 <label className="block text-[var(--text-secondary)] mb-1 font-bold">Alarm Title / Type</label>
                 <input
@@ -546,28 +584,106 @@ export const AlarmManagement: React.FC = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-[var(--text-secondary)] mb-1 font-bold">Severity Level</label>
-                <select
-                  value={triggerSeverity}
-                  onChange={(e: any) => setTriggerSeverity(e.target.value)}
-                  className="input-nexus w-full px-3 py-2 rounded-xl"
-                >
-                  <option value="CRITICAL">CRITICAL (Emergency Red)</option>
-                  <option value="HIGH">HIGH (Warning Amber)</option>
-                  <option value="WARNING">WARNING (Low Amber)</option>
-                </select>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[var(--text-secondary)] mb-1 font-bold">Severity Level</label>
+                  <select
+                    value={triggerSeverity}
+                    onChange={(e: any) => setTriggerSeverity(e.target.value)}
+                    className="input-nexus w-full px-3 py-2 rounded-xl"
+                  >
+                    <option value="CRITICAL">CRITICAL (Emergency Red)</option>
+                    <option value="HIGH">HIGH (Warning Amber)</option>
+                    <option value="WARNING">WARNING (Low Amber)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[var(--text-secondary)] mb-1 font-bold">Current Value</label>
+                  <input
+                    type="text"
+                    value={triggerVal}
+                    onChange={(e) => setTriggerVal(e.target.value)}
+                    placeholder="e.g. 890.2 °C"
+                    className="input-nexus w-full px-3 py-2 rounded-xl"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-[var(--text-secondary)] mb-1 font-bold">Current Value</label>
-                <input
-                  type="text"
-                  value={triggerVal}
-                  onChange={(e) => setTriggerVal(e.target.value)}
-                  placeholder="e.g. 890.2 °C"
-                  className="input-nexus w-full px-3 py-2 rounded-xl"
-                />
+              {/* Multi-Channel Notification Options (Email & SMS) */}
+              <div className="pt-2 border-t border-[var(--border-color)] space-y-2.5">
+                <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between">
+                  <span className="flex items-center space-x-1.5">
+                    <Bell className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Notification & Alert Channels</span>
+                  </span>
+                  <span className="text-emerald-400 text-[9px] font-mono">Multi-Channel Dispatch</span>
+                </div>
+
+                {/* Email Alert Channel */}
+                <div className="p-3 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-2">
+                  <label className="flex items-center space-x-2 text-xs font-bold text-[var(--text-primary)] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={notifyEmail}
+                      onChange={(e) => setNotifyEmail(e.target.checked)}
+                      className="w-4 h-4 rounded text-emerald-500 accent-emerald-500 cursor-pointer"
+                    />
+                    <Mail className="w-3.5 h-3.5 text-blue-400" />
+                    <span>Dispatch Email Alert</span>
+                  </label>
+                  {notifyEmail && (
+                    <input
+                      type="email"
+                      value={emailRecipient}
+                      onChange={(e) => setEmailRecipient(e.target.value)}
+                      placeholder="Engineer Email Address"
+                      className="input-nexus w-full px-3 py-1.5 text-xs rounded-lg font-mono"
+                      required
+                    />
+                  )}
+                </div>
+
+                {/* SMS Cellular Alert Channel */}
+                <div className="p-3 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] space-y-2">
+                  <label className="flex items-center space-x-2 text-xs font-bold text-[var(--text-primary)] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={notifySMS}
+                      onChange={(e) => setNotifySMS(e.target.checked)}
+                      className="w-4 h-4 rounded text-emerald-500 accent-emerald-500 cursor-pointer"
+                    />
+                    <Smartphone className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Dispatch Cellular SMS Text Alert</span>
+                  </label>
+                  {notifySMS && (
+                    <input
+                      type="tel"
+                      value={smsPhoneNumber}
+                      onChange={(e) => setSmsPhoneNumber(e.target.value)}
+                      placeholder="Duty Manager Phone (+1 555-019-2834)"
+                      className="input-nexus w-full px-3 py-1.5 text-xs rounded-lg font-mono"
+                      required
+                    />
+                  )}
+                </div>
+
+                {/* In-App SCADA Notification */}
+                <div className="p-2.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] flex items-center justify-between">
+                  <label className="flex items-center space-x-2 text-xs font-bold text-[var(--text-primary)] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={notifyInApp}
+                      onChange={(e) => setNotifyInApp(e.target.checked)}
+                      className="w-4 h-4 rounded text-emerald-500 accent-emerald-500 cursor-pointer"
+                    />
+                    <Bell className="w-3.5 h-3.5 text-purple-400" />
+                    <span>In-App SCADA Console & Inbox</span>
+                  </label>
+                  <span className="text-[9px] text-emerald-400 font-bold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">
+                    Live Active
+                  </span>
+                </div>
               </div>
 
               <div className="flex space-x-3 pt-2">
@@ -578,8 +694,9 @@ export const AlarmManagement: React.FC = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="w-1/2 btn-nexus-primary bg-[var(--brand-primary)] hover:bg-[var(--brand-hover)] py-2.5 rounded-xl text-white font-bold">
-                  Trigger SCADA Alarm
+                <button type="submit" className="w-1/2 btn-nexus-primary bg-[var(--brand-primary)] hover:bg-[var(--brand-hover)] py-2.5 rounded-xl text-white font-bold inline-flex items-center justify-center space-x-1">
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Trigger SCADA Alarm</span>
                 </button>
               </div>
             </form>
