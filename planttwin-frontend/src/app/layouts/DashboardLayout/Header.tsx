@@ -21,8 +21,7 @@ import { useTheme, ThemeMode } from '../../theme/ThemeProvider';
 import usePermissions from '../../permissions/usePermissions';
 import { useAuth } from '../../contexts/AuthContext';
 import apiClient from '../../../lib/api/client';
-import PlantTwinLogo, { LogoVariant } from '../../../components/common/PlantTwinLogo';
-import { LogoSelectorModal } from '../../../components/common/LogoSelectorModal';
+import PlantTwinLogo from '../../../components/common/PlantTwinLogo';
 
 interface HeaderProps {
   sidebarOpen: boolean;
@@ -61,8 +60,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   const headerRef = useRef<HTMLHeadingElement>(null);
 
-  const [logoModalOpen, setLogoModalOpen] = useState(false);
-  const [currentLogoVariant, setCurrentLogoVariant] = useState<LogoVariant>('option3');
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
   const [plantDropdownOpen, setPlantDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -231,18 +228,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Brand Logo & Version Badge */}
         <div className="flex items-center space-x-3">
-          <div onClick={() => setLogoModalOpen(true)} title="Click to open Logo Selection Studio">
-            <PlantTwinLogo size="md" showText={true} />
-          </div>
-
-          <button
-            onClick={() => setLogoModalOpen(true)}
-            className="hidden sm:flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-[var(--bg-canvas)] border border-[var(--border-color)] hover:border-cyan-500/50 text-[10px] font-mono font-bold text-cyan-400 hover:text-cyan-300 transition-all shadow-sm"
-          >
-            <Sparkles className="w-3 h-3" />
-            <span>5 Logo Options</span>
-          </button>
-
+          <PlantTwinLogo size="md" showText={true} />
           <div className="hidden xl:flex items-center space-x-1.5 text-[10px] font-mono text-[var(--text-secondary)] font-semibold border-l border-[var(--border-color)] pl-3 py-1">
             <span>v2.4.0</span>
             <span>•</span>
@@ -483,13 +469,6 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </div>
       </div>
-
-      <LogoSelectorModal
-        isOpen={logoModalOpen}
-        onClose={() => setLogoModalOpen(false)}
-        onSelectVariant={(variant) => setCurrentLogoVariant(variant)}
-        currentVariant={currentLogoVariant}
-      />
     </header>
   );
 };
