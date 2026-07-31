@@ -415,7 +415,7 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         {/* User Profile Card Dropdown */}
-        <div className="relative border-l border-[var(--border-color)] pl-2.5">
+        <div className="relative border-l border-[var(--border-color)] pl-2">
           <button
             onClick={() => {
               setProfileDropdownOpen(!profileDropdownOpen);
@@ -424,14 +424,18 @@ export const Header: React.FC<HeaderProps> = ({
             }}
             className="flex items-center space-x-2 text-left hover:opacity-90 transition-opacity"
           >
-            <div className="w-8 h-8 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-primary)] shadow-sm">
+            <div className="w-8 h-8 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-primary)] shadow-sm shrink-0">
               <User className="w-4 h-4" />
             </div>
-            <div className="hidden sm:block">
-              <div className="text-xs font-bold text-[var(--text-primary)] leading-tight">{permissions.roleName}</div>
-              <div className="text-[10px] text-[var(--brand-primary)] font-mono truncate max-w-[140px]">{userEmail}</div>
+            <div className="hidden md:block max-w-[130px] lg:max-w-[160px] truncate">
+              <div className="text-xs font-bold text-[var(--text-primary)] leading-tight truncate" title={permissions.roleName}>
+                {permissions.roleName}
+              </div>
+              <div className="text-[10px] text-[var(--brand-primary)] font-mono truncate" title={userEmail}>
+                {userEmail}
+              </div>
             </div>
-            <ChevronDown className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+            <ChevronDown className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
           </button>
 
           {profileDropdownOpen && (
