@@ -214,22 +214,22 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       ref={headerRef}
-      className="h-16 bg-[var(--bg-header)] backdrop-blur-xl border-b border-[var(--border-color)] px-4 lg:px-6 flex items-center justify-between z-30 sticky top-0 transition-colors shadow-sm"
+      className="h-16 bg-[var(--bg-header)] backdrop-blur-xl border-b border-[var(--border-color)] px-3 lg:px-5 flex items-center justify-between z-30 sticky top-0 transition-colors shadow-sm font-sans"
     >
       {/* Left Section: Sidebar Toggle, Brand, Environment, Org Switcher */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] transition-colors"
+          className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] transition-colors shrink-0"
           title="Toggle Navigation Sidebar"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         {/* Brand Logo & Version Badge */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 shrink-0">
           <PlantTwinLogo size="md" showText={true} />
-          <div className="hidden xl:flex items-center space-x-1.5 text-[10px] font-mono text-[var(--text-secondary)] font-semibold border-l border-[var(--border-color)] pl-3 py-1">
+          <div className="hidden 2xl:flex items-center space-x-1.5 text-[10px] font-mono text-[var(--text-secondary)] font-semibold border-l border-[var(--border-color)] pl-3 py-1">
             <span>v2.4.0</span>
             <span>•</span>
             <span className="text-emerald-500 font-bold flex items-center gap-1">
@@ -240,26 +240,26 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Divider */}
-        <div className="h-5 w-[1px] bg-[var(--border-color)] mx-1 hidden md:block" />
+        <div className="h-5 w-[1px] bg-[var(--border-color)] mx-0.5 hidden 2xl:block shrink-0" />
 
         {/* Environment Badge Pill */}
-        <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[10px] font-mono font-bold text-[var(--brand-primary)] shadow-sm">
+        <div className="hidden 2xl:flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-canvas)] border border-[var(--border-color)] text-[10px] font-mono font-bold text-[var(--brand-primary)] shadow-sm shrink-0">
           <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)] animate-ping" />
           <span>PRODUCTION</span>
         </div>
 
         {/* Dynamic Organization & Plant Switcher Dropdown */}
-        <div className="relative font-mono">
+        <div className="relative font-mono shrink-0">
           <button
             onClick={() => {
               setPlantDropdownOpen(!plantDropdownOpen);
               setThemeDropdownOpen(false);
               setProfileDropdownOpen(false);
             }}
-            className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] hover:border-[var(--border-strong)] transition-all text-xs font-bold text-[var(--text-primary)] shadow-sm"
+            className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] hover:border-[var(--border-strong)] transition-all text-xs font-bold text-[var(--text-primary)] shadow-sm"
           >
-            <Building className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
-            <span className="truncate max-w-[150px] sm:max-w-[200px]">{selectedPlant}</span>
+            <Building className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
+            <span className="truncate max-w-[100px] sm:max-w-[140px] md:max-w-[180px]">{selectedPlant}</span>
             <ChevronDown className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
           </button>
 
@@ -318,24 +318,24 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Right Section: Command Palette Trigger, Theme Selector, Layout Density, Notifications, User Card */}
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
         {/* Global Command Palette Quick Search Input */}
         <button
           onClick={() => onOpenCommandPalette && onOpenCommandPalette()}
-          className="hidden md:flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] hover:border-[var(--border-strong)] transition-all text-xs text-[var(--text-secondary)] w-64 lg:w-80 shadow-inner group"
+          className="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] hover:border-[var(--border-strong)] transition-all text-xs text-[var(--text-secondary)] w-36 md:w-52 lg:w-64 xl:w-72 shadow-inner group shrink-0"
         >
-          <Search className="w-3.5 h-3.5 text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors" />
-          <span className="flex-1 text-left truncate font-mono text-[11px]">Search equipment, alarms, or launch AI commands...</span>
-          <kbd className="px-1.5 py-0.5 rounded bg-[var(--bg-card)] border border-[var(--border-color)] text-[10px] font-mono text-[var(--text-secondary)] font-bold">
+          <Search className="w-3.5 h-3.5 text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors shrink-0" />
+          <span className="flex-1 text-left truncate font-mono text-[11px]">Search equipment, AI commands...</span>
+          <kbd className="hidden lg:inline-block px-1.5 py-0.5 rounded bg-[var(--bg-card)] border border-[var(--border-color)] text-[10px] font-mono text-[var(--text-secondary)] font-bold shrink-0">
             Ctrl K
           </kbd>
         </button>
 
         {/* Layout Density Switcher Toggle (Comfortable vs Compact) */}
-        <div className="hidden sm:flex items-center space-x-1 bg-[var(--bg-canvas)] p-1 rounded-xl border border-[var(--border-color)] text-xs font-mono">
+        <div className="hidden xl:flex items-center space-x-1 bg-[var(--bg-canvas)] p-1 rounded-xl border border-[var(--border-color)] text-xs font-mono shrink-0">
           <button
             onClick={() => handleDensityChange('comfortable')}
-            className={`px-2.5 py-1 rounded-lg transition-all font-bold inline-flex items-center space-x-1 ${
+            className={`px-2 py-0.5 rounded-lg transition-all font-bold inline-flex items-center space-x-1 ${
               density === 'comfortable'
                 ? 'text-[var(--text-primary)] bg-[var(--bg-card)] border border-[var(--border-color)] shadow-sm'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
@@ -347,7 +347,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => handleDensityChange('compact')}
-            className={`px-2.5 py-1 rounded-lg transition-all font-bold inline-flex items-center space-x-1 ${
+            className={`px-2 py-0.5 rounded-lg transition-all font-bold inline-flex items-center space-x-1 ${
               density === 'compact'
                 ? 'text-[var(--text-primary)] bg-[var(--bg-card)] border border-[var(--border-color)] shadow-sm'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
@@ -359,18 +359,18 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Dynamic 6-Theme Palette Switcher Dropdown */}
-        <div className="relative font-mono">
+        <div className="relative font-mono shrink-0">
           <button
             onClick={() => {
               setThemeDropdownOpen(!themeDropdownOpen);
               setPlantDropdownOpen(false);
               setProfileDropdownOpen(false);
             }}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] hover:border-[var(--border-strong)] transition-all text-xs font-bold text-[var(--text-primary)] shadow-sm"
+            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] hover:border-[var(--border-strong)] transition-all text-xs font-bold text-[var(--text-primary)] shadow-sm"
           >
-            <Palette className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-            <span className="capitalize">{theme}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+            <Palette className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0" />
+            <span className="capitalize hidden sm:inline">{theme}</span>
+            <ChevronDown className="w-3.5 h-3.5 text-[var(--text-secondary)] shrink-0" />
           </button>
 
           {themeDropdownOpen && (
@@ -407,7 +407,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Enterprise Notification Center Quick Bell */}
         <button
           onClick={() => navigate('/notifications')}
-          className="relative p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] rounded-xl transition-colors"
+          className="relative p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] rounded-xl transition-colors shrink-0"
           title="Open Enterprise Notification Center"
         >
           <Bell className="w-4 h-4" />
@@ -415,23 +415,23 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         {/* User Profile Card Dropdown */}
-        <div className="relative border-l border-[var(--border-color)] pl-2">
+        <div className="relative border-l border-[var(--border-color)] pl-2 shrink-0">
           <button
             onClick={() => {
               setProfileDropdownOpen(!profileDropdownOpen);
               setPlantDropdownOpen(false);
               setThemeDropdownOpen(false);
             }}
-            className="flex items-center space-x-2 text-left hover:opacity-90 transition-opacity"
+            className="flex items-center space-x-1.5 text-left hover:opacity-90 transition-opacity"
           >
             <div className="w-8 h-8 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-primary)] shadow-sm shrink-0">
               <User className="w-4 h-4" />
             </div>
-            <div className="hidden md:block max-w-[130px] lg:max-w-[160px] truncate">
+            <div className="hidden lg:block max-w-[100px] xl:max-w-[140px] truncate">
               <div className="text-xs font-bold text-[var(--text-primary)] leading-tight truncate" title={permissions.roleName}>
                 {permissions.roleName}
               </div>
-              <div className="text-[10px] text-[var(--brand-primary)] font-mono truncate" title={userEmail}>
+              <div className="text-[10px] text-[var(--brand-primary)] font-mono truncate hidden 2xl:block" title={userEmail}>
                 {userEmail}
               </div>
             </div>
