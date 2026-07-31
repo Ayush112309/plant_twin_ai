@@ -33,7 +33,9 @@ export const SiemensPLCSIM: React.FC = () => {
   const [slot, setSlot] = useState(1);
   const [dataBlock, setDataBlock] = useState('DB1');
   const [connecting, setConnecting] = useState(false);
-  const [isConnected, setIsConnected] = useState(true);
+  const [isConnected, setIsConnected] = useState<boolean>(() => {
+    return localStorage.getItem('planttwin_siemens_connected') === 'true';
+  });
 
   // Live S7 DB Process Values
   const [db100Val, setDb100Val] = useState(68.4);
@@ -47,6 +49,7 @@ export const SiemensPLCSIM: React.FC = () => {
     setTimeout(() => {
       setConnecting(false);
       setIsConnected(true);
+      localStorage.setItem('planttwin_siemens_connected', 'true');
       setWriteMsg(`Successfully connected to Siemens S7-1200 PLC at ${ipAddress}:102 (Rack ${rack}, Slot ${slot}). PUT/GET Verified!`);
       updateSiemensTag(`${dataBlock}.DBD4`, db100Val);
       setTimeout(() => setWriteMsg(null), 5000);
@@ -103,6 +106,7 @@ export const SiemensPLCSIM: React.FC = () => {
 
   const handleStopS7Stream = () => {
     setIsConnected(false);
+    localStorage.setItem('planttwin_siemens_connected', 'false');
     setDb100Val(68.4);
     setVibrationVal(0.18);
     resetNominalState();

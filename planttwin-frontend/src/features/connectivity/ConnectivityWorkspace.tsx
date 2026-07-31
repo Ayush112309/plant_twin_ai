@@ -36,11 +36,15 @@ export const ConnectivityWorkspace: React.FC = () => {
   const { ingestCSVData, resetNominalState } = usePlantTelemetry();
   const [activeDriver, setActiveDriver] = useState<'siemens' | 'opcua' | 'mqtt' | 'rest' | 'csv' | 'mapping'>('siemens');
 
-  // OPC-UA Interactive Testing State
+  // OPC-UA Interactive Testing State (Persisted in localStorage)
   const [opcServerUrl, setOpcServerUrl] = useState('opc.tcp://192.168.0.50:4840');
   const [opcSecurityMode, setOpcSecurityMode] = useState('Basic256Sha256 - Sign & Encrypt');
-  const [opcIsConnected, setOpcIsConnected] = useState(true);
-  const [opcIsSubscribed, setOpcIsSubscribed] = useState(true);
+  const [opcIsConnected, setOpcIsConnected] = useState<boolean>(() => {
+    return localStorage.getItem('planttwin_opc_connected') === 'true';
+  });
+  const [opcIsSubscribed, setOpcIsSubscribed] = useState<boolean>(() => {
+    return localStorage.getItem('planttwin_opc_connected') === 'true';
+  });
   const [opcStatusMsg, setOpcStatusMsg] = useState<string | null>(null);
   const [opcIsLoading, setOpcIsLoading] = useState(false);
 
@@ -60,6 +64,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     setTimeout(() => {
       setOpcIsLoading(false);
       setOpcIsConnected(true);
+      localStorage.setItem('planttwin_opc_connected', 'true');
       ingestCSVData([], 'OPC-UA / SCADA');
       setOpcStatusMsg(`⚡ OPC-UA Binary Connection Verified (${opcServerUrl})! Discovered 6 Active Subscribed Nodes, 0 Dropouts. Cross-workspace live sync active!`);
       setTimeout(() => setOpcStatusMsg(null), 5000);
@@ -68,6 +73,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
   const handleTriggerTempAlert = () => {
     setOpcIsConnected(true);
+    localStorage.setItem('planttwin_opc_connected', 'true');
     setOpcNodes((prev) =>
       prev.map((node) => {
         if (node.nodeId.includes('Temperature')) return { ...node, val: '142.8', quality: 'UNCERTAIN_WARNING' };
@@ -85,6 +91,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
   const handleTriggerVibAlert = () => {
     setOpcIsConnected(true);
+    localStorage.setItem('planttwin_opc_connected', 'true');
     setOpcNodes((prev) =>
       prev.map((node) => {
         if (node.nodeId.includes('Vibration')) return { ...node, val: '1.85', quality: 'BAD_ALARM' };
@@ -102,6 +109,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
   const handleSimulateOpcSurge = () => {
     setOpcIsConnected(true);
+    localStorage.setItem('planttwin_opc_connected', 'true');
     setOpcNodes((prev) =>
       prev.map((node) => {
         if (node.nodeId.includes('Temperature')) return { ...node, val: '142.8', quality: 'UNCERTAIN_WARNING' };
@@ -124,6 +132,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     if (opcIsConnected) {
       setOpcIsConnected(false);
       setOpcIsSubscribed(false);
+      localStorage.setItem('planttwin_opc_connected', 'false');
       setOpcNodes((prev) =>
         prev.map((node) => {
           if (node.nodeId.includes('Temperature')) return { ...node, val: '84.5', quality: 'GOOD_100' };
@@ -139,16 +148,19 @@ export const ConnectivityWorkspace: React.FC = () => {
     } else {
       setOpcIsConnected(true);
       setOpcIsSubscribed(true);
+      localStorage.setItem('planttwin_opc_connected', 'true');
       ingestCSVData([], 'OPC-UA / SCADA');
       setOpcStatusMsg('▶️ OPC-UA Binary Driver Reconnected — Live telemetry stream resumed across all workspaces!');
       setTimeout(() => setOpcStatusMsg(null), 6000);
     }
   };
 
-  // MQTT State & Sparkplug B Pub/Sub Telemetry State
+  // MQTT State & Sparkplug B Pub/Sub Telemetry State (Persisted in localStorage)
   const [mqttBroker, setMqttBroker] = useState('mqtt://broker.hivemq.com:1883');
   const [mqttTopic, setMqttTopic] = useState('spBv1.0/RefineryAlpha/DDATA/Reactor001');
-  const [mqttIsConnected, setMqttIsConnected] = useState(true);
+  const [mqttIsConnected, setMqttIsConnected] = useState<boolean>(() => {
+    return localStorage.getItem('planttwin_mqtt_connected') === 'true';
+  });
   const [mqttIsLoading, setMqttIsLoading] = useState(false);
   const [mqttStatusMsg, setMqttStatusMsg] = useState<string | null>(null);
 
@@ -185,6 +197,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     setTimeout(() => {
       setMqttIsLoading(false);
       setMqttIsConnected(true);
+      localStorage.setItem('planttwin_mqtt_connected', 'true');
       ingestCSVData([], 'MQTT / Sparkplug B');
       setMqttStatusMsg(`⚡ MQTT Broker Connection Verified (${mqttBroker})! Subscribed to 3 active Sparkplug B topics.`);
       setTimeout(() => setMqttStatusMsg(null), 5000);
@@ -193,6 +206,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
   const handlePublishMqttTempAlert = () => {
     setMqttIsConnected(true);
+    localStorage.setItem('planttwin_mqtt_connected', 'true');
     const newMsg = {
       timestamp: new Date().toLocaleTimeString(),
       topic: 'spBv1.0/RefineryAlpha/DDATA/Reactor001',
@@ -213,6 +227,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
   const handlePublishMqttVibAlert = () => {
     setMqttIsConnected(true);
+    localStorage.setItem('planttwin_mqtt_connected', 'true');
     const newMsg = {
       timestamp: new Date().toLocaleTimeString(),
       topic: 'spBv1.0/RefineryAlpha/DDATA/Pump002',
@@ -234,21 +249,25 @@ export const ConnectivityWorkspace: React.FC = () => {
   const handleToggleMqttConnection = () => {
     if (mqttIsConnected) {
       setMqttIsConnected(false);
+      localStorage.setItem('planttwin_mqtt_connected', 'false');
       resetNominalState();
       setMqttStatusMsg('🛑 MQTT Broker Disconnected — Telemetry stream paused and plant baseline restored across all workspaces!');
       setTimeout(() => setMqttStatusMsg(null), 6000);
     } else {
       setMqttIsConnected(true);
+      localStorage.setItem('planttwin_mqtt_connected', 'true');
       ingestCSVData([], 'MQTT / Sparkplug B');
       setMqttStatusMsg('▶️ MQTT Broker Reconnected — Live telemetry stream resumed across all workspaces!');
       setTimeout(() => setMqttStatusMsg(null), 6000);
     }
   };
 
-  // REST API Webhook State & HTTP Ingestion
+  // REST API Webhook State & HTTP Ingestion (Persisted in localStorage)
   const [restEndpointUrl, setRestEndpointUrl] = useState('http://localhost:8000/api/v1/telemetry/ingest');
   const [restAuthHeader, setRestAuthHeader] = useState('Bearer apex-scada-token-2026');
-  const [restIsConnected, setRestIsConnected] = useState(true);
+  const [restIsConnected, setRestIsConnected] = useState<boolean>(() => {
+    return localStorage.getItem('planttwin_rest_connected') === 'true';
+  });
   const [restIsLoading, setRestIsLoading] = useState(false);
   const [restStatusMsg, setRestStatusMsg] = useState<string | null>(null);
 
@@ -279,6 +298,7 @@ export const ConnectivityWorkspace: React.FC = () => {
     setTimeout(() => {
       setRestIsLoading(false);
       setRestIsConnected(true);
+      localStorage.setItem('planttwin_rest_connected', 'true');
       ingestCSVData([], 'REST Webhook API');
       setRestStatusMsg(`⚡ REST API Webhook Listener Verified (${restEndpointUrl})! 200 OK — Ready for HTTP POST JSON payloads.`);
       setTimeout(() => setRestStatusMsg(null), 5000);
@@ -287,6 +307,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
   const handlePostRestTempAlert = () => {
     setRestIsConnected(true);
+    localStorage.setItem('planttwin_rest_connected', 'true');
     const newLog = {
       timestamp: new Date().toLocaleTimeString(),
       method: 'POST',
@@ -308,6 +329,7 @@ export const ConnectivityWorkspace: React.FC = () => {
 
   const handlePostRestVibAlert = () => {
     setRestIsConnected(true);
+    localStorage.setItem('planttwin_rest_connected', 'true');
     const newLog = {
       timestamp: new Date().toLocaleTimeString(),
       method: 'POST',
@@ -330,11 +352,13 @@ export const ConnectivityWorkspace: React.FC = () => {
   const handleToggleRestListener = () => {
     if (restIsConnected) {
       setRestIsConnected(false);
+      localStorage.setItem('planttwin_rest_connected', 'false');
       resetNominalState();
       setRestStatusMsg('🛑 REST Webhook Listener Paused — Telemetry stream paused and plant baseline restored across all workspaces!');
       setTimeout(() => setRestStatusMsg(null), 6000);
     } else {
       setRestIsConnected(true);
+      localStorage.setItem('planttwin_rest_connected', 'true');
       ingestCSVData([], 'REST Webhook API');
       setRestStatusMsg('▶️ REST Webhook Listener Resumed — Live telemetry stream resumed across all workspaces!');
       setTimeout(() => setRestStatusMsg(null), 6000);
