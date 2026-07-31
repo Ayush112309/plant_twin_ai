@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export type LogoVariant = 'optionA' | 'optionB' | 'optionC' | 'optionD' | 'optionE';
+export type LogoVariant = 'option3' | 'option6';
 
 interface PlantTwinLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -9,130 +9,122 @@ interface PlantTwinLogoProps {
   variant?: LogoVariant;
 }
 
-// Option A: Cybernetic Twin Shield (Hexagon + Interlaced Waves + AI Core)
-export const LogoOptionA: React.FC<{ sizePx: number }> = ({ sizePx }) => (
-  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: sizePx, height: sizePx }}>
+// Option 3: The Neural Infinity Loop (Mobius Twin)
+export const LogoOption3: React.FC<{ sizePx: number }> = ({ sizePx }) => (
+  <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: sizePx, height: sizePx }}>
     <defs>
-      <linearGradient id="optAGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#06B6D4" />
-        <stop offset="50%" stopColor="#10B981" />
-        <stop offset="100%" stopColor="#6366F1" />
+      <linearGradient id="opt3Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#8B5CF6" />
+        <stop offset="50%" stopColor="#06B6D4" />
+        <stop offset="100%" stopColor="#10B981" />
       </linearGradient>
-      <filter id="optAGlow" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="1.5" result="blur" />
+
+      <filter id="opt3Glow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="2" result="blur" />
         <feComposite in="SourceGraphic" in2="blur" operator="over" />
       </filter>
     </defs>
-    <polygon points="20,2 35,10 35,30 20,38 5,30 5,10" stroke="url(#optAGrad1)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M 12 15 C 12 11, 20 11, 20 18 C 20 25, 28 25, 28 21" stroke="#34D399" strokeWidth="2.5" strokeLinecap="round" filter="url(#optAGlow)" />
-    <path d="M 28 25 C 28 29, 20 29, 20 22 C 20 15, 12 15, 12 19" stroke="#06B6D4" strokeWidth="2.5" strokeLinecap="round" filter="url(#optAGlow)" />
-    <circle cx="20" cy="20" r="3" fill="#10B981" filter="url(#optAGlow)">
-      <animate attributeName="r" values="2.5;4;2.5" dur="2s" repeatCount="indefinite" />
+
+    {/* Glowing Outer Mobius / Infinity Loop */}
+    <path
+      d="M 14 22 C 14 14, 22 14, 22 22 C 22 30, 30 30, 30 22 C 30 14, 22 14, 22 22 C 22 30, 14 30, 14 22 Z"
+      stroke="url(#opt3Grad)"
+      strokeWidth="3.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      filter="url(#opt3Glow)"
+    />
+
+    {/* Physical Asset Node (Left - Emerald) */}
+    <circle cx="14" cy="22" r="3.5" fill="#10B981" filter="url(#opt3Glow)">
+      <animate attributeName="r" values="3;4.5;3" dur="2.4s" repeatCount="indefinite" />
+    </circle>
+
+    {/* Cloud AI Model Node (Right - Purple) */}
+    <circle cx="30" cy="22" r="3.5" fill="#8B5CF6" filter="url(#opt3Glow)">
+      <animate attributeName="r" values="3.5;2.5;3.5" dur="2.4s" repeatCount="indefinite" />
     </circle>
   </svg>
 );
 
-// Option B: Quantum Helix & Industrial Gear
-export const LogoOptionB: React.FC<{ sizePx: number }> = ({ sizePx }) => (
-  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: sizePx, height: sizePx }}>
+// Option 6: The SCADA Circuit Tree (Bio-Industrial Sensor Canopy)
+export const LogoOption6: React.FC<{ sizePx: number }> = ({ sizePx }) => (
+  <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: sizePx, height: sizePx }}>
     <defs>
-      <linearGradient id="optBGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#F59E0B" />
-        <stop offset="100%" stopColor="#06B6D4" />
+      <linearGradient id="opt6Grad" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#06B6D4" />
+        <stop offset="60%" stopColor="#10B981" />
+        <stop offset="100%" stopColor="#F59E0B" />
       </linearGradient>
-    </defs>
-    {/* Gear teeth */}
-    <circle cx="20" cy="20" r="14" stroke="url(#optBGrad)" strokeWidth="2" strokeDasharray="4 3" />
-    {/* Inner Helix */}
-    <path d="M 10 20 Q 20 8, 30 20 Q 20 32, 10 20" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" />
-    <path d="M 10 20 Q 20 32, 30 20 Q 20 8, 10 20" stroke="#06B6D4" strokeWidth="2.5" strokeLinecap="round" />
-    <circle cx="20" cy="20" r="3.5" fill="#F59E0B" />
-  </svg>
-);
 
-// Option C: Neural Infinity Loop (Mobius Twin)
-export const LogoOptionC: React.FC<{ sizePx: number }> = ({ sizePx }) => (
-  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: sizePx, height: sizePx }}>
-    <defs>
-      <linearGradient id="optCGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#8B5CF6" />
-        <stop offset="100%" stopColor="#34D399" />
-      </linearGradient>
+      <filter id="opt6Glow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="1.8" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
     </defs>
-    {/* Infinity Loop */}
-    <path
-      d="M 13 20 C 13 13, 20 13, 20 20 C 20 27, 27 27, 27 20 C 27 13, 20 13, 20 20 C 20 27, 13 27, 13 20 Z"
-      stroke="url(#optCGrad)"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <circle cx="13" cy="20" r="3" fill="#8B5CF6" />
-    <circle cx="27" cy="20" r="3" fill="#34D399" />
-  </svg>
-);
 
-// Option D: Isometric Hex-Matrix Prism
-export const LogoOptionD: React.FC<{ sizePx: number }> = ({ sizePx }) => (
-  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: sizePx, height: sizePx }}>
-    <defs>
-      <linearGradient id="optDGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#3B82F6" />
-        <stop offset="100%" stopColor="#14B8A6" />
-      </linearGradient>
-    </defs>
-    {/* Isometric Cube */}
-    <path d="M 20 4 L 34 12 L 34 28 L 20 36 L 6 28 L 6 12 Z" stroke="url(#optDGrad)" strokeWidth="2" />
-    <path d="M 20 4 L 20 36" stroke="url(#optDGrad)" strokeWidth="1.5" opacity="0.6" />
-    <path d="M 6 12 L 20 20 L 34 12" stroke="url(#optDGrad)" strokeWidth="1.5" opacity="0.6" />
-    <circle cx="20" cy="20" r="4" fill="#3B82F6" />
-  </svg>
-);
+    {/* Tree Root Circuit Traces */}
+    <path d="M 22 38 L 22 24" stroke="url(#opt6Grad)" strokeWidth="3" strokeLinecap="round" />
+    <path d="M 22 34 L 14 38" stroke="#06B6D4" strokeWidth="2" strokeLinecap="round" />
+    <path d="M 22 34 L 30 38" stroke="#06B6D4" strokeWidth="2" strokeLinecap="round" />
 
-// Option E: Industrial Pulse Atom
-export const LogoOptionE: React.FC<{ sizePx: number }> = ({ sizePx }) => (
-  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: sizePx, height: sizePx }}>
-    <defs>
-      <linearGradient id="optEGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#F43F5E" />
-        <stop offset="100%" stopColor="#06B6D4" />
-      </linearGradient>
-    </defs>
-    {/* Orbital rings */}
-    <ellipse cx="20" cy="20" rx="15" ry="6" stroke="url(#optEGrad)" strokeWidth="2" transform="rotate(-30 20 20)" />
-    <ellipse cx="20" cy="20" rx="15" ry="6" stroke="url(#optEGrad)" strokeWidth="2" transform="rotate(30 20 20)" />
-    {/* Factory Tower Silhouette */}
-    <rect x="17" y="12" width="6" height="16" fill="#F43F5E" rx="1" />
-    <circle cx="20" cy="20" r="2.5" fill="#06B6D4" />
+    {/* Canopy Branch Traces */}
+    <path d="M 22 24 L 12 14" stroke="url(#opt6Grad)" strokeWidth="2.5" strokeLinecap="round" />
+    <path d="M 22 24 L 32 14" stroke="url(#opt6Grad)" strokeWidth="2.5" strokeLinecap="round" />
+    <path d="M 22 24 L 22 10" stroke="url(#opt6Grad)" strokeWidth="2.5" strokeLinecap="round" />
+    <path d="M 17 19 L 10 22" stroke="#10B981" strokeWidth="2" strokeLinecap="round" />
+    <path d="M 27 19 L 34 22" stroke="#10B981" strokeWidth="2" strokeLinecap="round" />
+
+    {/* SCADA Sensor Root Nodes */}
+    <circle cx="14" cy="38" r="2.2" fill="#06B6D4" />
+    <circle cx="30" cy="38" r="2.2" fill="#06B6D4" />
+
+    {/* AI Neural Canopy Nodes */}
+    <circle cx="12" cy="14" r="3" fill="#F59E0B" filter="url(#opt6Glow)" />
+    <circle cx="32" cy="14" r="3" fill="#F59E0B" filter="url(#opt6Glow)" />
+    <circle cx="22" cy="10" r="3.5" fill="#10B981" filter="url(#opt6Glow)">
+      <animate attributeName="r" values="3;4.5;3" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="10" cy="22" r="2" fill="#10B981" />
+    <circle cx="34" cy="22" r="2" fill="#10B981" />
   </svg>
 );
 
 export const PlantTwinLogoIcon: React.FC<{ className?: string; sizePx?: number; variant?: LogoVariant }> = ({
   className = '',
   sizePx = 38,
-  variant = 'optionA',
+  variant,
 }) => {
-  const [activeVariant, setActiveVariant] = useState<LogoVariant>(variant);
+  const [activeVariant, setActiveVariant] = useState<LogoVariant>(variant || 'option3');
 
   useEffect(() => {
-    const saved = localStorage.getItem('planttwin_logo_variant') as LogoVariant;
-    if (saved) {
-      setActiveVariant(saved);
+    if (variant) {
+      setActiveVariant(variant);
+      return;
     }
-  }, []);
+    const saved = localStorage.getItem('planttwin_logo_variant') as LogoVariant;
+    if (saved === 'option3' || saved === 'option6') {
+      setActiveVariant(saved);
+    } else {
+      setActiveVariant('option3'); // Default to Option 3
+    }
+  }, [variant]);
 
   return (
     <div
       className={`relative inline-flex items-center justify-center shrink-0 group ${className}`}
       style={{ width: `${sizePx}px`, height: `${sizePx}px` }}
     >
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-cyan-500 via-emerald-400 to-indigo-600 opacity-40 blur-md group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
+      {/* Ambient Pulsing Glow */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-cyan-500 via-emerald-400 to-purple-600 opacity-40 blur-md group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
+      
+      {/* Glass Container Shield */}
       <div className="relative w-full h-full rounded-2xl bg-slate-950/90 border border-emerald-400/40 p-1.5 flex items-center justify-center shadow-2xl backdrop-blur-xl group-hover:border-cyan-400/80 transition-all duration-300">
-        {activeVariant === 'optionA' && <LogoOptionA sizePx={sizePx - 10} />}
-        {activeVariant === 'optionB' && <LogoOptionB sizePx={sizePx - 10} />}
-        {activeVariant === 'optionC' && <LogoOptionC sizePx={sizePx - 10} />}
-        {activeVariant === 'optionD' && <LogoOptionD sizePx={sizePx - 10} />}
-        {activeVariant === 'optionE' && <LogoOptionE sizePx={sizePx - 10} />}
+        {activeVariant === 'option6' ? (
+          <LogoOption6 sizePx={sizePx - 8} />
+        ) : (
+          <LogoOption3 sizePx={sizePx - 8} />
+        )}
       </div>
     </div>
   );
@@ -152,18 +144,13 @@ export const PlantTwinLogo: React.FC<PlantTwinLogoProps> = ({
       <PlantTwinLogoIcon sizePx={sizePx} variant={variant} />
 
       {showText && (
-        <div className="flex flex-col">
-          <div className={`font-extrabold tracking-tight flex items-center space-x-1.5 font-sans ${textSizeClass}`}>
-            <span className="bg-gradient-to-r from-cyan-400 via-emerald-300 to-indigo-300 bg-clip-text text-transparent font-black drop-shadow-sm">
-              PlantTwin
-            </span>
-            <span className="text-white font-black">AI</span>
-            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-              OS
-            </span>
-          </div>
-          <span className="text-[10px] font-mono text-slate-400 tracking-widest uppercase font-semibold">
-            Industrial Digital Twin Platform
+        <div className="flex items-center space-x-1.5 font-sans font-black tracking-tight">
+          <span className={`bg-gradient-to-r from-cyan-400 via-emerald-300 to-indigo-300 bg-clip-text text-transparent ${textSizeClass}`}>
+            PlantTwin
+          </span>
+          <span className={`text-white ${textSizeClass}`}>AI</span>
+          <span className="px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+            OS
           </span>
         </div>
       )}

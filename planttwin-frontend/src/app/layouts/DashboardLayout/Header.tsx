@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
   const headerRef = useRef<HTMLHeadingElement>(null);
 
   const [logoModalOpen, setLogoModalOpen] = useState(false);
-  const [currentLogoVariant, setCurrentLogoVariant] = useState<LogoVariant>('optionA');
+  const [currentLogoVariant, setCurrentLogoVariant] = useState<LogoVariant>('option3');
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
   const [plantDropdownOpen, setPlantDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
