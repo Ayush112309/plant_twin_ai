@@ -27,6 +27,7 @@ import {
 import { useAuth } from '../../../app/contexts/AuthContext';
 import apiClient from '../../../lib/api/client';
 import { SSOModal } from './SSOModal';
+import PlantTwinLogo from '../../../components/common/PlantTwinLogo';
 
 const DEMO_PERSONAS = [
   { role: 'Plant Manager', email: 'plant.manager@planttwin.ai', route: '/operations', icon: Building2, color: 'text-teal-400 border-teal-500/40 bg-teal-950/60' },
@@ -167,13 +168,7 @@ export const LoginPage: React.FC = () => {
 
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-teal-400 flex items-center justify-center shadow-lg shadow-blue-950/80 glow-blue shrink-0">
-                <Activity className="w-6 h-6 text-white font-extrabold" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-extrabold text-white tracking-tight">PlantTwin AI OS</h1>
-                <div className="text-xs text-teal-400 font-semibold">v2.4.0 • Enterprise Industrial Edition</div>
-              </div>
+              <PlantTwinLogo size="xl" showText={true} />
             </div>
 
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-lg">

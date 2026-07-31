@@ -20,6 +20,7 @@ import { useTheme, ThemeMode } from '../../theme/ThemeProvider';
 import usePermissions from '../../permissions/usePermissions';
 import { useAuth } from '../../contexts/AuthContext';
 import apiClient from '../../../lib/api/client';
+import PlantTwinLogo from '../../../components/common/PlantTwinLogo';
 
 interface HeaderProps {
   sidebarOpen: boolean;
@@ -226,22 +227,14 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Brand Logo & Version Badge */}
         <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-xl bg-[var(--brand-primary)] flex items-center justify-center text-white font-extrabold shadow-sm shrink-0">
-            <Activity className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="font-extrabold text-sm text-[var(--text-primary)] tracking-tight flex items-center gap-1.5 font-mono">
-              <span className="font-sans font-extrabold text-[var(--text-primary)]">PlantTwin AI</span>
-              <span className="text-[var(--accent-emerald)] font-mono font-bold text-xs">OS</span>
-            </div>
-            <div className="text-[10px] text-[var(--text-secondary)] font-mono font-semibold tracking-wider uppercase flex items-center gap-1">
-              <span>v2.4.0</span>
-              <span>•</span>
-              <span className="text-emerald-500 font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                {backendStatus}
-              </span>
-            </div>
+          <PlantTwinLogo size="md" showText={true} />
+          <div className="hidden xl:flex items-center space-x-1.5 text-[10px] font-mono text-[var(--text-secondary)] font-semibold border-l border-[var(--border-color)] pl-3 py-1">
+            <span>v2.4.0</span>
+            <span>•</span>
+            <span className="text-emerald-500 font-bold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              {backendStatus}
+            </span>
           </div>
         </div>
 

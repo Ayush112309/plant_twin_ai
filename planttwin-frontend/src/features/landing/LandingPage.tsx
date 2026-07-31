@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../app/contexts/AuthContext';
 import apiClient from '../../lib/api/client';
 import { SSOModal } from '../identity/login/SSOModal';
+import PlantTwinLogo from '../../components/common/PlantTwinLogo';
 import {
   Activity,
   Radio,
@@ -283,25 +284,7 @@ export const LandingPage: React.FC = () => {
       <header className="h-20 border-b border-slate-800/80 px-6 lg:px-12 flex items-center justify-between sticky top-0 bg-[#050811]/90 backdrop-blur-xl z-40 shadow-2xl transition-all">
         {/* Brand Logo & Platform Subtitle */}
         <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-teal-400 flex items-center justify-center shadow-lg shadow-blue-950/80 glow-blue shrink-0">
-            <Activity className="w-5 h-5 text-white font-extrabold" />
-          </div>
-          <div>
-            <div className="font-extrabold text-lg tracking-tight text-slate-100 flex items-center gap-2.5">
-              <span className="text-white font-sans font-extrabold">PlantTwin AI</span>
-              <span className="text-[10px] font-bold text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded border border-teal-500/40 shadow-sm">
-                v2.4.0
-              </span>
-            </div>
-            <div className="text-[10px] text-slate-400 uppercase tracking-widest font-bold flex items-center gap-2">
-              <span>Industrial Operating System</span>
-              <span className="text-slate-600">•</span>
-              <span className="text-emerald-400 flex items-center gap-1 font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                RBAC Active
-              </span>
-            </div>
-          </div>
+          <PlantTwinLogo size="lg" showText={true} />
         </div>
 
         {/* Action Controls & CTAs */}
