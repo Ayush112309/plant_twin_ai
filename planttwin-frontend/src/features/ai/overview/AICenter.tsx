@@ -852,23 +852,49 @@ export const AICenter: React.FC = () => {
                 </div>
               </div>
 
-              {/* Prescriptive Recommendation Box */}
-              <div className="p-3.5 bg-amber-950/40 border border-amber-500/30 rounded-xl text-[11px] space-y-2 text-amber-200">
-                <div className="font-bold text-amber-400 flex items-center justify-between">
-                  <span>🛠️ Prescriptive Maintenance Recommendation:</span>
+              {/* Enriched Large Prescriptive Recommendation Card 1: Centrifugal Pump-002 */}
+              <div className="p-6 sm:p-7 bg-gradient-to-br from-amber-950/90 via-slate-900 to-amber-950/60 border-2 border-amber-500/60 rounded-3xl text-xs space-y-4 text-amber-100 shadow-2xl font-sans">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/30 pb-3">
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-amber-300 flex items-center space-x-2">
+                      <span>🛠️ Prescriptive Maintenance Recommendation Matrix</span>
+                    </h3>
+                    <p className="text-amber-200/80 text-xs font-mono">Centrifugal Pump-002 • Driven End Bearing Assembly</p>
+                  </div>
                   <button
                     onClick={() => {
                       setRetrainMsg('🚨 Emergency Dispatch Work Order generated for Pump-002 Bearing Assembly Replacement!');
                       setTimeout(() => setRetrainMsg(null), 4000);
                     }}
-                    className="py-1 px-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-[10px] transition-all shadow-md"
+                    className="py-3 px-5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-all shadow-xl hover:scale-[1.02] active:scale-95 shrink-0 flex items-center space-x-2"
                   >
-                    Dispatch Work Order
+                    <span>🚀 Dispatch Work Order</span>
                   </button>
                 </div>
-                <p className="leading-relaxed text-[10.5px]">
-                  Pump-002 bearing vibration exceeds ISO 10816 threshold (<strong>1.85 mm/s</strong> vs 1.50 mm/s limit). RUL model estimates <strong>14 Days remaining</strong>. Recommended action: Dispatch maintenance team to replace drive end bearing assembly before impeller seizure.
-                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
+                  <div className="p-3.5 bg-amber-950/60 rounded-xl border border-amber-500/30 space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-amber-400">Diagnostic Excursion</span>
+                    <p className="font-extrabold text-amber-100 text-xs leading-snug">
+                      Pump-002 bearing vibration exceeds ISO 10816 threshold (<strong>1.85 mm/s</strong> vs 1.50 mm/s limit).
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-amber-950/60 rounded-xl border border-amber-500/30 space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-amber-400">Prognostic RUL Horizon</span>
+                    <p className="font-extrabold text-amber-100 text-xs leading-snug">
+                      RUL model estimates <strong>14 Days remaining</strong> before catastrophic impeller seizure.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-slate-950/80 rounded-2xl border border-amber-500/40 space-y-2">
+                  <div className="font-extrabold text-amber-300 text-xs flex items-center space-x-1.5">
+                    <span>💡 Recommended Prescriptive Action Plan:</span>
+                  </div>
+                  <p className="leading-relaxed text-xs text-amber-100 font-sans">
+                    Dispatch shift maintenance team immediately to replace drive end bearing assembly (Part #SKF-6208-2Z), verify lubrication pressure, and re-balance pump impeller shaft before bearing seizure.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -910,23 +936,49 @@ export const AICenter: React.FC = () => {
                 </div>
               </div>
 
-              {/* Prescriptive Recommendation Box */}
-              <div className="p-3.5 bg-rose-950/40 border border-rose-500/30 rounded-xl text-[11px] space-y-2 text-rose-200">
-                <div className="font-bold text-rose-400 flex items-center justify-between">
-                  <span>🔥 Prescriptive Maintenance Recommendation:</span>
+              {/* Enriched Large Prescriptive Recommendation Card 2: Reactor-001 */}
+              <div className="p-6 sm:p-7 bg-gradient-to-br from-rose-950/90 via-slate-900 to-rose-950/60 border-2 border-rose-500/60 rounded-3xl text-xs space-y-4 text-rose-100 shadow-2xl font-sans">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-rose-500/30 pb-3">
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-rose-300 flex items-center space-x-2">
+                      <span>🔥 Prescriptive Maintenance Recommendation Matrix</span>
+                    </h3>
+                    <p className="text-rose-200/80 text-xs font-mono">Reactor Vessel-001 • Catalytic Bed Thermal Loop</p>
+                  </div>
                   <button
                     onClick={() => {
                       setRetrainMsg('🚨 Emergency Dispatch Work Order generated for Reactor-001 Coolant Calibration!');
                       setTimeout(() => setRetrainMsg(null), 4000);
                     }}
-                    className="py-1 px-2.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-[10px] transition-all shadow-md"
+                    className="py-3 px-5 rounded-2xl bg-gradient-to-r from-rose-600 to-red-500 hover:from-rose-500 hover:to-red-400 text-white font-black text-xs uppercase tracking-wider transition-all shadow-xl hover:scale-[1.02] active:scale-95 shrink-0 flex items-center space-x-2"
                   >
-                    Dispatch Work Order
+                    <span>🚀 Dispatch Work Order</span>
                   </button>
                 </div>
-                <p className="leading-relaxed text-[10.5px]">
-                  Reactor-001 temperature spike (<strong>142.8 °C</strong>) indicates catalytic bed overheating. Recommended action: Modulate coolant bypass valve and inspect thermal sensor calibration.
-                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
+                  <div className="p-3.5 bg-rose-950/60 rounded-xl border border-rose-500/30 space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-rose-400">Diagnostic Excursion</span>
+                    <p className="font-extrabold text-rose-100 text-xs leading-snug">
+                      Reactor-001 temperature spike (<strong>142.8 °C</strong> vs 84.5 °C baseline) indicates bed overheating.
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-rose-950/60 rounded-xl border border-rose-500/30 space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-rose-400">Prognostic Risk</span>
+                    <p className="font-extrabold text-rose-100 text-xs leading-snug">
+                      High thermal runaway probability if inlet bypass flow is not modulated within <strong>4 Hours</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-slate-950/80 rounded-2xl border border-rose-500/40 space-y-2">
+                  <div className="font-extrabold text-rose-300 text-xs flex items-center space-x-1.5">
+                    <span>💡 Recommended Prescriptive Action Plan:</span>
+                  </div>
+                  <p className="leading-relaxed text-xs text-rose-100 font-sans">
+                    Modulate coolant bypass control valve (VALVE-104), inspect thermal sensor RTD calibration, and flush heat exchanger cooling jackets immediately to prevent catalyst thermal degradation.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

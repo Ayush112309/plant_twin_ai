@@ -54,6 +54,7 @@ interface PlantTelemetryContextType {
   systemHealthScore: number;
   isOpcStreaming: boolean;
   activeProtocol: string;
+  toggleOpcStreaming: (active?: boolean) => void;
   ingestCSVData: (rows: any[], protocolName?: string) => void;
   updateSiemensTag: (tagAddress: string, value: number) => void;
   resetNominalState: () => void;
@@ -151,8 +152,22 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
   });
   const [rulDays, setRulDays] = useState(142);
   const [systemHealthScore, setSystemHealthScore] = useState(88.5);
-  const [isOpcStreaming, setIsOpcStreaming] = useState(true);
+
+  // Read saved streaming state or default to false to prevent unsolicited background auto-streams on refresh/login
+  const [isOpcStreaming, setIsOpcStreaming] = useState<boolean>(() => {
+    const saved = localStorage.getItem('planttwin_is_opc_streaming');
+    return saved !== null ? saved === 'true' : false;
+  });
+
   const [activeProtocol, setActiveProtocol] = useState('OPC-UA / SCADA');
+
+  const toggleOpcStreaming = (active?: boolean) => {
+    setIsOpcStreaming((prev) => {
+      const nextState = active !== undefined ? active : !prev;
+      localStorage.setItem('planttwin_is_opc_streaming', String(nextState));
+      return nextState;
+    });
+  };
 
   // Live Auto-Updating Telemetry Ticker (Ticks values every 2.5s across all 11 workspaces when OPC-UA streaming is active)
   useEffect(() => {
@@ -354,6 +369,7 @@ export const PlantTelemetryProvider: React.FC<{ children: React.ReactNode }> = (
         systemHealthScore,
         isOpcStreaming,
         activeProtocol,
+        toggleOpcStreaming,
         ingestCSVData,
         updateSiemensTag,
         resetNominalState,
