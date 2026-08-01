@@ -15,6 +15,7 @@ import PlantExplorer from '../../features/enterprise/hierarchy/PlantExplorer';
 import IntegrationsWorkspace from '../../features/integrations/IntegrationsWorkspace';
 import LoginPage from '../../features/identity/login/LoginPage';
 import LandingPage from '../../features/landing/LandingPage';
+import PersonaHubPage from '../../features/demos/PersonaHubPage';
 import RegisterPage from '../../features/identity/register/RegisterPage';
 import AcceptInvitationPage from '../../features/identity/invitations/AcceptInvitationPage';
 import UserManagementWorkspace from '../../features/identity/users/UserManagementWorkspace';
@@ -24,11 +25,12 @@ import ProtectedRoute from './ProtectedRoute';
 export const AppRouter: React.FC = () => {
   return (
     <Routes>
-      {/* Landing Experience & Role Tour */}
+      {/* Landing Experience & Role Tour (Pages 1 & 2) */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/landing" element={<LandingPage />} />
+      <Route path="/demos" element={<PersonaHubPage />} />
 
-      {/* Authentication Routes */}
+      {/* Authentication & Onboarding Routes (Pages 3 & 4) */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/accept-invitation" element={<AcceptInvitationPage />} />
