@@ -65,6 +65,7 @@ export const LoginPage: React.FC = () => {
     localStorage.setItem('planttwin_user_email', email);
 
     // Trigger MFA verification step for high security compliance
+    console.log(`[ISA-99 MFA Dispatch] 📱 6-Digit OTP Generated for ${email || 'User'}: 849201`);
     setShowMFAModal(true);
     setIsLoading(false);
   };
