@@ -118,7 +118,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('planttwin_demo_persona', persona);
     localStorage.removeItem('planttwin_access_token');
     localStorage.removeItem('planttwin_refresh_token');
-    localStorage.removeItem('planttwin_user_email');
     window.dispatchEvent(new Event('planttwin:org-updated'));
     setIsDemoMode(true);
     setDemoPersona(persona);

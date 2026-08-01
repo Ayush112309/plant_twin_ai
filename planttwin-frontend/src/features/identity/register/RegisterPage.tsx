@@ -129,11 +129,14 @@ export const RegisterPage: React.FC = () => {
 
         if (tokenObj && tokenObj.access_token) {
           await setAuthData(tokenObj.access_token, tokenObj.refresh_token);
+          localStorage.setItem('planttwin_user_email', email);
         } else {
           enterDemoMode('System Administrator');
+          localStorage.setItem('planttwin_user_email', email);
         }
       } catch (backendErr) {
         enterDemoMode('System Administrator');
+        localStorage.setItem('planttwin_user_email', email);
       }
 
       navigate('/operations');
