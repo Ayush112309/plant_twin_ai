@@ -222,7 +222,7 @@ export const LoginPage: React.FC = () => {
               </div>
             )}
 
-            <form onSubmit={handleAuthSubmit} className="space-y-4">
+            <form onSubmit={handleAuthSubmit} autoComplete="off" className="space-y-4">
               <div>
                 <label className="block text-xs font-mono font-bold text-slate-300 uppercase mb-1.5">Work Email Address</label>
                 <div className="relative">
@@ -230,6 +230,7 @@ export const LoginPage: React.FC = () => {
                   <input
                     type="email"
                     required
+                    autoComplete="new-password"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter work email address..."
@@ -254,6 +255,7 @@ export const LoginPage: React.FC = () => {
                   <input
                     type="password"
                     required
+                    autoComplete="new-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter password..."
@@ -358,8 +360,23 @@ export const LoginPage: React.FC = () => {
             </div>
 
             <p className="text-xs text-slate-400 mb-4">
-              An authenticator code has been sent to your registered MFA device for account <strong className="text-white">{email}</strong>.
+              An authenticator code has been sent to your registered MFA device for account <strong className="text-white">{email || 'your account'}</strong>.
             </p>
+
+            {/* Live OTP Code Verification Banner for Demo Testing */}
+            <div className="p-3.5 rounded-2xl bg-cyan-950/60 border border-cyan-500/50 mb-4 flex items-center justify-between">
+              <div className="text-xs font-mono text-cyan-200">
+                <span className="text-emerald-400 font-bold">📱 Generated OTP Code: </span>
+                <span className="font-extrabold text-white tracking-wider">849201</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMfaCode('849201')}
+                className="px-2.5 py-1 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-[10px] font-mono font-extrabold transition-all"
+              >
+                Auto-Fill Code
+              </button>
+            </div>
 
             <form onSubmit={handleVerifyMFA} className="space-y-4">
               <div>
@@ -369,7 +386,7 @@ export const LoginPage: React.FC = () => {
                   maxLength={6}
                   value={mfaCode}
                   onChange={(e) => setMfaCode(e.target.value)}
-                  placeholder="849201"
+                  placeholder="Enter 6-digit OTP (e.g. 849201)"
                   className="w-full bg-slate-950 border border-slate-700 rounded-xl py-3 px-4 text-center font-mono text-lg font-black text-cyan-400 tracking-widest outline-none focus:border-cyan-500"
                 />
               </div>
