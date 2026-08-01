@@ -43,8 +43,8 @@ export const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [teamInvites, setTeamInvites] = useState<{ email: string; role: string }[]>([
-    { email: 'operations.lead@plant.com', role: 'SCADA Operations Lead' },
-    { email: 'tech.maintenance@plant.com', role: 'Predictive Maintenance Tech' },
+    { email: 'maintenance.manager@plant.com', role: 'Maintenance Manager' },
+    { email: 'operator@plant.com', role: 'Control Room Operator' },
   ]);
 
   // Step 3: Plan Selection State
@@ -58,7 +58,7 @@ export const RegisterPage: React.FC = () => {
   };
 
   const addTeamMember = () => {
-    setTeamInvites([...teamInvites, { email: '', role: 'Predictive Maintenance Tech' }]);
+    setTeamInvites([...teamInvites, { email: '', role: 'AI & Reliability Specialist' }]);
   };
 
   const removeTeamMember = (index: number) => {
@@ -389,11 +389,13 @@ export const RegisterPage: React.FC = () => {
                           updated[index].role = e.target.value;
                           setTeamInvites(updated);
                         }}
-                        className="bg-slate-950 border border-slate-800 rounded-xl py-2 px-2 text-xs font-bold text-white outline-none"
+                        className="bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-xs font-bold text-white outline-none focus:border-cyan-500 cursor-pointer"
                       >
-                        <option value="SCADA Operations Lead">SCADA Lead</option>
-                        <option value="Predictive Maintenance Tech">Maintenance Tech</option>
-                        <option value="Automation & Control Engineer">Automation Eng</option>
+                        <option value="Plant Manager">Plant Manager</option>
+                        <option value="Maintenance Manager">Maintenance Manager</option>
+                        <option value="AI & Reliability Specialist">AI & Reliability Specialist</option>
+                        <option value="Control Room Operator">Control Room Operator</option>
+                        <option value="System Administrator">System Administrator</option>
                       </select>
                       {teamInvites.length > 1 && (
                         <button type="button" onClick={() => removeTeamMember(index)} className="p-2 text-red-400 hover:text-red-300">
