@@ -4,9 +4,10 @@ interface PlantTwinLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showText?: boolean;
   className?: string;
+  onClick?: () => void;
 }
 
-// Transparent Metallic Rose Gold & Crystal Glass Mobius Infinity Loop Emblem (No Square Background Box)
+// Transparent Metallic Rose Gold & Crystal Glass Mobius Infinity Loop Emblem
 export const PlantTwinLogoIcon: React.FC<{ className?: string; sizePx?: number }> = ({ className = '', sizePx = 42 }) => {
   return (
     <div
@@ -32,12 +33,16 @@ export const PlantTwinLogo: React.FC<PlantTwinLogoProps> = ({
   size = 'md',
   showText = true,
   className = '',
+  onClick,
 }) => {
   const sizePx = size === 'sm' ? 36 : size === 'md' ? 46 : size === 'lg' ? 56 : 68;
   const textSizeClass = size === 'sm' ? 'text-sm' : size === 'md' ? 'text-base' : size === 'lg' ? 'text-xl' : 'text-2xl';
 
   return (
-    <div className={`flex items-center space-x-3 cursor-pointer select-none ${className}`}>
+    <div
+      onClick={onClick}
+      className={`flex items-center space-x-3 cursor-pointer select-none ${className}`}
+    >
       <PlantTwinLogoIcon sizePx={sizePx} />
 
       {showText && (
