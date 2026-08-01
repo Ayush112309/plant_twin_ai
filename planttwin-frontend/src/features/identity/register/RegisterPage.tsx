@@ -16,6 +16,9 @@ import {
   Lock,
   Plus,
   Trash2,
+  Sliders,
+  CheckSquare,
+  FileCheck,
 } from 'lucide-react';
 import { useAuth } from '../../../app/contexts/AuthContext';
 import apiClient from '../../../lib/api/client';
@@ -40,11 +43,19 @@ export const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [teamInvites, setTeamInvites] = useState<{ email: string; role: string }[]>([
-    { email: '', role: 'SCADA Operations Lead' },
+    { email: 'operations.lead@plant.com', role: 'SCADA Operations Lead' },
+    { email: 'tech.maintenance@plant.com', role: 'Predictive Maintenance Tech' },
   ]);
 
   // Step 3: Plan Selection State
   const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro' | 'enterprise'>('pro');
+
+  const applyIndustryPreset = (presetName: string, industry: string, location: string, scale: string) => {
+    setOrgName(presetName);
+    setIndustryType(industry);
+    setPlantLocation(location);
+    setScaleAssets(scale);
+  };
 
   const addTeamMember = () => {
     setTeamInvites([...teamInvites, { email: '', role: 'Predictive Maintenance Tech' }]);
@@ -159,8 +170,8 @@ export const RegisterPage: React.FC = () => {
       </header>
 
       {/* Main Wizard Area */}
-      <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-3xl bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-10 backdrop-blur-2xl shadow-2xl">
+      <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full">
+        <div className="w-full bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-10 backdrop-blur-2xl shadow-2xl">
           {/* Header & Step Indicator */}
           <div className="text-center mb-8">
             <h1 className="text-2xl sm:text-4xl font-black text-white">Register PlantTwin AI Organization</h1>
@@ -191,7 +202,38 @@ export const RegisterPage: React.FC = () => {
 
           {/* STEP 1: Company Profile */}
           {step === 1 && (
-            <div className="space-y-4">
+            <div className="space-y-5">
+              {/* Quick Preset Template Bar */}
+              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+                <div className="text-xs font-mono font-bold text-slate-400 uppercase mb-2 flex items-center justify-between">
+                  <span>⚡ Quick-Select Industry Preset Template:</span>
+                  <span className="text-[10px] text-cyan-400">1-Click Auto-Fill</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => applyIndustryPreset('Apex Oil Terminal', 'Oil & Gas Refinery', 'Houston, Texas', '10 - 50 Industrial PLCs')}
+                    className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-slate-200 hover:border-cyan-500 hover:text-cyan-300 transition-all"
+                  >
+                    🛢️ Apex Oil Terminal
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applyIndustryPreset('Rotterdam Chemical Site', 'Chemical & Processing', 'Rotterdam, Netherlands', '50+ Enterprise PLCs')}
+                    className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-slate-200 hover:border-emerald-500 hover:text-emerald-300 transition-all"
+                  >
+                    🧪 Rotterdam Chemical
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applyIndustryPreset('BioPharm Manufacturing', 'Pharmaceutical Manufacturing', 'Basel, Switzerland', '10 - 50 Industrial PLCs')}
+                    className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-slate-200 hover:border-purple-500 hover:text-purple-300 transition-all"
+                  >
+                    💊 BioPharm Manufacturing
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-mono font-bold text-slate-300 uppercase mb-1.5">Organization / Plant Name *</label>
                 <div className="relative">
@@ -306,8 +348,9 @@ export const RegisterPage: React.FC = () => {
               {/* Multi-Seat Team Invitations */}
               <div className="border-t border-slate-800 pt-4 mt-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-mono font-bold text-slate-300 uppercase">Multi-Seat Team Invitations</span>
+                  <span className="text-xs font-mono font-bold text-slate-300 uppercase">Multi-Seat Team Invitations ({teamInvites.length} Seats)</span>
                   <button
+                    type="button"
                     onClick={addTeamMember}
                     className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center space-x-1"
                   >
@@ -344,7 +387,7 @@ export const RegisterPage: React.FC = () => {
                         <option value="Automation & Control Engineer">Automation Eng</option>
                       </select>
                       {teamInvites.length > 1 && (
-                        <button onClick={() => removeTeamMember(index)} className="p-2 text-red-400 hover:text-red-300">
+                        <button type="button" onClick={() => removeTeamMember(index)} className="p-2 text-red-400 hover:text-red-300">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       )}
@@ -357,7 +400,7 @@ export const RegisterPage: React.FC = () => {
 
           {/* STEP 3: Plan Selection */}
           {step === 3 && (
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* Starter Plan */}
                 <div
@@ -373,7 +416,7 @@ export const RegisterPage: React.FC = () => {
                   <div className="text-xl font-black text-cyan-400 my-2">$499 <span className="text-xs text-slate-400 font-normal">/mo</span></div>
                   <ul className="text-xs text-slate-400 space-y-1 font-mono">
                     <li>• Up to 10 PLCs</li>
-                    <li>• 2 AI Agent Roles</li>
+                    <li>• 3 Team Seats</li>
                     <li>• Standard SCADA</li>
                   </ul>
                 </div>
@@ -393,7 +436,7 @@ export const RegisterPage: React.FC = () => {
                   <div className="text-xl font-black text-emerald-400 my-2">$1,499 <span className="text-xs text-slate-400 font-normal">/mo</span></div>
                   <ul className="text-xs text-slate-400 space-y-1 font-mono">
                     <li>• Up to 50 PLCs</li>
-                    <li>• All 5 AI Agent Roles</li>
+                    <li>• 10 Team Seats</li>
                     <li>• RUL & XAI Included</li>
                   </ul>
                 </div>
@@ -412,9 +455,23 @@ export const RegisterPage: React.FC = () => {
                   <div className="text-xl font-black text-purple-400 my-2">Custom</div>
                   <ul className="text-xs text-slate-400 space-y-1 font-mono">
                     <li>• Unlimited PLCs</li>
-                    <li>• Custom Model Training</li>
+                    <li>• Unlimited Seats</li>
                     <li>• Dedicated On-Premises</li>
                   </ul>
+                </div>
+              </div>
+
+              {/* Real-time Setup Summary Box */}
+              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 text-xs font-mono">
+                <div className="text-cyan-400 font-bold uppercase flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span>📋 Live Onboarding Setup Summary:</span>
+                  <span className="text-slate-400">Step 3 of 3</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-slate-300 pt-1">
+                  <div><strong>Plant Org:</strong> {orgName || 'Apex Refinery'}</div>
+                  <div><strong>Industry:</strong> {industryType}</div>
+                  <div><strong>Admin User:</strong> {email || 'admin@apex.com'}</div>
+                  <div><strong>Team Seats:</strong> {teamInvites.length + 1} Seats Invited</div>
                 </div>
               </div>
 
@@ -432,6 +489,7 @@ export const RegisterPage: React.FC = () => {
           <div className="flex items-center justify-between border-t border-slate-800 pt-6 mt-8">
             {step > 1 ? (
               <button
+                type="button"
                 onClick={handleBack}
                 className="px-4 py-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 transition-all flex items-center space-x-1.5"
               >
@@ -444,6 +502,7 @@ export const RegisterPage: React.FC = () => {
 
             {step < 3 ? (
               <button
+                type="button"
                 onClick={handleNext}
                 className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-extrabold text-xs hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all flex items-center space-x-1.5"
               >
@@ -452,6 +511,7 @@ export const RegisterPage: React.FC = () => {
               </button>
             ) : (
               <button
+                type="button"
                 onClick={handleSubmit}
                 disabled={isLoading}
                 className="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 text-slate-950 font-black text-xs hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all flex items-center space-x-2"
