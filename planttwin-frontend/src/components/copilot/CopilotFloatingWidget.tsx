@@ -47,12 +47,12 @@ export interface CopilotMessage {
   showFeedbackForm?: boolean;
 }
 
-// Markdown Parser Component for Clean Text Rendering
+// Theme-Driven Markdown Parser Component for Clean Text Rendering
 const FormattedMessageText: React.FC<{ text: string }> = ({ text }) => {
   const lines = text.split('\n');
 
   return (
-    <div className="space-y-2 text-xs leading-relaxed text-slate-200">
+    <div className="space-y-2 text-xs leading-relaxed text-[var(--text-primary)]">
       {lines.map((line, lIdx) => {
         if (!line.trim()) return <div key={lIdx} className="h-1" />;
 
@@ -66,7 +66,7 @@ const FormattedMessageText: React.FC<{ text: string }> = ({ text }) => {
         const renderedLine = parts.map((part, pIdx) => {
           if (part.startsWith('**') && part.endsWith('**')) {
             return (
-              <strong key={pIdx} className="font-extrabold text-white">
+              <strong key={pIdx} className="font-black text-[var(--text-primary)]">
                 {part.slice(2, -2)}
               </strong>
             );
@@ -307,17 +307,17 @@ export const CopilotFloatingWidget: React.FC = () => {
             setIsMinimized(false);
             setUnreadCount(0);
           }}
-          className="pointer-events-auto group relative flex items-center space-x-2.5 bg-slate-950/95 hover:bg-slate-900 border-2 border-emerald-400/80 hover:border-cyan-400 hover:scale-105 active:scale-95 text-white px-4 py-3 rounded-full shadow-[0_0_30px_rgba(16,185,129,0.35)] transition-all duration-300 backdrop-blur-xl"
+          className="pointer-events-auto group relative flex items-center space-x-2.5 bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 hover:scale-105 active:scale-95 text-slate-950 px-4 py-3 rounded-full shadow-2xl transition-all duration-300 border border-emerald-400/40"
           title="Open PlantTwin AI Industrial Copilot"
         >
           <div className="relative">
-            <Bot className="w-5 h-5 font-bold text-cyan-400" />
+            <Bot className="w-5 h-5 font-bold text-slate-950" />
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-slate-950 flex items-center justify-center">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-ping" />
             </span>
           </div>
-          <span className="text-xs font-black tracking-wide text-white drop-shadow-md">Industrial AI Copilot</span>
-          <Sparkles className="w-4 h-4 text-cyan-300 group-hover:rotate-12 transition-transform" />
+          <span className="text-xs font-black tracking-wide text-slate-950 drop-shadow-sm">Industrial AI Copilot</span>
+          <Sparkles className="w-4 h-4 text-slate-900 group-hover:rotate-12 transition-transform" />
 
           {unreadCount > 0 && (
             <span className="absolute -top-1.5 -left-1.5 w-5 h-5 bg-red-500 text-white font-bold text-[10px] rounded-full flex items-center justify-center border-2 border-slate-950">
@@ -327,25 +327,36 @@ export const CopilotFloatingWidget: React.FC = () => {
         </button>
       )}
 
-      {/* Expanded Floating Window */}
+      {/* Expanded Floating Window (Theme-Driven CSS Variables) */}
       {isOpen && (
         <div
-          className={`pointer-events-auto bg-slate-950/95 border border-slate-800 shadow-2xl transition-all duration-300 flex flex-col overflow-hidden rounded-3xl backdrop-blur-2xl ${
+          className={`pointer-events-auto shadow-2xl border transition-all duration-300 flex flex-col overflow-hidden rounded-3xl backdrop-blur-2xl ${
             isMinimized ? 'w-80 h-14' : 'w-96 sm:w-[480px] h-[660px]'
           }`}
+          style={{
+            backgroundColor: 'var(--bg-card)',
+            borderColor: 'var(--border-color)',
+            color: 'var(--text-primary)',
+          }}
         >
           {/* Header Bar */}
-          <div className="h-14 bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between shrink-0">
+          <div
+            className="h-14 border-b px-4 flex items-center justify-between shrink-0"
+            style={{
+              backgroundColor: 'var(--bg-header)',
+              borderColor: 'var(--border-color)',
+            }}
+          >
             <div className="flex items-center space-x-2.5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-slate-950 font-black shadow-md">
                 <Bot className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs font-black text-white flex items-center gap-1.5">
+                <div className="text-xs font-black flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
                   <span>PlantTwin AI Copilot</span>
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 </div>
-                <div className="text-[10px] text-emerald-400 font-mono font-bold flex items-center gap-1">
+                <div className="text-[10px] text-emerald-500 font-mono font-bold flex items-center gap-1">
                   <span>Industrial AI Engineer</span>
                 </div>
               </div>
@@ -354,21 +365,21 @@ export const CopilotFloatingWidget: React.FC = () => {
             <div className="flex items-center space-x-1">
               <button
                 onClick={() => setMessages([])}
-                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-primary)] rounded-lg hover:bg-[var(--bg-canvas)] transition-colors"
                 title="Clear Chat History"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setIsMinimized(!isMinimized)}
-                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-primary)] rounded-lg hover:bg-[var(--bg-canvas)] transition-colors"
                 title={isMinimized ? 'Expand Window' : 'Minimize Window'}
               >
                 {isMinimized ? <Maximize2 className="w-3.5 h-3.5" /> : <Minimize2 className="w-3.5 h-3.5" />}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-red-400 rounded-lg hover:bg-slate-800 transition-colors"
+                className="p-1.5 text-[var(--text-muted)] hover:text-red-500 rounded-lg hover:bg-[var(--bg-canvas)] transition-colors"
                 title="Close Copilot"
               >
                 <X className="w-4 h-4" />
@@ -378,19 +389,29 @@ export const CopilotFloatingWidget: React.FC = () => {
 
           {/* Context Sub-header */}
           {!isMinimized && (
-            <div className="px-4 py-2 bg-slate-900/60 border-b border-slate-800 flex items-center justify-between text-[10px] text-slate-400 font-mono">
-              <span className="truncate flex items-center gap-1 text-slate-300">
-                <Radio className="w-3 h-3 text-cyan-400 shrink-0" />
+            <div
+              className="px-4 py-2 border-b flex items-center justify-between text-[10px] font-mono"
+              style={{
+                backgroundColor: 'var(--bg-canvas)',
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              <span className="truncate flex items-center gap-1">
+                <Radio className="w-3 h-3 text-cyan-500 shrink-0" />
                 <span>{currentRouteName}</span>
               </span>
-              <span className="text-emerald-400 font-extrabold shrink-0 pl-2">{permissions.roleName}</span>
+              <span className="text-emerald-500 font-extrabold shrink-0 pl-2">{permissions.roleName}</span>
             </div>
           )}
 
           {/* Main Chat Messages Container */}
           {!isMinimized && (
             <>
-              <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#070B19]/80 text-xs">
+              <div
+                className="flex-1 p-4 overflow-y-auto space-y-4 text-xs"
+                style={{ backgroundColor: 'var(--bg-canvas)' }}
+              >
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
@@ -400,35 +421,42 @@ export const CopilotFloatingWidget: React.FC = () => {
                   >
                     {/* Message Bubble */}
                     <div
-                      className={`max-w-[92%] rounded-2xl p-4 space-y-2 shadow-xl leading-relaxed ${
+                      className={`max-w-[92%] rounded-2xl p-4 space-y-2 shadow-md leading-relaxed ${
                         msg.sender === 'user'
                           ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-bold rounded-br-none'
-                          : 'bg-slate-900/90 border border-slate-800 text-slate-100 rounded-bl-none'
+                          : 'border text-[var(--text-primary)] rounded-bl-none'
                       }`}
+                      style={
+                        msg.sender === 'copilot'
+                          ? {
+                              backgroundColor: 'var(--bg-card)',
+                              borderColor: 'var(--border-color)',
+                            }
+                          : {}
+                      }
                     >
                       {/* Sender Header & Audio Listen Toggle */}
                       {msg.sender === 'copilot' && (
-                        <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2 text-[10px] font-mono text-emerald-400">
+                        <div
+                          className="flex items-center justify-between border-b pb-2 mb-2 text-[10px] font-mono text-emerald-500"
+                          style={{ borderColor: 'var(--border-color)' }}
+                        >
                           <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
-                            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                            <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
                             <span>{msg.category || 'AI Analysis'}</span>
                           </span>
 
                           <div className="flex items-center space-x-2">
                             <button
                               onClick={() => handleTextToSpeech(msg.id, msg.text)}
-                              className={`p-1 px-2 rounded-lg flex items-center gap-1 transition-colors ${
-                                speakingMsgId === msg.id
-                                  ? 'bg-emerald-500 text-slate-950 font-bold'
-                                  : 'text-slate-400 hover:text-emerald-400 hover:bg-slate-800'
-                              }`}
+                              className="p-1 px-2 rounded-lg flex items-center gap-1 text-[var(--text-muted)] hover:text-emerald-500 hover:bg-[var(--bg-canvas)] transition-colors"
                               title={speakingMsgId === msg.id ? 'Stop Speech' : 'Read Aloud (Text-to-Speech)'}
                             >
-                              {speakingMsgId === msg.id ? <VolumeX className="w-3 h-3 animate-pulse" /> : <Volume2 className="w-3 h-3" />}
+                              {speakingMsgId === msg.id ? <VolumeX className="w-3 h-3 animate-pulse text-emerald-500" /> : <Volume2 className="w-3 h-3" />}
                               <span>{speakingMsgId === msg.id ? 'Speaking...' : 'Listen'}</span>
                             </button>
 
-                            <span className="text-slate-500">{msg.timestamp}</span>
+                            <span className="text-[var(--text-muted)]">{msg.timestamp}</span>
                           </div>
                         </div>
                       )}
@@ -438,8 +466,11 @@ export const CopilotFloatingWidget: React.FC = () => {
 
                       {/* Interactive Action Recommendations */}
                       {msg.recommendations && msg.recommendations.length > 0 && (
-                        <div className="pt-3 border-t border-slate-800 space-y-2 mt-2">
-                          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400">
+                        <div
+                          className="pt-3 border-t space-y-2 mt-2"
+                          style={{ borderColor: 'var(--border-color)' }}
+                        >
+                          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-500">
                             Suggested Platform Actions:
                           </div>
                           <div className="flex flex-col gap-1.5">
@@ -447,10 +478,15 @@ export const CopilotFloatingWidget: React.FC = () => {
                               <button
                                 key={idx}
                                 onClick={() => handleActionClick(rec)}
-                                className="flex items-center justify-between bg-slate-950 border border-slate-800 hover:border-cyan-500/60 text-xs font-bold text-cyan-300 px-3.5 py-2 rounded-xl transition-all text-left group"
+                                className="flex items-center justify-between border hover:border-cyan-500 text-xs font-bold px-3.5 py-2 rounded-xl transition-all text-left group"
+                                style={{
+                                  backgroundColor: 'var(--bg-canvas)',
+                                  borderColor: 'var(--border-color)',
+                                  color: 'var(--text-primary)',
+                                }}
                               >
                                 <span>{rec.label}</span>
-                                <ChevronRight className="w-4 h-4 shrink-0 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" />
+                                <ChevronRight className="w-4 h-4 shrink-0 text-[var(--text-muted)] group-hover:text-cyan-500 group-hover:translate-x-0.5 transition-all" />
                               </button>
                             ))}
                           </div>
@@ -459,7 +495,7 @@ export const CopilotFloatingWidget: React.FC = () => {
 
                       {/* Decision Feedback Loop Widget */}
                       {msg.sender === 'copilot' && msg.showFeedbackForm && (
-                        <div className="pt-3 border-t border-slate-800">
+                        <div className="pt-3 border-t" style={{ borderColor: 'var(--border-color)' }}>
                           <DecisionFeedbackWidget
                             predictionId={msg.id}
                             assetId="Pump-12"
@@ -469,7 +505,7 @@ export const CopilotFloatingWidget: React.FC = () => {
                       )}
                     </div>
 
-                    <span className="text-[9px] text-slate-500 font-mono mt-1 px-1">
+                    <span className="text-[9px] text-[var(--text-muted)] font-mono mt-1 px-1">
                       {msg.sender === 'user' ? `You (${permissions.roleName})` : 'Industrial AI Engineer'}
                     </span>
                   </div>
@@ -477,9 +513,16 @@ export const CopilotFloatingWidget: React.FC = () => {
 
                 {/* Loading State */}
                 {isLoading && (
-                  <div className="flex items-center space-x-2 bg-slate-900 border border-slate-800 p-3.5 rounded-2xl max-w-[85%] text-slate-300 text-xs">
-                    <Sparkles className="w-4 h-4 text-cyan-400 animate-spin shrink-0" />
-                    <span className="font-mono text-cyan-300 font-bold">Querying RouterBench LLM & Live SCADA Telemetry...</span>
+                  <div
+                    className="flex items-center space-x-2 border p-3.5 rounded-2xl max-w-[85%] text-xs"
+                    style={{
+                      backgroundColor: 'var(--bg-card)',
+                      borderColor: 'var(--border-color)',
+                      color: 'var(--text-primary)',
+                    }}
+                  >
+                    <Sparkles className="w-4 h-4 text-cyan-500 animate-spin shrink-0" />
+                    <span className="font-mono text-cyan-500 font-bold">Querying RouterBench LLM & Live SCADA Telemetry...</span>
                   </div>
                 )}
 
@@ -487,18 +530,32 @@ export const CopilotFloatingWidget: React.FC = () => {
               </div>
 
               {/* Categorized Industrial Prompts Bar */}
-              <div className="p-3 bg-slate-950 border-t border-slate-800 space-y-2">
+              <div
+                className="p-3 border-t space-y-2"
+                style={{
+                  backgroundColor: 'var(--bg-card)',
+                  borderColor: 'var(--border-color)',
+                }}
+              >
                 {/* Category selector pills */}
                 <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-1">
                   {PROMPT_CATEGORIES.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => setSelectedPromptCategory(cat.id)}
-                      className={`px-3 py-1 rounded-xl text-[10px] font-mono font-bold whitespace-nowrap transition-all ${
+                      className={`px-3 py-1 rounded-xl text-[10px] font-mono font-bold whitespace-nowrap transition-all border ${
                         selectedPromptCategory === cat.id
-                          ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 shadow-md'
-                          : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                          ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 border-emerald-400 font-black shadow-md'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                       }`}
+                      style={
+                        selectedPromptCategory !== cat.id
+                          ? {
+                              backgroundColor: 'var(--bg-canvas)',
+                              borderColor: 'var(--border-color)',
+                            }
+                          : {}
+                      }
                     >
                       {cat.name}
                     </button>
@@ -511,7 +568,12 @@ export const CopilotFloatingWidget: React.FC = () => {
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(chip)}
-                      className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500 text-xs font-medium text-slate-300 hover:text-white whitespace-nowrap transition-all"
+                      className="px-3 py-1.5 rounded-xl border text-xs font-medium whitespace-nowrap transition-all"
+                      style={{
+                        backgroundColor: 'var(--bg-canvas)',
+                        borderColor: 'var(--border-color)',
+                        color: 'var(--text-primary)',
+                      }}
                     >
                       {chip}
                     </button>
@@ -520,7 +582,13 @@ export const CopilotFloatingWidget: React.FC = () => {
               </div>
 
               {/* Input Form Footer with Voice Dictation */}
-              <div className="p-3 bg-slate-900/90 border-t border-slate-800">
+              <div
+                className="p-3 border-t"
+                style={{
+                  backgroundColor: 'var(--bg-header)',
+                  borderColor: 'var(--border-color)',
+                }}
+              >
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -534,8 +602,12 @@ export const CopilotFloatingWidget: React.FC = () => {
                     className={`p-2.5 rounded-xl border transition-all ${
                       isListening
                         ? 'bg-rose-600 border-rose-400 text-white animate-pulse'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500'
+                        : 'text-[var(--text-muted)] hover:text-cyan-500'
                     }`}
+                    style={{
+                      backgroundColor: 'var(--bg-canvas)',
+                      borderColor: 'var(--border-color)',
+                    }}
                     title={isListening ? 'Listening... Click to Stop' : 'Voice Dictation Mode (Click & Speak)'}
                   >
                     {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
@@ -546,7 +618,12 @@ export const CopilotFloatingWidget: React.FC = () => {
                     value={inputMsg}
                     onChange={(e) => setInputMsg(e.target.value)}
                     placeholder={isListening ? 'Listening to your voice...' : 'Ask Industrial AI Engineer (e.g. Why did Pump-12 stop?)...'}
-                    className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors font-sans"
+                    className="flex-1 border rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-cyan-500 transition-colors font-sans"
+                    style={{
+                      backgroundColor: 'var(--bg-canvas)',
+                      borderColor: 'var(--border-color)',
+                      color: 'var(--text-primary)',
+                    }}
                   />
                   <button
                     type="submit"
