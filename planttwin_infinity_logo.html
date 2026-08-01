@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlantTwin AI — Neural Infinity Loop Emblem</title>
+  <style>
+    :root {
+      --bg-dark: #070B19;
+      --emerald: #10B981;
+      --cyan: #06B6D4;
+      --purple: #8B5CF6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #ffffff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    /* Ambient Background Glow */
+    .ambient-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, rgba(139, 92, 246, 0.12) 40%, rgba(7, 11, 25, 0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      border-radius: 50%;
+      animation: pulseGlow 6s ease-in-out infinite alternative;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; }
+      100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.9; }
+    }
+
+    /* Card Wrapper */
+    .logo-card {
+      position: relative;
+      z-index: 10;
+      background: rgba(12, 20, 41, 0.85);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 28px;
+      padding: 3rem 4rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(6, 182, 212, 0.15);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 680px;
+      width: 100%;
+      transition: transform 0.4s ease, border-color 0.4s ease;
+    }
+
+    .logo-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(6, 182, 212, 0.5);
+    }
+
+    /* SVG Emblem */
+    .emblem-svg {
+      width: 100%;
+      max-width: 440px;
+      height: auto;
+      filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.25));
+    }
+
+    /* Typography */
+    .brand-title {
+      margin-top: 2rem;
+      font-size: 2.25rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-title span.grad {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--emerald) 50%, #a7f3d0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title span.white {
+      color: #ffffff;
+    }
+
+    .os-badge {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+      font-family: monospace;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+    }
+
+    /* Action Toolbar */
+    .toolbar {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      padding: 0.65rem 1.25rem;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <div class="logo-card">
+    <!-- SVG Vector Emblem -->
+    <svg class="emblem-svg" viewBox="0 0 500 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Neon Gradient -->
+        <linearGradient id="infinityGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#10B981" />
+          <stop offset="50%" stop-color="#06B6D4" />
+          <stop offset="100%" stop-color="#8B5CF6" />
+        </linearGradient>
+
+        <!-- Glow Filter -->
+        <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="4" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- Outer Continuous Cybernetic Infinity Ribbon -->
+      <path 
+        d="M 170 120 C 170 60, 250 60, 250 120 C 250 180, 330 180, 330 120 C 330 60, 250 60, 250 120 C 250 180, 170 180, 170 120 Z" 
+        stroke="url(#infinityGrad)" 
+        stroke-width="12" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        filter="url(#neonGlow)"
+      />
+
+      <!-- Left Loop Content: Physical Factory & Gear (Emerald) -->
+      <g transform="translate(132, 75) scale(0.9)">
+        <!-- Factory Building -->
+        <path d="M 10 65 L 10 30 L 28 42 L 28 30 L 46 42 L 46 65 Z" stroke="#10B981" stroke-width="3.5" fill="none" stroke-linejoin="round" />
+        <!-- Smoke Stack -->
+        <line x1="18" y1="12" x2="18" y2="30" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" />
+        <!-- Smoke Wave -->
+        <path d="M 14 8 C 16 4, 22 4, 24 8" stroke="#10B981" stroke-width="2.5" fill="none" stroke-linecap="round" />
+        <!-- Gear -->
+        <circle cx="36" cy="52" r="7" stroke="#10B981" stroke-width="3" fill="none" />
+      </g>
+
+      <!-- Right Loop Content: Cloud AI Neural Network (Purple) -->
+      <g transform="translate(290, 75) scale(0.9)">
+        <!-- Cloud Body -->
+        <path d="M 18 52 C 8 52, 8 34, 20 34 C 24 18, 52 18, 56 34 C 68 34, 68 52, 56 52 Z" stroke="#8B5CF6" stroke-width="3.5" fill="none" stroke-linejoin="round" />
+        <!-- Neural Node AI Core -->
+        <rect x="30" y="32" width="16" height="12" rx="3" fill="#8B5CF6" />
+        <text x="38" y="41" fill="#ffffff" font-size="8" font-weight="900" text-anchor="middle" font-family="sans-serif">AI</text>
+        <!-- Circuit Connections -->
+        <line x1="38" y1="20" x2="38" y2="32" stroke="#8B5CF6" stroke-width="2" />
+        <line x1="38" y1="44" x2="38" y2="56" stroke="#8B5CF6" stroke-width="2" />
+      </g>
+
+      <!-- Orbiting Pulsing Data Particles -->
+      <circle cx="170" cy="120" r="4" fill="#10B981" filter="url(#neonGlow)">
+        <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite" />
+      </circle>
+
+      <circle cx="330" cy="120" r="4" fill="#8B5CF6" filter="url(#neonGlow)">
+        <animate attributeName="r" values="6;3;6" dur="2s" repeatCount="indefinite" />
+      </circle>
+    </svg>
+
+    <!-- Brand Typography (No Bottom Subtext Lines) -->
+    <div class="brand-title">
+      <span class="grad">PlantTwin</span>
+      <span class="white">AI</span>
+      <span class="os-badge">OS</span>
+    </div>
+
+    <!-- Toolbar Buttons -->
+    <div class="toolbar">
+      <button class="btn" onclick="copySvgCode()">
+        📋 Copy SVG Code
+      </button>
+      <button class="btn" onclick="downloadSvg()">
+        💾 Download SVG
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function copySvgCode() {
+      const svgElement = document.querySelector('.emblem-svg').outerHTML;
+      navigator.clipboard.writeText(svgElement).then(() => {
+        alert('✅ SVG Code copied to clipboard!');
+      });
+    }
+
+    function downloadSvg() {
+      const svgElement = document.querySelector('.emblem-svg').outerHTML;
+      const blob = new Blob([svgElement], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'planttwin_infinity_logo.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
