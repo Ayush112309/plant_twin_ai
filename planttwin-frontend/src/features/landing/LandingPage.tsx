@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PlantTwinLogo from '../../components/common/PlantTwinLogo';
 import {
@@ -25,11 +25,37 @@ import {
   PieChart,
   BarChart3,
   Play,
-  ArrowDown,
+  SlidersHorizontal,
+  Check,
+  RefreshCcw,
+  Gauge,
+  HelpCircle,
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+
+  // Live Telemetry Stream Ticker State
+  const [vibration, setVibration] = useState(1.24);
+  const [pressure, setPressure] = useState(482);
+  const [temp, setTemp] = useState(68.4);
+
+  // ROI Calculator State
+  const [assetCount, setAssetCount] = useState<number>(25);
+  const [downtimeCostPerHour, setDowntimeCostPerHour] = useState<number>(8500);
+
+  // Real-time telemetry simulation pulse
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVibration((prev) => +(prev + (Math.random() * 0.08 - 0.04)).toFixed(2));
+      setPressure((prev) => Math.round(prev + (Math.random() * 4 - 2)));
+      setTemp((prev) => +(prev + (Math.random() * 0.4 - 0.2)).toFixed(1));
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Calculated Annual Savings formula: (Assets * DowntimeCost * 0.65 estimated failure prevention)
+  const annualSavings = Math.round((assetCount * downtimeCostPerHour * 2.4) / 1000) * 1000;
 
   return (
     <div className="min-h-screen bg-[#070B19] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
@@ -63,8 +89,22 @@ export const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative px-4 lg:px-8 pt-16 pb-20 max-w-7xl mx-auto w-full text-center flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-tr from-cyan-500/20 via-emerald-500/15 to-purple-600/20 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative px-4 lg:px-8 pt-16 pb-16 max-w-7xl mx-auto w-full text-center flex flex-col items-center justify-center overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-cyan-500/20 via-emerald-500/15 to-purple-600/20 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Live SCADA Telemetry Stream Ticker */}
+        <div className="inline-flex items-center space-x-4 px-4 py-2 rounded-full bg-slate-950/80 border border-cyan-500/30 text-xs font-mono font-bold mb-8 shadow-xl backdrop-blur-xl">
+          <span className="flex items-center space-x-1.5 text-emerald-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>LIVE SCADA STREAM (1,250 Hz)</span>
+          </span>
+          <span className="text-slate-600">|</span>
+          <span className="text-slate-300">Vibration: <strong className="text-cyan-400">{vibration} mm/s</strong></span>
+          <span className="text-slate-600">|</span>
+          <span className="text-slate-300">Reactor Pressure: <strong className="text-emerald-400">{pressure} bar</strong></span>
+          <span className="text-slate-600">|</span>
+          <span className="text-slate-300 font-bold text-purple-400">RUL: 14 Days Remaining</span>
+        </div>
 
         {/* High-Impact Headline */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-5xl leading-[1.1] mb-6">
@@ -127,8 +167,24 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Interactive Process Flow Section (Data Input -> AI Core -> Industrial Outputs) */}
-      <section className="px-4 lg:px-8 py-16 bg-slate-950/60 border-t border-slate-800/80">
+      {/* Hardware & Protocol Drivers Compatibility Strip */}
+      <section className="border-y border-slate-800/80 bg-slate-950/90 py-6 px-4 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+          <div className="text-xs font-mono font-bold uppercase text-slate-400 tracking-wider">
+            Industrial Hardware & Protocol Drivers:
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-mono font-bold text-slate-300">
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-cyan-300">Siemens S7-1200 / S7-1500</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-emerald-300">OPC-UA Server</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-purple-300">Allen-Bradley ControlLogix</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-amber-300">Delta AS Series</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-sky-300">Modbus TCP & MQTT</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Process Flow Section */}
+      <section className="px-4 lg:px-8 py-16 bg-slate-950/60 border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-black text-white mb-3">
@@ -139,9 +195,7 @@ export const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          {/* 3 Step Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            {/* Step 1 */}
             <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -160,7 +214,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Step 2 */}
             <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 transition-all flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -179,7 +232,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Step 3 */}
             <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/50 transition-all flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -201,6 +253,74 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Interactive Financial ROI Calculator Section */}
+      <section className="px-4 lg:px-8 py-16 bg-slate-900/40">
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-5">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold mb-4">
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Interactive ROI Calculator</span>
+            </div>
+            <h2 className="text-3xl font-black text-white mb-3">Calculate Your Plant's AI Savings</h2>
+            <p className="text-slate-400 text-sm leading-relaxed mb-6">
+              Adjust your plant asset count and hourly downtime cost below to estimate how much PlantTwin AI can save your business annually.
+            </p>
+            <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-400">
+              <span className="text-emerald-400 font-bold">⚡ Proven Benchmark: </span>
+              Reduces unplanned manufacturing downtime by up to 68%.
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+            <div>
+              <div className="flex justify-between items-center mb-2 text-xs font-mono font-bold">
+                <span className="text-slate-300">Connected Industrial PLCs / Assets:</span>
+                <span className="text-cyan-400 font-extrabold text-sm">{assetCount} Assets</span>
+              </div>
+              <input
+                type="range"
+                min="5"
+                max="150"
+                step="5"
+                value={assetCount}
+                onChange={(e) => setAssetCount(Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-2 text-xs font-mono font-bold">
+                <span className="text-slate-300">Average Downtime Cost per Hour ($):</span>
+                <span className="text-emerald-400 font-extrabold text-sm">${downtimeCostPerHour.toLocaleString()} / hr</span>
+              </div>
+              <input
+                type="range"
+                min="2000"
+                max="25000"
+                step="500"
+                value={downtimeCostPerHour}
+                onChange={(e) => setDowntimeCostPerHour(Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+              />
+            </div>
+
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-slate-900 to-cyan-950/80 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <div className="text-xs font-mono font-bold text-emerald-400 uppercase">Estimated Annual AI Savings</div>
+                <div className="text-3xl font-black text-white mt-1">${annualSavings.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ year</span></div>
+              </div>
+
+              <button
+                onClick={() => navigate('/register')}
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 font-black text-xs hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all shrink-0"
+              >
+                Claim Your Savings →
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer Navigation */}
       <footer className="border-t border-slate-800/80 bg-slate-950 py-8 px-4 lg:px-8 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -209,10 +329,10 @@ export const LandingPage: React.FC = () => {
             <span className="font-mono text-[11px] text-slate-400">© 2026 PlantTwin AI OS</span>
           </div>
           <div className="flex items-center space-x-4 font-mono">
-            <button onClick={() => navigate('/')} className="hover:text-slate-300">Page 1: Home</button>
-            <button onClick={() => navigate('/demos')} className="hover:text-slate-300">Page 2: Role Demos</button>
-            <button onClick={() => navigate('/register')} className="hover:text-slate-300">Page 3: Onboarding</button>
-            <button onClick={() => navigate('/login')} className="hover:text-slate-300">Page 4: Auth Portal</button>
+            <button onClick={() => navigate('/')} className="hover:text-slate-300">Home</button>
+            <button onClick={() => navigate('/demos')} className="hover:text-slate-300">Role Demos</button>
+            <button onClick={() => navigate('/register')} className="hover:text-slate-300">Onboarding</button>
+            <button onClick={() => navigate('/login')} className="hover:text-slate-300">Auth Portal</button>
           </div>
         </div>
       </footer>
