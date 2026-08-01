@@ -64,6 +64,9 @@ class Settings(BaseSettings):
 
     # AI Configuration
     GOOGLE_API_KEY: str | None = None
+    ROUTERBENCH_API_KEY: str | None = None
+    ROUTERBENCH_BASE_URL: str = "https://api.routerbench.com/v1"
+    ROUTERBENCH_MODEL: str = "google/gemini-1.5-pro"
 
     model_config = SettingsConfigDict(
         env_file=".env",

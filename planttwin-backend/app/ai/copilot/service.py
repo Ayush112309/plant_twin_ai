@@ -21,48 +21,87 @@ except ImportError:
 class CopilotService:
     """Industrial AI Engineer engine for PlantTwin AI Copilot."""
 
-    
     @staticmethod
     async def process_query(request: CopilotQueryRequest) -> CopilotQueryResponse:
-        api_key = settings.GOOGLE_API_KEY
-        if not api_key or not LANGCHAIN_AVAILABLE:
-            logger.info("Falling back to static AI Copilot responses (No API Key or LangChain).")
-            return await CopilotService._process_static_query(request)
-            
-        try:
-            logger.info("Routing query to LangChain LLM Copilot.")
-            llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=api_key, temperature=0)
-            tools = [get_equipment_status, get_recent_alarms, get_latest_telemetry]
-            
-            agent = initialize_agent(
-                tools, 
-                llm, 
-                agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION, 
-                verbose=True
-            )
-            
-            system_prompt = (
-                "You are the PlantTwin AI Copilot, a Senior Industrial AI Engineer. "
-                "You have tools to check equipment status, recent alarms, and telemetry. "
-                "Format your responses beautifully using markdown, bullet points, and relevant emojis. "
-                "Keep responses concise and professional."
-            )
-            
-            full_query = f"{system_prompt}\n\nUser Query: {request.message}"
-            
-            response = await agent.ainvoke(full_query)
-            
-            return CopilotQueryResponse(
-                reply=response.get("output", "I could not process that request."),
-                intent_detected="LLM_DYNAMIC_QUERY",
-                category="AI Assistant",
-                confidence=0.95,
-                recommendations=[],
-                metadata={"llm_used": True}
-            )
-        except Exception as e:
-            logger.error(f"LLM Error: {str(e)}")
-            return await CopilotService._process_static_query(request)
+        routerbench_key = settings.ROUTERBENCH_API_KEY or os.getenv("ROUTERBENCH_API_KEY")
+        google_key = settings.GOOGLE_API_KEY or os.getenv("GOOGLE_API_KEY")
+
+        # 1. Try RouterBench API Gateway (with Gemini model)
+        if routerbench_key:
+            try:
+                import httpx
+                logger.info(f"Routing query via RouterBench ({settings.ROUTERBENCH_MODEL}).")
+                headers = {
+                    "Authorization": f"Bearer {routerbench_key}",
+                    "Content-Type": "application/json",
+                }
+                system_prompt = (
+                    "You are the PlantTwin AI Copilot, an expert Industrial AI Engineer for Digital Twins. "
+                    "You analyze live SCADA telemetry, RUL predictions, ISA-18.2 alarms, and ML model outputs. "
+                    "Format responses using clean markdown, bullet points, and actionable engineering advice."
+                )
+                payload = {
+                    "model": settings.ROUTERBENCH_MODEL,
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": f"Context: {request.context}\nUser Query: {request.message}"}
+                    ],
+                    "temperature": 0.2,
+                }
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    res = await client.post(f"{settings.ROUTERBENCH_BASE_URL}/chat/completions", json=payload, headers=headers)
+                    if res.status_code == 200:
+                        data = res.json()
+                        reply_text = data["choices"][0]["message"]["content"]
+                        return CopilotQueryResponse(
+                            reply=reply_text,
+                            intent_detected="ROUTERBENCH_GEMINI_QUERY",
+                            category="RouterBench AI",
+                            confidence=0.98,
+                            recommendations=[],
+                            metadata={"llm_used": True, "provider": "RouterBench", "model": settings.ROUTERBENCH_MODEL}
+                        )
+            except Exception as rb_err:
+                logger.error(f"RouterBench API Error: {str(rb_err)}")
+
+        # 2. Try Direct Google Gemini API Gateway
+        if google_key and LANGCHAIN_AVAILABLE:
+            try:
+                logger.info("Routing query to LangChain LLM Copilot.")
+                llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=google_key, temperature=0)
+                tools = [get_equipment_status, get_recent_alarms, get_latest_telemetry]
+                
+                agent = initialize_agent(
+                    tools, 
+                    llm, 
+                    agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION, 
+                    verbose=True
+                )
+                
+                system_prompt = (
+                    "You are the PlantTwin AI Copilot, a Senior Industrial AI Engineer. "
+                    "You have tools to check equipment status, recent alarms, and telemetry. "
+                    "Format your responses beautifully using markdown, bullet points, and relevant emojis. "
+                    "Keep responses concise and professional."
+                )
+                
+                full_query = f"{system_prompt}\n\nUser Query: {request.message}"
+                response = await agent.ainvoke(full_query)
+                
+                return CopilotQueryResponse(
+                    reply=response.get("output", "I could not process that request."),
+                    intent_detected="LLM_DYNAMIC_QUERY",
+                    category="AI Assistant",
+                    confidence=0.95,
+                    recommendations=[],
+                    metadata={"llm_used": True, "provider": "GoogleGeminiDirect"}
+                )
+            except Exception as e:
+                logger.error(f"LLM Error: {str(e)}")
+
+        # 3. Fallback to High-Precision Static Industrial Knowledge Engine
+        logger.info("Falling back to static AI Copilot responses.")
+        return await CopilotService._process_static_query(request)
 
     @staticmethod
     async def _process_static_query(request: CopilotQueryRequest) -> CopilotQueryResponse:

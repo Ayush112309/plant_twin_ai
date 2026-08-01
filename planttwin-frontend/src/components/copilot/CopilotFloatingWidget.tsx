@@ -301,17 +301,17 @@ export const CopilotFloatingWidget: React.FC = () => {
             setIsMinimized(false);
             setUnreadCount(0);
           }}
-          className="pointer-events-auto group relative flex items-center space-x-2.5 bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 hover:scale-105 active:scale-95 text-slate-950 px-4 py-3 rounded-full shadow-2xl transition-all duration-300 border border-emerald-400/40"
+          className="pointer-events-auto group relative flex items-center space-x-2.5 bg-slate-950/95 hover:bg-slate-900 border-2 border-emerald-400/80 hover:border-cyan-400 hover:scale-105 active:scale-95 text-white px-4 py-3 rounded-full shadow-[0_0_30px_rgba(16,185,129,0.35)] transition-all duration-300 backdrop-blur-xl"
           title="Open PlantTwin AI Industrial Copilot"
         >
           <div className="relative">
-            <Bot className="w-5 h-5 font-bold" />
+            <Bot className="w-5 h-5 font-bold text-cyan-400" />
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-slate-950 flex items-center justify-center">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-ping" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
             </span>
           </div>
-          <span className="text-xs font-extrabold tracking-wide">Industrial AI Copilot</span>
-          <Sparkles className="w-4 h-4 text-slate-900 group-hover:rotate-12 transition-transform" />
+          <span className="text-xs font-black tracking-wide text-white drop-shadow-md">Industrial AI Copilot</span>
+          <Sparkles className="w-4 h-4 text-cyan-300 group-hover:rotate-12 transition-transform" />
 
           {unreadCount > 0 && (
             <span className="absolute -top-1.5 -left-1.5 w-5 h-5 bg-red-500 text-white font-bold text-[10px] rounded-full flex items-center justify-center border-2 border-slate-950">
