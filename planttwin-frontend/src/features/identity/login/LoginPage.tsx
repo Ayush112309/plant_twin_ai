@@ -39,8 +39,8 @@ export const LoginPage: React.FC = () => {
   const { setAuthData, enterDemoMode } = useAuth();
 
   const [mode, setMode] = useState<'login' | 'signup'>('login');
-  const [email, setEmail] = useState('admin@apexrefinery.com');
-  const [password, setPassword] = useState('••••••••••••');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -232,7 +232,7 @@ export const LoginPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@apexrefinery.com"
+                    placeholder="Enter work email address..."
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs font-bold text-white focus:border-cyan-500 outline-none"
                   />
                 </div>
@@ -256,7 +256,7 @@ export const LoginPage: React.FC = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••••••"
+                    placeholder="Enter password..."
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs font-bold text-white focus:border-cyan-500 outline-none"
                   />
                 </div>
