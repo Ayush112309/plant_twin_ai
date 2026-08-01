@@ -5,181 +5,195 @@ import {
   Building2,
   Wrench,
   Brain,
-  Radio,
+  Cpu,
   Crown,
   CheckCircle2,
+  XCircle,
   ArrowRight,
   Sparkles,
-  Zap,
-  Activity,
   Shield,
-  Clock,
-  Play,
-  Cpu,
-  Layers,
-  BarChart3,
-  Flame,
-  Gauge,
+  UserCheck,
+  PlaySquare,
+  LogIn,
   Sliders,
-  Check,
 } from 'lucide-react';
+import { useAuth } from '../../app/contexts/AuthContext';
 
-interface PersonaInfo {
+interface PersonaRoleData {
   id: string;
   roleName: string;
-  title: string;
+  email: string;
   badge: string;
   badgeColor: string;
   icon: any;
+  metricLabel: string;
+  metricValue: string;
+  metricColor: string;
   quote: string;
-  metrics: { label: string; value: string; trend: string }[];
-  agentActions: string[];
-  simulatedScenario: {
-    title: string;
-    description: string;
-    aiRecommendation: string;
-    savingsEst: string;
-  };
+  focusItems: string[];
+  primaryWorkspaces: string[];
+  permissions: { name: string; allowed: boolean }[];
+  defaultRoute: string;
 }
 
-const PERSONAS: PersonaInfo[] = [
+const PERSONA_ROLES: PersonaRoleData[] = [
   {
-    id: 'cro',
-    roleName: 'Chief Reliability Officer (CRO)',
-    title: 'Asset Health & Financial Risk Oversight',
-    badge: '👑 Executive Leadership',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-    icon: Crown,
-    quote: 'Monitor enterprise fleet availability, financial downtime risks, and long-term capital allocation ROI across all manufacturing plants.',
-    metrics: [
-      { label: 'Fleet Health Index', value: '94.2%', trend: '+2.4% MoM' },
-      { label: 'Unplanned Downtime Cost', value: '$14,200', trend: '-68% Reduction' },
-      { label: 'RUL Forecasting Accuracy', value: '98.7%', trend: 'Optimal' },
-    ],
-    agentActions: [
-      'Fleet Availability Risk Matrix',
-      'Capital Asset Expenditure Forecast',
-      'ESG Carbon Footprint Compliance',
-    ],
-    simulatedScenario: {
-      title: 'High Criticality Turbine Vibration Event',
-      description: 'Turbine-004 drive end bearing shows 2.1mm/s RMS vibration velocity excursion.',
-      aiRecommendation: 'Schedule drive end bearing replacement during planned shift change at 22:00 UTC.',
-      savingsEst: '$45,000 Unplanned Failure Savings',
-    },
-  },
-  {
-    id: 'scada_lead',
-    roleName: 'SCADA Operations Lead',
-    title: 'Real-Time Telemetry & ISA-18.2 Alarm Overrides',
-    badge: '⚡ Operations Core',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
-    icon: Radio,
-    quote: 'Supervise high-frequency SCADA streams (1,250 Hz), acknowledge ISA-18.2 alarms, and trigger manual PLC coil overrides.',
-    metrics: [
-      { label: 'Active Alarms (ISA-18.2)', value: '4 Active', trend: '1 Critical' },
-      { label: 'Telemetry Stream Rate', value: '1,250 Hz', trend: '100% Sync' },
-      { label: 'Operator Response Time', value: '1.2 min', trend: 'Fast' },
-    ],
-    agentActions: [
-      'Live Sensor Override Controls',
-      'ISA-18.2 Alarm Nuisance Filtering',
-      'Closed-Loop PID Tuning Guidance',
-    ],
-    simulatedScenario: {
-      title: 'Pressure Spike Excursion in Reactor Line-02',
-      description: 'Pressure reached 520 bar threshold (limit 500 bar). Auto-escalation active.',
-      aiRecommendation: 'Engage bypass valve V-102 by +12% and step down feed pump P-002 speed.',
-      savingsEst: 'Prevents Relief Valve Rupture & Emergency Shutdown',
-    },
-  },
-  {
-    id: 'maint_tech',
-    roleName: 'Predictive Maintenance Tech',
-    title: 'RUL Forecasting & Work Order Dispatching',
-    badge: '🔧 Field Operations',
-    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
-    icon: Wrench,
-    quote: 'Execute prescriptive maintenance recommendations, inspect bearing vibration spectrums, and dispatch 1-click Work Orders.',
-    metrics: [
-      { label: 'Work Orders Dispatched', value: '18 Active', trend: '3 In Progress' },
-      { label: 'Mean Time to Repair (MTTR)', value: '42 min', trend: '-18 min' },
-      { label: 'Spare Parts Availability', value: '100%', trend: 'In Stock' },
-    ],
-    agentActions: [
-      '1-Click Work Order Dispatcher',
-      'Bearing Spectrum FFT Frequency Analysis',
-      'Parts Inventory Auto-Reservation',
-    ],
-    simulatedScenario: {
-      title: 'Pump-002 Drive End Bearing Wear',
-      description: 'RUL model estimates 14 Days remaining before impeller seizure.',
-      aiRecommendation: 'Dispatch maintenance team to replace SKF 6208 bearing assembly.',
-      savingsEst: '$18,500 Motor Repair Savings',
-    },
-  },
-  {
-    id: 'automation_eng',
-    roleName: 'Automation & Control Engineer',
-    title: 'PLC Communications & MLOps Feature Store',
-    badge: '🧠 AI & Controls',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
-    icon: Brain,
-    quote: 'Configure Siemens S7-1200 / OPC-UA / MQTT protocol gateways, monitor MLOps model drift, and train feature store embeddings.',
-    metrics: [
-      { label: 'OPC-UA / S7 Nodes Online', value: '128 Tags', trend: '100% Up' },
-      { label: 'Model Prediction Drift', value: '0.012', trend: 'Negligible' },
-      { label: 'Feast Feature Store Size', value: '1.4 GB', trend: 'Synced' },
-    ],
-    agentActions: [
-      'Siemens S7 & OPC-UA Driver Config',
-      'SHAP & LIME XAI Model Explainer',
-      'Automated Model Retraining Pipeline',
-    ],
-    simulatedScenario: {
-      title: 'XAI Counterfactual Telemetry Simulation',
-      description: 'What-If analysis: Simulating 10% temperature reduction impact on RUL.',
-      aiRecommendation: 'Promote XGBoost v2.4 model to production (F1-score: 0.984).',
-      savingsEst: 'Increases RUL Model Precision by +4.2%',
-    },
-  },
-  {
-    id: 'exec_vp',
-    roleName: 'Executive Operations VP',
-    title: 'Multi-Site Plant Performance & Yield Analytics',
-    badge: '🏢 Corporate Level',
-    badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+    id: 'plant_manager',
+    roleName: 'Plant Manager',
+    email: 'plant.manager@planttwin.ai',
+    badge: '🏭 Executive Leadership',
+    badgeColor: 'border-emerald-500/40 text-emerald-400 bg-emerald-950/60 shadow-emerald-900/30',
     icon: Building2,
-    quote: 'Compare multi-plant operational performance, benchmark site efficiency, and export compliance reports for board review.',
-    metrics: [
-      { label: 'Active Plants Tracked', value: '4 Sites', trend: 'Global' },
-      { label: 'Overall Plant OEE', value: '88.4%', trend: '+3.2% Target' },
-      { label: 'Net AI Downtime ROI', value: '$132,500', trend: 'Net Profit' },
+    metricLabel: 'Overall OEE Rate',
+    metricValue: '88.4%',
+    metricColor: 'text-emerald-400',
+    quote: 'Monitor overall plant performance, production KPIs, energy consumption, equipment availability, AI insights, maintenance summaries, and executive reports from a unified dashboard.',
+    focusItems: [
+      'Production Throughput',
+      'Overall OEE (77.8%)',
+      'Plant KPIs',
+      'Plant Health Score (98.5%)',
+      'Executive Dashboards',
+      'Reports Export',
     ],
-    agentActions: [
-      'Multi-Plant Yield Comparison',
-      'Automated ESG & Energy PDF Exporter',
-      'Executive Board Summary Feed',
+    primaryWorkspaces: ['Operations Center', 'Reporting & Analytics', 'AI Insights', 'Plant Explorer'],
+    permissions: [
+      { name: 'View All Plants & Sites', allowed: true },
+      { name: 'Export Executive PDF/CSV Reports', allowed: true },
+      { name: 'View AI Recommendations', allowed: true },
+      { name: 'PLC Tag Memory Write Access', allowed: false },
+      { name: 'User & System Administration', allowed: false },
     ],
-    simulatedScenario: {
-      title: 'Quarterly Fleet Yield Optimization',
-      description: 'Comparing Houston Refinery vs Rotterdam Chemical Site energy efficiency.',
-      aiRecommendation: 'Balance load allocations: Shift 15% throughput to Rotterdam Line 3.',
-      savingsEst: '$120,000 Annual Energy Savings',
-    },
+    defaultRoute: '/operations',
+  },
+  {
+    id: 'maintenance_manager',
+    roleName: 'Maintenance Manager',
+    email: 'maintenance.manager@planttwin.ai',
+    badge: '🔧 Asset Reliability Lead',
+    badgeColor: 'border-amber-500/40 text-amber-400 bg-amber-950/60 shadow-amber-900/30',
+    icon: Wrench,
+    metricLabel: 'Active Work Orders',
+    metricValue: '14 Pending',
+    metricColor: 'text-amber-400',
+    quote: 'Manage work order lifecycles, preventive maintenance schedules, asset health degradation, spare parts inventory, and emergency technician dispatching.',
+    focusItems: [
+      'Work Orders Lifecycle',
+      'Asset Health Score',
+      'Maintenance Schedules',
+      'Equipment Downtime',
+      'Spare Parts Inventory',
+      'Incident Management',
+    ],
+    primaryWorkspaces: ['Work Orders Center', 'Equipment Workspace', 'Runtime Operations', 'Alert Management'],
+    permissions: [
+      { name: 'Create & Assign Work Orders', allowed: true },
+      { name: 'Manage Asset Maintenance History', allowed: true },
+      { name: 'Acknowledge ISA-18.2 Alarms', allowed: true },
+      { name: 'Modify ML AI Training Pipelines', allowed: false },
+      { name: 'System Licensing & Tenant Settings', allowed: false },
+    ],
+    defaultRoute: '/work-orders',
+  },
+  {
+    id: 'ai_specialist',
+    roleName: 'AI & Reliability Specialist',
+    email: 'ai.specialist@planttwin.ai',
+    badge: '🧠 Predictive Intelligence Lead',
+    badgeColor: 'border-purple-500/40 text-purple-400 bg-purple-950/60 shadow-purple-900/30',
+    icon: Brain,
+    metricLabel: 'Model Accuracy Score',
+    metricValue: '99.4%',
+    metricColor: 'text-purple-400',
+    quote: 'Train predictive RUL models, inspect SHAP/LIME feature attributions, run root cause fault tree analyses, and manage the Feast MLOps Feature Store.',
+    focusItems: [
+      'Remaining Useful Life (RUL)',
+      'SHAP & LIME XAI Explanations',
+      'Root Cause Analysis (RCA)',
+      'Anomaly Detection Models',
+      'Feature Store Registry',
+      'Model Drift Monitoring',
+    ],
+    primaryWorkspaces: ['AI Predictive Center', 'Root Cause & XAI', 'Feature Store Registry', 'Model Registry'],
+    permissions: [
+      { name: 'Train & Deploy ML Models', allowed: true },
+      { name: 'Configure Feature Store Pipeline', allowed: true },
+      { name: 'Run XAI Telemetry Simulations', allowed: true },
+      { name: 'Direct PLC Coil Overrides', allowed: false },
+      { name: 'Manage Billing & Subscription', allowed: false },
+    ],
+    defaultRoute: '/ai',
+  },
+  {
+    id: 'operator',
+    roleName: 'Control Room Operator',
+    email: 'operator@planttwin.ai',
+    badge: '💻 SCADA Operations Specialist',
+    badgeColor: 'border-sky-500/40 text-sky-400 bg-sky-950/60 shadow-sky-900/30',
+    icon: Cpu,
+    metricLabel: 'Live SCADA Stream',
+    metricValue: '1,250 Hz',
+    metricColor: 'text-sky-400',
+    quote: 'Monitor real-time high-frequency SCADA telemetry, acknowledge critical ISA-18.2 alarms, inspect live trends, and perform controlled operational overrides.',
+    focusItems: [
+      'High-Frequency SCADA Stream',
+      'ISA-18.2 Alarm Overrides',
+      'Live Trend Analysis',
+      'Operational Interlocks',
+      'Process Value Adjustments',
+      'Shift Logs & Notes',
+    ],
+    primaryWorkspaces: ['Live SCADA Telemetry', 'Alarm Management', 'Runtime Operations', 'Connectivity Hub'],
+    permissions: [
+      { name: 'Perform PLC Controlled Overrides', allowed: true },
+      { name: 'Acknowledge ISA-18.2 Alarms', allowed: true },
+      { name: 'View Real-Time Telemetry', allowed: true },
+      { name: 'Modify System Architecture', allowed: false },
+      { name: 'Delete Audit History Logs', allowed: false },
+    ],
+    defaultRoute: '/telemetry',
+  },
+  {
+    id: 'admin',
+    roleName: 'System Administrator (Full Access)',
+    email: 'admin@planttwin.ai',
+    badge: '👑 Super Admin (100% Full Access)',
+    badgeColor: 'border-yellow-500/60 text-yellow-300 bg-yellow-950/80 font-bold shadow-yellow-900/40',
+    icon: Crown,
+    metricLabel: 'RBAC Access Level',
+    metricValue: 'Super Admin',
+    metricColor: 'text-yellow-300',
+    quote: 'Full operational, security, and administrative control over the entire PlantTwin AI tenant, including user management, protocol drivers, audit logs, and system settings.',
+    focusItems: [
+      'Multi-Tenant Management',
+      'User RBAC Permissions',
+      'Industrial Protocol Drivers',
+      'Audit Logs & Compliance',
+      'API Keys & Webhooks',
+      'System Architecture Config',
+    ],
+    primaryWorkspaces: ['User Management', 'Audit Logs', 'Connectivity Hub', 'System Settings', 'All Workspaces'],
+    permissions: [
+      { name: 'Full Read & Write System Access', allowed: true },
+      { name: 'Manage User Accounts & Roles', allowed: true },
+      { name: 'Configure Siemens S7 & OPC-UA', allowed: true },
+      { name: 'Full PLC Tag Write Access', allowed: true },
+      { name: 'Manage Enterprise Subscriptions', allowed: true },
+    ],
+    defaultRoute: '/operations',
   },
 ];
 
 export const PersonaHubPage: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedPersona, setSelectedPersona] = useState<PersonaInfo>(PERSONAS[0]);
-  const [simActive, setSimActive] = useState(false);
+  const { enterDemoMode } = useAuth();
+  const [selectedRole, setSelectedRole] = useState<PersonaRoleData>(PERSONA_ROLES[0]);
 
-  const handleRunSimulator = () => {
-    setSimActive(true);
-    setTimeout(() => {
-      setSimActive(false);
-    }, 2500);
+  const handleLaunchWorkspace = (role: PersonaRoleData) => {
+    enterDemoMode(role.roleName);
+    localStorage.setItem('planttwin_user_email', role.email);
+    window.dispatchEvent(new Event('planttwin:org-updated'));
+    navigate(role.defaultRoute);
   };
 
   return (
@@ -213,136 +227,168 @@ export const PersonaHubPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Page Title & Subtitle */}
-      <section className="px-4 lg:px-8 py-10 max-w-7xl mx-auto w-full text-center">
-        <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold mb-4">
-          <Sparkles className="w-4 h-4" />
-          <span>Page 2: Role Demos & Interactive Persona Hub</span>
+      {/* Main Content Area */}
+      <main className="flex-1 px-4 lg:px-8 py-10 max-w-7xl mx-auto w-full flex flex-col items-center">
+        {/* Top Pills Badge */}
+        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold mb-4 shadow-lg">
+          <UserCheck className="w-4 h-4 text-cyan-400" />
+          <span>Multi-Persona RBAC Governance</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-4">
-          Experience AI Agents Tailored to Your Industrial Role
+
+        {/* Title & Subtitle */}
+        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white text-center mb-3">
+          Interactive 5-Persona Workspaces
         </h1>
-        <p className="text-slate-400 max-w-3xl mx-auto text-base sm:text-lg">
-          Select any of the 5 specialized industrial personas below to test live interactive AI agent simulations before registering your organization.
+        <p className="text-slate-400 text-center max-w-2xl text-xs sm:text-sm mb-10 leading-relaxed">
+          Experience tailored operational views customized for each role in your industrial organization. Select a persona below to preview permissions and launch workspace.
         </p>
-      </section>
 
-      {/* Main 5 Personas Grid & Simulator Area */}
-      <main className="px-4 lg:px-8 pb-16 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: 5 Persona Selection Tabs */}
-        <div className="lg:col-span-4 space-y-3">
-          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400 mb-2">
-            Select User Persona (5 Roles)
-          </h3>
-
-          {PERSONAS.map((p) => {
-            const isSelected = selectedPersona.id === p.id;
-            const Icon = p.icon;
+        {/* Top 5 Persona Selection Cards Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 w-full mb-8">
+          {PERSONA_ROLES.map((r) => {
+            const isSelected = selectedRole.id === r.id;
+            const Icon = r.icon;
             return (
               <button
-                key={p.id}
-                onClick={() => setSelectedPersona(p)}
-                className={`w-full p-4 rounded-2xl border text-left transition-all relative overflow-hidden group ${
+                key={r.id}
+                onClick={() => setSelectedRole(r)}
+                className={`p-4 rounded-2xl border text-left flex flex-col justify-between transition-all relative group ${
                   isSelected
-                    ? 'bg-slate-900/90 border-cyan-500/70 shadow-[0_0_25px_rgba(6,182,212,0.15)]'
-                    : 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/50'
+                    ? 'bg-slate-900/95 border-blue-500/80 shadow-[0_0_30px_rgba(59,130,246,0.3)] ring-2 ring-blue-500/50'
+                    : 'bg-slate-950/70 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/40'
                 }`}
               >
-                <div className="flex items-center space-x-3.5">
-                  <div className={`p-2.5 rounded-xl border ${p.badgeColor}`}>
+                {/* Active Indicator Pulse */}
+                {isSelected && (
+                  <span className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                )}
+
+                <div>
+                  <div className={`p-2.5 rounded-xl border w-fit mb-3 ${r.badgeColor}`}>
                     <Icon className="w-5 h-5" />
                   </div>
-                  <div>
-                    <div className="text-sm font-bold text-white flex items-center gap-2">
-                      <span>{p.roleName}</span>
-                    </div>
-                    <div className="text-xs text-slate-400 font-mono mt-0.5">{p.title}</div>
-                  </div>
+
+                  <h3 className="text-sm font-bold text-white line-clamp-1">{r.roleName}</h3>
+                  <div className="text-[10px] text-slate-400 font-mono truncate mb-2.5">{r.email}</div>
+
+                  <span className={`inline-block px-2.5 py-0.5 rounded-md text-[9px] font-mono font-bold border mb-3 ${r.badgeColor}`}>
+                    {r.badge}
+                  </span>
+                </div>
+
+                <div className="border-t border-slate-800/80 pt-2.5 flex items-center justify-between text-[10px] font-mono">
+                  <span className="text-slate-400">{r.metricLabel}</span>
+                  <span className={`font-bold ${r.metricColor}`}>{r.metricValue}</span>
                 </div>
               </button>
             );
           })}
         </div>
 
-        {/* Right Column: Live Interactive Agent Simulator */}
-        <div className="lg:col-span-8 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl flex flex-col justify-between shadow-2xl">
-          <div>
-            {/* Header with Selected Role Badge */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-6 mb-6">
-              <div className="flex items-center space-x-3">
-                <div className={`p-3 rounded-2xl border ${selectedPersona.badgeColor}`}>
-                  <selectedPersona.icon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-black text-white">{selectedPersona.roleName}</h2>
-                  <p className="text-xs text-slate-400 font-mono mt-0.5">{selectedPersona.title}</p>
-                </div>
+        {/* Bottom Detailed Workspace Preview Box */}
+        <div className="w-full bg-slate-950/90 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-2xl shadow-2xl">
+          {/* Header Row */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-6 mb-6">
+            <div>
+              <div className="flex items-center space-x-2 text-[11px] font-mono uppercase font-extrabold text-emerald-400 tracking-wider mb-1">
+                <span>{selectedRole.badge}</span>
+                <span className="text-slate-500">({selectedRole.email.toUpperCase()})</span>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-mono font-bold border ${selectedPersona.badgeColor}`}>
-                {selectedPersona.badge}
-              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-white">{selectedRole.roleName} Workspace</h2>
             </div>
 
-            {/* Persona Mission Quote */}
-            <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 text-xs text-slate-300 italic mb-6 leading-relaxed">
-              "{selectedPersona.quote}"
-            </div>
+            {/* CTAs */}
+            <div className="flex items-center space-x-3 w-full sm:w-auto">
+              <button
+                onClick={() => navigate('/login')}
+                className="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-500 text-xs font-bold text-slate-200 transition-all flex items-center space-x-1.5 shrink-0"
+              >
+                <LogIn className="w-4 h-4 text-slate-400" />
+                <span>Sign In</span>
+              </button>
 
-            {/* Live Metrics Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              {selectedPersona.metrics.map((m, idx) => (
-                <div key={idx} className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800">
-                  <div className="text-[11px] text-slate-400 font-mono font-bold uppercase">{m.label}</div>
-                  <div className="text-xl font-black text-white mt-1">{m.value}</div>
-                  <div className="text-[10px] text-emerald-400 font-mono mt-0.5">{m.trend}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Simulated Interactive Scenario Card */}
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-950 to-slate-900 border border-cyan-500/30 relative overflow-hidden mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2 text-cyan-400 text-xs font-mono font-bold">
-                  <Zap className="w-4 h-4 animate-pulse" />
-                  <span>SIMULATED AGENT EVENT SCENARIO</span>
-                </div>
-                <button
-                  onClick={handleRunSimulator}
-                  disabled={simActive}
-                  className="px-3 py-1.5 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30 text-xs font-bold transition-all flex items-center space-x-1.5"
-                >
-                  <Play className={`w-3.5 h-3.5 ${simActive ? 'animate-spin' : ''}`} />
-                  <span>{simActive ? 'Simulating AI Agent...' : 'Test AI Agent Simulation'}</span>
-                </button>
-              </div>
-
-              <h4 className="text-sm font-bold text-white mb-1">{selectedPersona.simulatedScenario.title}</h4>
-              <p className="text-xs text-slate-400 mb-3">{selectedPersona.simulatedScenario.description}</p>
-
-              <div className="p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-200 mb-2">
-                <strong className="text-cyan-400">🤖 AI Prescriptive Recommendation: </strong>
-                {selectedPersona.simulatedScenario.aiRecommendation}
-              </div>
-
-              <div className="text-xs text-emerald-400 font-mono font-bold flex items-center gap-1">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>ROI Value Impact: {selectedPersona.simulatedScenario.savingsEst}</span>
-              </div>
+              <button
+                onClick={() => handleLaunchWorkspace(selectedRole)}
+                className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 transition-all flex items-center space-x-2 shrink-0"
+              >
+                <span>Enter {selectedRole.roleName} Workspace</span>
+                <PlaySquare className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
-          {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-800 pt-6">
-            <div className="text-xs text-slate-400 font-mono">
-              Ready to deploy this persona in your plant?
+          {/* Mission Quote Box */}
+          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/90 text-xs sm:text-sm text-slate-300 italic mb-8 leading-relaxed">
+            "{selectedRole.quote}"
+          </div>
+
+          {/* 3 Grid Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Column 1: Primary Operational Focus */}
+            <div className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800/80 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center space-x-2 text-[11px] font-mono font-bold text-slate-300 uppercase tracking-wider mb-4">
+                  <Sliders className="w-4 h-4 text-cyan-400" />
+                  <span>PRIMARY OPERATIONAL FOCUS</span>
+                </div>
+                <ul className="space-y-2 text-xs text-slate-300">
+                  {selectedRole.focusItems.map((item, idx) => (
+                    <li key={idx} className="flex items-center space-x-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <button
-              onClick={() => navigate('/register')}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-extrabold text-xs hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all flex items-center justify-center space-x-2"
-            >
-              <span>Register Organization as {selectedPersona.roleName}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+
+            {/* Column 2: Primary Workspaces */}
+            <div className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800/80 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center space-x-2 text-[11px] font-mono font-bold text-slate-300 uppercase tracking-wider mb-4">
+                  <Building2 className="w-4 h-4 text-emerald-400" />
+                  <span>PRIMARY WORKSPACES</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {selectedRole.primaryWorkspaces.map((ws, idx) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold text-slate-200"
+                    >
+                      {ws}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Column 3: RBAC Permissions Matrix */}
+            <div className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800/80 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center space-x-2 text-[11px] font-mono font-bold text-slate-300 uppercase tracking-wider mb-4">
+                  <Shield className="w-4 h-4 text-emerald-400" />
+                  <span>RBAC PERMISSIONS MATRIX</span>
+                </div>
+                <div className="space-y-2.5 text-xs font-mono">
+                  {selectedRole.permissions.map((perm, idx) => (
+                    <div key={idx} className="flex items-center justify-between">
+                      <span className="text-slate-300">{perm.name}</span>
+                      {perm.allowed ? (
+                        <span className="text-emerald-400 font-bold flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>Allowed</span>
+                        </span>
+                      ) : (
+                        <span className="text-red-400 font-bold flex items-center gap-1">
+                          <XCircle className="w-3.5 h-3.5" />
+                          <span>Denied</span>
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
