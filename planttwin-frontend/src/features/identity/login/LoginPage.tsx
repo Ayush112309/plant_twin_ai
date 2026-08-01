@@ -135,10 +135,6 @@ export const LoginPage: React.FC = () => {
             <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
             <div>
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold mb-4">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Page 4: Dual Auth Portal</span>
-              </div>
               <h2 className="text-2xl font-black text-white mb-2">Secure Enterprise Gateway</h2>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Connect your user credentials or single sign-on (SSO) identity to access real-time industrial telemetry streams, RUL models, and SCADA controllers.

@@ -229,12 +229,6 @@ export const PersonaHubPage: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 px-4 lg:px-8 py-10 max-w-7xl mx-auto w-full flex flex-col items-center">
-        {/* Top Pills Badge */}
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold mb-4 shadow-lg">
-          <UserCheck className="w-4 h-4 text-cyan-400" />
-          <span>Multi-Persona RBAC Governance</span>
-        </div>
-
         {/* Title & Subtitle */}
         <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white text-center mb-3">
           Interactive 5-Persona Workspaces

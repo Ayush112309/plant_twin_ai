@@ -66,12 +66,6 @@ export const LandingPage: React.FC = () => {
       <section className="relative px-4 lg:px-8 pt-16 pb-20 max-w-7xl mx-auto w-full text-center flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-tr from-cyan-500/20 via-emerald-500/15 to-purple-600/20 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Page Badge */}
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold mb-6 shadow-lg animate-fade-in">
-          <Sparkles className="w-4 h-4" />
-          <span>Page 1: Industrial AI Agent Platform</span>
-        </div>
-
         {/* High-Impact Headline */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-5xl leading-[1.1] mb-6">
           AI Agents for Autonomous <br className="hidden sm:inline" />

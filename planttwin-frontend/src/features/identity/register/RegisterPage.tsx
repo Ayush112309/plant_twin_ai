@@ -163,10 +163,6 @@ export const RegisterPage: React.FC = () => {
         <div className="w-full max-w-3xl bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-10 backdrop-blur-2xl shadow-2xl">
           {/* Header & Step Indicator */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold mb-3">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Page 3: Organization Onboarding Wizard</span>
-            </div>
             <h1 className="text-2xl sm:text-4xl font-black text-white">Register PlantTwin AI Organization</h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1">Set up your industrial plant profile, team seats, and subscription plan</p>
           </div>
