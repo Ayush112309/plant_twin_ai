@@ -9,6 +9,7 @@ import {
   Wrench,
   Brain,
   Crown,
+  Cpu,
   ArrowRight,
   CheckCircle2,
   ShieldCheck,
@@ -18,9 +19,19 @@ import {
   Globe,
   Radio,
   RefreshCw,
+  PlaySquare,
 } from 'lucide-react';
 import { useAuth } from '../../../app/contexts/AuthContext';
 import apiClient from '../../../lib/api/client';
+import { SSOModal } from './SSOModal';
+
+const DEMO_PERSONAS = [
+  { role: 'Plant Manager', email: 'plant.manager@planttwin.ai', route: '/operations', icon: Building2, color: 'text-teal-400 border-teal-500/40 bg-teal-950/60' },
+  { role: 'Maintenance Manager', email: 'maintenance.manager@planttwin.ai', route: '/work-orders', icon: Wrench, color: 'text-amber-400 border-amber-500/40 bg-amber-950/60' },
+  { role: 'AI & Reliability Specialist', email: 'ai.specialist@planttwin.ai', route: '/ai', icon: Brain, color: 'text-purple-400 border-purple-500/40 bg-purple-950/60' },
+  { role: 'Control Room Operator', email: 'operator@planttwin.ai', route: '/telemetry', icon: Cpu, color: 'text-sky-400 border-sky-500/40 bg-sky-950/60' },
+  { role: 'System Administrator', email: 'admin@planttwin.ai', route: '/users', icon: Crown, color: 'text-yellow-300 border-yellow-500/60 bg-yellow-950/80 font-bold' },
+];
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -32,7 +43,10 @@ export const LoginPage: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Recovery & MFA modal state
+  // SSO Modal State
+  const [ssoModalProvider, setSsoModalProvider] = useState<'google' | 'microsoft' | 'okta' | null>(null);
+
+  // Password Recovery Modal state
   const [showRecoveryModal, setShowRecoveryModal] = useState(false);
   const [recoveryEmail, setRecoveryEmail] = useState('');
   const [recoverySent, setRecoverySent] = useState(false);
@@ -57,7 +71,6 @@ export const LoginPage: React.FC = () => {
           enterDemoMode('System Administrator');
         }
       } else {
-        // Signup Mode -> Redirect to Onboarding Wizard Page 3
         navigate('/register');
         return;
       }
@@ -71,15 +84,11 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleOAuthLogin = (provider: string) => {
-    setIsLoading(true);
-    setTimeout(() => {
-      localStorage.setItem('planttwin_user_email', `admin@${provider.toLowerCase()}.com`);
-      enterDemoMode('System Administrator');
-      window.dispatchEvent(new Event('planttwin:org-updated'));
-      setIsLoading(false);
-      navigate('/operations');
-    }, 1200);
+  const handlePersonaLogin = (persona: typeof DEMO_PERSONAS[0]) => {
+    enterDemoMode(persona.role);
+    localStorage.setItem('planttwin_user_email', persona.email);
+    window.dispatchEvent(new Event('planttwin:org-updated'));
+    navigate(persona.route);
   };
 
   const handleSendRecovery = (e: React.FormEvent) => {
@@ -119,8 +128,8 @@ export const LoginPage: React.FC = () => {
       </header>
 
       {/* Main Split-Screen Auth Portal */}
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-4xl bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden backdrop-blur-2xl shadow-2xl grid grid-cols-1 lg:grid-cols-12">
+      <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full">
+        <div className="w-full bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden backdrop-blur-2xl shadow-2xl grid grid-cols-1 lg:grid-cols-12 mb-8">
           {/* Left Column: Industrial Platform Visual & Security Badges */}
           <div className="lg:col-span-5 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-800 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -239,7 +248,7 @@ export const LoginPage: React.FC = () => {
               </button>
             </form>
 
-            {/* Enterprise OAuth Quick Access */}
+            {/* Enterprise OAuth Quick Access Buttons (Triggers Interactive SSOModal) */}
             <div className="border-t border-slate-800 pt-6 mt-6">
               <div className="text-[11px] text-slate-400 font-mono font-bold uppercase text-center mb-3">
                 Or Continue With Enterprise SSO
@@ -248,24 +257,24 @@ export const LoginPage: React.FC = () => {
               <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
-                  onClick={() => handleOAuthLogin('Google')}
-                  className="py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 flex items-center justify-center space-x-1.5 transition-all"
+                  onClick={() => setSsoModalProvider('google')}
+                  className="py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/60 text-xs font-bold text-slate-200 flex items-center justify-center space-x-1.5 transition-all hover:bg-slate-900"
                 >
                   <Globe className="w-3.5 h-3.5 text-blue-400" />
                   <span>Google</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleOAuthLogin('Microsoft')}
-                  className="py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 flex items-center justify-center space-x-1.5 transition-all"
+                  onClick={() => setSsoModalProvider('microsoft')}
+                  className="py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/60 text-xs font-bold text-slate-200 flex items-center justify-center space-x-1.5 transition-all hover:bg-slate-900"
                 >
                   <Globe className="w-3.5 h-3.5 text-cyan-400" />
                   <span>Azure AD</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleOAuthLogin('Okta')}
-                  className="py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 flex items-center justify-center space-x-1.5 transition-all"
+                  onClick={() => setSsoModalProvider('okta')}
+                  className="py-2.5 px-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-purple-500/60 text-xs font-bold text-slate-200 flex items-center justify-center space-x-1.5 transition-all hover:bg-slate-900"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
                   <span>Okta</span>
@@ -274,7 +283,36 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* 1-Click Demo Persona Fast-Login Bar */}
+        <div className="w-full bg-slate-950/80 border border-slate-800/90 rounded-2xl p-4 text-center">
+          <div className="text-xs font-mono font-bold text-slate-400 uppercase mb-3 flex items-center justify-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-amber-400" />
+            <span>Instant Demo Sign-In (Select Persona Role)</span>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {DEMO_PERSONAS.map((persona, idx) => {
+              const Icon = persona.icon;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => handlePersonaLogin(persona)}
+                  className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center space-x-1.5 ${persona.color} hover:scale-105`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{persona.role}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </main>
+
+      {/* Render Interactive SSO Modal when triggered */}
+      {ssoModalProvider && (
+        <SSOModal provider={ssoModalProvider} onClose={() => setSsoModalProvider(null)} />
+      )}
 
       {/* Password Recovery Modal */}
       {showRecoveryModal && (

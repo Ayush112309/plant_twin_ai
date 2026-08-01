@@ -16,7 +16,7 @@ import { useAuth } from '../../../app/contexts/AuthContext';
 import apiClient from '../../../lib/api/client';
 
 interface SSOModalProps {
-  provider: 'google' | 'microsoft';
+  provider: 'google' | 'microsoft' | 'okta';
   onClose: () => void;
 }
 
@@ -25,19 +25,36 @@ export const SSOModal: React.FC<SSOModalProps> = ({ provider, onClose }) => {
   const { enterDemoMode, setAuthData } = useAuth();
 
   const isGoogle = provider === 'google';
-  const providerName = isGoogle ? 'Google Workspace' : 'Microsoft Azure AD (Entra ID)';
-  const providerProtocol = isGoogle ? 'OpenID Connect (OIDC) / OAuth 2.0' : 'SAML 2.0 & MSAL.js Token Exchange';
+  const isOkta = provider === 'okta';
+
+  const providerName = isGoogle
+    ? 'Google Workspace'
+    : isOkta
+    ? 'Okta Enterprise SSO'
+    : 'Microsoft Azure AD (Entra ID)';
+
+  const providerProtocol = isGoogle
+    ? 'OpenID Connect (OIDC) / OAuth 2.0'
+    : isOkta
+    ? 'SAML 2.0 & Okta Identity Cloud API'
+    : 'SAML 2.0 & MSAL.js Token Exchange';
 
   const defaultAccounts = isGoogle
     ? [
         { email: 'admin@planttwin.ai', role: 'System Administrator (Full Access)', org: 'PlantTwin AI Corporate' },
         { email: 'plant.manager@planttwin.ai', role: 'Plant Operations Manager', org: 'PlantTwin AI Global' },
-        { email: 'admin@apex.com', role: 'Enterprise Administrator', org: 'Apex Refinery Enterprise' },
+        { email: 'admin@apexrefinery.com', role: 'Enterprise Administrator', org: 'Apex Refinery Enterprise' },
+      ]
+    : isOkta
+    ? [
+        { email: 'admin@planttwin.ai', role: 'Okta Identity Administrator', org: 'Okta Enterprise Domain' },
+        { email: 'operator@planttwin.ai', role: 'SCADA Lead Specialist', org: 'Okta SCADA Group' },
+        { email: 'admin@apexrefinery.com', role: 'Enterprise Okta Admin', org: 'Apex Refinery Tenant' },
       ]
     : [
         { email: 'admin@planttwin.ai', role: 'Global Directory Administrator', org: 'Azure AD Tenant (04a8b792-azure)' },
         { email: 'reliability.eng@planttwin.ai', role: 'Reliability Lead', org: 'Azure AD Maintenance Group' },
-        { email: 'admin@apex.com', role: 'Enterprise Tenant Admin', org: 'Apex Azure Directory' },
+        { email: 'admin@apexrefinery.com', role: 'Enterprise Tenant Admin', org: 'Apex Azure Directory' },
       ];
 
   const [selectedEmail, setSelectedEmail] = useState(defaultAccounts[0].email);
@@ -60,6 +77,8 @@ export const SSOModal: React.FC<SSOModalProps> = ({ provider, onClose }) => {
     setAuthStatusMsg(
       isGoogle
         ? 'Redirecting to Google Identity Provider (accounts.google.com)...'
+        : isOkta
+        ? 'Connecting to Okta Identity Engine Endpoint (sso.okta.com)...'
         : 'Connecting to Microsoft Entra ID Token Endpoint (login.microsoftonline.com)...'
     );
 
@@ -68,6 +87,8 @@ export const SSOModal: React.FC<SSOModalProps> = ({ provider, onClose }) => {
       setAuthStatusMsg(
         isGoogle
           ? 'Verifying Google Workspace RS256 JWT ID Token & Domain Claims...'
+          : isOkta
+          ? 'Validating Okta SAML 2.0 Assertion & Security Policy...'
           : 'Validating SAML 2.0 Assertion & Azure Active Directory Tenant Membership...'
       );
 
@@ -76,14 +97,13 @@ export const SSOModal: React.FC<SSOModalProps> = ({ provider, onClose }) => {
         setAuthStatusMsg(
           isGoogle
             ? 'Issuing PlantTwin Enterprise Access Token (JWT)...'
-            : 'Syncing Azure Directory Security Groups & RBAC Roles...'
+            : 'Syncing Directory Security Groups & RBAC Roles...'
         );
 
         setTimeout(async () => {
           setAuthStep(4);
           setAuthStatusMsg('🎉 Federated SSO Authentication Successful! Redirecting to Workspace...');
 
-          // Attempt backend SSO login endpoint
           try {
             const response: any = await apiClient.post(`/identity/auth/sso/${provider}`, {
               email: activeEmail,
@@ -94,7 +114,6 @@ export const SSOModal: React.FC<SSOModalProps> = ({ provider, onClose }) => {
               await setAuthData(response.data.access_token, response.data.refresh_token);
             }
           } catch (e) {
-            // Fallback for seamless demo mode
             enterDemoMode('System Administrator');
           }
 
@@ -102,137 +121,139 @@ export const SSOModal: React.FC<SSOModalProps> = ({ provider, onClose }) => {
           window.dispatchEvent(new Event('planttwin:org-updated'));
 
           setTimeout(() => {
+            onClose();
             navigate('/operations');
-          }, 600);
-        }, 800);
-      }, 800);
-    }, 800);
+          }, 800);
+        }, 1000);
+      }, 1000);
+    }, 1000);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in font-mono">
-      <div className="w-full max-w-lg p-6 bg-[#0b101d] border border-slate-800 rounded-2xl shadow-2xl space-y-5 relative text-slate-100">
-        {/* Header */}
-        <div className="flex items-start justify-between border-b border-slate-800 pb-4">
-          <div className="flex items-center space-x-3">
-            <div
-              className={`p-3 rounded-xl border flex items-center justify-center ${
-                isGoogle
-                  ? 'bg-blue-500/10 border-blue-500/30 text-blue-400'
-                  : 'bg-sky-500/10 border-sky-500/30 text-sky-400'
-              }`}
-            >
-              <span className="font-extrabold text-base">{isGoogle ? 'G' : 'M'}</span>
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-extrabold text-white font-sans">{providerName}</h3>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                  ENTERPRISE SSO
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 font-mono mt-0.5">{providerProtocol}</p>
-            </div>
-          </div>
+    <div className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 w-full max-w-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] relative text-white animate-fade-in">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          disabled={authenticating}
+          className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
 
-          <button
-            onClick={onClose}
-            disabled={authenticating}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+        {/* Modal Header */}
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+            {isGoogle ? <Globe className="w-6 h-6" /> : <ShieldCheck className="w-6 h-6" />}
+          </div>
+          <div>
+            <div className="text-[10px] font-mono font-bold uppercase text-cyan-400 tracking-wider">
+              Single Sign-On (SSO) Portal
+            </div>
+            <h3 className="text-xl font-black text-white">{providerName}</h3>
+          </div>
         </div>
 
-        {/* Auth Progress Stepper */}
-        {authenticating ? (
-          <div className="p-5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-4">
-            <div className="flex items-center space-x-3 text-xs text-emerald-400 font-bold">
-              <RefreshCw className="w-4 h-4 animate-spin shrink-0" />
-              <span>{authStatusMsg}</span>
-            </div>
+        <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+          Log in with your corporate SSO credentials. Protocol: <span className="text-slate-200 font-mono">{providerProtocol}</span>
+        </p>
 
-            <div className="grid grid-cols-4 gap-2 pt-2">
-              {[1, 2, 3, 4].map((stepNum) => (
+        {/* Authentication Progress Bar */}
+        {authenticating ? (
+          <div className="space-y-4 py-4">
+            <div className="p-4 rounded-2xl bg-slate-950 border border-cyan-500/40 space-y-3">
+              <div className="flex items-center justify-between text-xs font-mono font-bold text-cyan-400">
+                <span className="flex items-center space-x-2">
+                  <RefreshCw className="w-4 h-4 animate-spin text-cyan-400" />
+                  <span>SSO Handshake Step {authStep} of 4</span>
+                </span>
+                <span>{authStep * 25}%</span>
+              </div>
+
+              <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
                 <div
-                  key={stepNum}
-                  className={`h-2 rounded-full transition-all ${
-                    authStep >= stepNum ? (isGoogle ? 'bg-blue-500' : 'bg-sky-500') : 'bg-slate-800'
-                  }`}
+                  className="bg-gradient-to-r from-cyan-500 via-emerald-400 to-indigo-500 h-2 transition-all duration-700"
+                  style={{ width: `${authStep * 25}%` }}
                 />
-              ))}
+              </div>
+
+              <p className="text-xs font-mono text-slate-300 italic">{authStatusMsg}</p>
             </div>
           </div>
         ) : (
-          <div className="space-y-4 text-xs font-mono">
-            <div className="text-xs font-bold text-slate-300 font-sans">
-              Select or Enter Enterprise Account:
-            </div>
-
-            {/* Quick Account Selector */}
+          <div className="space-y-4">
+            {/* Accounts Directory Options */}
             <div className="space-y-2">
-              {defaultAccounts.map((acc) => (
-                <div
-                  key={acc.email}
+              <label className="block text-xs font-mono font-bold text-slate-300 uppercase">
+                Select Federated Enterprise Account
+              </label>
+
+              {defaultAccounts.map((acc, idx) => (
+                <button
+                  key={idx}
+                  type="button"
                   onClick={() => {
-                    setSelectedEmail(acc.email);
                     setUseCustom(false);
+                    setSelectedEmail(acc.email);
                   }}
-                  className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                  className={`w-full p-3 rounded-2xl border text-left transition-all flex items-center justify-between ${
                     !useCustom && selectedEmail === acc.email
-                      ? isGoogle
-                        ? 'bg-blue-950/60 border-blue-500/80 text-white shadow-md'
-                        : 'bg-sky-950/60 border-sky-500/80 text-white shadow-md'
-                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                      ? 'bg-slate-950 border-cyan-500/80 shadow-[0_0_15px_rgba(6,182,212,0.2)]'
+                      : 'bg-slate-950/50 border-slate-800 hover:border-slate-700'
                   }`}
                 >
-                  <div>
-                    <div className="font-bold text-white flex items-center gap-2">
-                      <span>{acc.email}</span>
-                      {!useCustom && selectedEmail === acc.email && (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      )}
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-xs">
+                      {acc.email[0].toUpperCase()}
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">
-                      {acc.role} • {acc.org}
+                    <div>
+                      <div className="text-xs font-bold text-white">{acc.email}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">{acc.role} • {acc.org}</div>
                     </div>
                   </div>
-                </div>
+                  {!useCustom && selectedEmail === acc.email && (
+                    <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                  )}
+                </button>
               ))}
             </div>
 
-            {/* Custom Domain Input */}
-            <div className="pt-2 border-t border-slate-800 space-y-2">
-              <label className="text-xs text-slate-400 font-bold">Or enter custom domain email:</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="email"
-                  placeholder="user@yourcompany.com"
-                  value={customEmail}
-                  onChange={(e) => {
-                    setCustomEmail(e.target.value);
-                    setUseCustom(true);
-                  }}
-                  onFocus={() => setUseCustom(true)}
-                  className={`w-full p-2.5 rounded-xl bg-slate-900 border text-white font-mono text-xs focus:outline-none ${
-                    useCustom ? 'border-blue-500 ring-1 ring-blue-500' : 'border-slate-800'
-                  }`}
-                />
-              </div>
-            </div>
-
-            {/* Launch Button */}
+            {/* Custom Domain Email Input */}
             <div className="pt-2">
               <button
                 type="button"
-                onClick={handleStartSSO}
-                className={`w-full py-3 px-4 rounded-xl font-bold text-xs text-white shadow-lg flex items-center justify-center space-x-2 transition-all ${
-                  isGoogle
-                    ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-900/40'
-                    : 'bg-sky-600 hover:bg-sky-500 shadow-sky-900/40'
-                }`}
+                onClick={() => setUseCustom(!useCustom)}
+                className="text-xs font-mono font-bold text-cyan-400 hover:underline mb-2 block"
               >
-                <span>Authorize & Launch Workspace ({activeEmail})</span>
+                {useCustom ? '← Choose from Directory' : '+ Enter Custom Enterprise Domain Email'}
+              </button>
+
+              {useCustom && (
+                <input
+                  type="email"
+                  value={customEmail}
+                  onChange={(e) => setCustomEmail(e.target.value)}
+                  placeholder="your.name@company-domain.com"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl py-2.5 px-3 text-xs font-bold text-white focus:border-cyan-500 outline-none"
+                />
+              )}
+            </div>
+
+            {/* Action CTAs */}
+            <div className="flex items-center justify-end space-x-3 pt-4 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-bold transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleStartSSO}
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-extrabold text-xs hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all flex items-center space-x-1.5"
+              >
+                <span>Authenticate via {isGoogle ? 'Google' : isOkta ? 'Okta' : 'Azure AD'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
