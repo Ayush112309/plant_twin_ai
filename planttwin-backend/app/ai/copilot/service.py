@@ -4,6 +4,7 @@ PlantTwin AI Backend — Copilot Intelligence Engine (Signature Feature)
 Context-aware Industrial AI Engineer searching across Telemetry, Digital Twin,
 AI Predictions, Maintenance, Work Orders, Documents, and Knowledge Base.
 """
+import os
 from typing import Dict, Any, List
 from .schemas import CopilotQueryRequest, CopilotQueryResponse, CopilotActionRecommendation
 from app.core.logging.logger import logger

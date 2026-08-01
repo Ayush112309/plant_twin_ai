@@ -23,6 +23,7 @@ import {
   Bot,
   Activity,
   X,
+  CornerDownLeft,
 } from 'lucide-react';
 
 interface PaletteItem {
@@ -35,6 +36,7 @@ interface PaletteItem {
   action: () => void;
   badge?: string;
   color?: string;
+  actionBadge?: string;
 }
 
 interface ModalProps {
@@ -52,12 +54,16 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
 
-  // Keydown listener for ESC
+  // Keydown listener for ESC and number hotkeys
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
       }
+      if (e.ctrlKey && e.key === '1') setSelectedCategory('ALL');
+      if (e.ctrlKey && e.key === '2') setSelectedCategory('AI');
+      if (e.ctrlKey && e.key === '3') setSelectedCategory('ACTIONS');
+      if (e.ctrlKey && e.key === '4') setSelectedCategory('ENTITIES');
     };
 
     if (isOpen) {
@@ -78,232 +84,208 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
     {
       id: 'qa-1',
       category: 'Quick Action',
-      type: 'Action',
+      type: 'Workflow Action',
       title: 'Create Work Order',
       subtitle: 'Dispatch technician and assign maintenance task',
       icon: Plus,
       color: 'text-emerald-400',
+      actionBadge: '⚡ Instant Action',
       action: () => navigate('/work-orders'),
     },
     {
       id: 'qa-2',
       category: 'Quick Action',
-      type: 'Action',
+      type: 'Hierarchy Config',
       title: 'Add Equipment',
       subtitle: 'Register new asset in plant hierarchy',
       icon: Cpu,
       color: 'text-sky-400',
+      actionBadge: '⚡ Instant Action',
       action: () => navigate('/equipment'),
     },
     {
       id: 'qa-3',
       category: 'Quick Action',
-      type: 'Action',
+      type: 'Sensor Mapping',
       title: 'Create Sensor Tag',
       subtitle: 'Configure new telemetry sensor tag mapping',
       icon: Radio,
       color: 'text-purple-400',
+      actionBadge: '⚡ Tag Config',
       action: () => navigate('/assets'),
     },
     {
       id: 'qa-4',
       category: 'Quick Action',
-      type: 'Action',
+      type: 'Protocol Gateway',
       title: 'Connect PLC (Siemens S7)',
       subtitle: 'Configure S7-1200 / S7-1500 / PLCSIM Advanced memory DB connection',
       icon: Zap,
       color: 'text-teal-400',
+      actionBadge: '🔌 Connector',
       action: () => navigate('/connectivity'),
     },
     {
       id: 'qa-5',
       category: 'Quick Action',
-      type: 'Action',
+      type: 'Reporting Output',
       title: 'Generate OEE & Monthly Report',
-      subtitle: 'Create valid PDF-1.4 Spec report',
+      subtitle: 'Create valid PDF-1.4 Spec executive report',
       icon: FileText,
       color: 'text-emerald-400',
+      actionBadge: '📄 PDF Export',
       action: () => navigate('/reports'),
     },
     {
       id: 'qa-6',
       category: 'Quick Action',
-      type: 'Action',
+      type: 'Layout Customizer',
       title: 'Create Custom Dashboard',
       subtitle: 'Customize drag & drop widget layout',
       icon: Layers,
       color: 'text-indigo-400',
+      actionBadge: '🎨 Layout Builder',
       action: () => navigate('/reports'),
     },
     {
       id: 'qa-7',
       category: 'Quick Action',
-      type: 'Action',
+      type: 'Virtual Load Test',
       title: 'Start Digital Twin Simulation',
       subtitle: 'Run virtual load scenario simulation',
       icon: Play,
       color: 'text-amber-400',
+      actionBadge: '🎮 Simulator',
       action: () => navigate('/digital-twin'),
     },
-    {
-      id: 'qa-8',
-      category: 'Quick Action',
-      type: 'Action',
-      title: 'Restart Siemens Connector',
-      subtitle: 'Re-initialize driver instance and heartbeat',
-      icon: RotateCcw,
-      color: 'text-red-400',
-      action: () => navigate('/connectivity'),
-    },
-    {
-      id: 'qa-9',
-      category: 'Quick Action',
-      type: 'Action',
-      title: 'Open Plant Explorer',
-      subtitle: 'Browse ISA-95 asset hierarchy tree',
-      icon: Compass,
-      color: 'text-cyan-400',
-      action: () => navigate('/plant-explorer'),
-    },
 
-    // --- AI COMMANDS (LAUNCHER) ---
+    // --- AI COMMANDS ---
     {
       id: 'ai-1',
       category: 'AI Command',
-      type: 'AI Launcher',
-      title: 'Explain Critical Alarm ALM-2024-001',
-      subtitle: 'Root cause explanation & pneumatic valve diagnostics',
-      icon: Bot,
-      color: 'text-purple-400',
-      badge: 'AI Engine',
-      action: () => onLaunchCopilotQuery?.('Explain critical alarm ALM-2024-001'),
+      type: 'Incident Diagnosis',
+      title: 'Why did Pump-12 stop?',
+      subtitle: 'Run cross-module root cause search (Telemetry → Alarms → Twin)',
+      icon: Sparkles,
+      color: 'text-emerald-400',
+      badge: 'Signature NLP',
+      actionBadge: '🤖 AI Query',
+      action: () => {
+        if (onLaunchCopilotQuery) onLaunchCopilotQuery('Why did Pump-12 stop?');
+        else navigate('/operations');
+      },
     },
     {
       id: 'ai-2',
       category: 'AI Command',
-      type: 'AI Launcher',
-      title: 'Predict Failures for Next 7 Days',
-      subtitle: 'Scan 7-day failure horizon probability',
-      icon: Sparkles,
-      color: 'text-purple-400',
-      badge: 'AI Engine',
-      action: () => onLaunchCopilotQuery?.('Predict failures for the next 7 days.'),
+      type: 'Anomaly Detection',
+      title: 'Show abnormal sensors',
+      subtitle: 'Scan all 128 telemetry tags for Z-Score statistical outliers',
+      icon: Activity,
+      color: 'text-cyan-400',
+      badge: 'Real-time ML',
+      actionBadge: '🤖 AI Query',
+      action: () => {
+        if (onLaunchCopilotQuery) onLaunchCopilotQuery('Show abnormal sensors.');
+        else navigate('/telemetry');
+      },
     },
     {
       id: 'ai-3',
       category: 'AI Command',
-      type: 'AI Launcher',
-      title: 'Analyze Pump Outage (Why did Pump-12 stop?)',
-      subtitle: 'Cross-module search Telemetry → Twin → Work Orders',
-      icon: Bot,
+      type: 'RUL Prediction',
+      title: 'Predict failures for next 7 days',
+      subtitle: 'Run XGBoost RUL degradation models across active assets',
+      icon: Brain,
       color: 'text-purple-400',
-      badge: 'AI Engine',
-      action: () => onLaunchCopilotQuery?.('Why did Pump-12 stop?'),
+      badge: 'Predictive RUL',
+      actionBadge: '🤖 AI Query',
+      action: () => {
+        if (onLaunchCopilotQuery) onLaunchCopilotQuery('Predict failures for the next 7 days.');
+        else navigate('/ai');
+      },
     },
     {
       id: 'ai-4',
       category: 'AI Command',
-      type: 'AI Launcher',
-      title: 'Generate SHAP Root Cause Analysis (RCA)',
-      subtitle: 'Feature importance ranking for Reactor-001 thermal spike',
-      icon: Brain,
-      color: 'text-purple-400',
-      badge: 'AI Engine',
-      action: () => onLaunchCopilotQuery?.('Why is temperature increasing in Reactor-3?'),
-    },
-    {
-      id: 'ai-5',
-      category: 'AI Command',
-      type: 'AI Launcher',
-      title: 'Summarize Plant Health & OEE Score',
-      subtitle: 'Composite score & production throughput overview',
-      icon: Activity,
-      color: 'text-purple-400',
-      badge: 'AI Engine',
-      action: () => onLaunchCopilotQuery?.('Overall Plant OEE & Health Summary'),
-    },
-    {
-      id: 'ai-6',
-      category: 'AI Command',
-      type: 'AI Launcher',
-      title: 'Optimize Energy Consumption',
-      subtitle: 'Suggest thermal heat exchange energy saving plan',
-      icon: Zap,
-      color: 'text-purple-400',
-      badge: 'AI Engine',
-      action: () => onLaunchCopilotQuery?.('Suggest energy optimization for Hydrocracking line'),
-    },
-    {
-      id: 'ai-7',
-      category: 'AI Command',
-      type: 'AI Launcher',
-      title: 'Compare Line-1 vs Line-2 Performance',
-      subtitle: 'Benchmarking breakdown across assembly lines',
-      icon: Sparkles,
-      color: 'text-purple-400',
-      badge: 'AI Engine',
-      action: () => onLaunchCopilotQuery?.('Compare Line-1 and Line-2 performance.'),
+      type: 'Explainability XAI',
+      title: 'Explain Reactor-001 temperature spike',
+      subtitle: 'Inspect SHAP & LIME feature attributions for thermal tag',
+      icon: Compass,
+      color: 'text-amber-400',
+      badge: 'SHAP / LIME',
+      actionBadge: '🤖 XAI Analysis',
+      action: () => {
+        if (onLaunchCopilotQuery) onLaunchCopilotQuery('Why is temperature increasing in Reactor-3?');
+        else navigate('/ai');
+      },
     },
 
-    // --- ENTITIES & NAVIGATOR ---
+    // --- PLATFORM ENTITIES ---
     {
       id: 'ent-1',
       category: 'Entity',
-      type: 'Equipment',
+      type: 'Critical Asset',
       title: 'Reactor-001 (EQ-RX-001)',
       subtitle: 'Hydrocracking Area 01 • Status: Critical (42% Health)',
       icon: Cpu,
       color: 'text-red-400',
+      actionBadge: '📊 Asset View',
       action: () => navigate('/equipment'),
     },
     {
       id: 'ent-2',
       category: 'Entity',
-      type: 'Equipment',
+      type: 'Equipment Asset',
       title: 'Pump-002 (EQ-PMP-002)',
       subtitle: 'Centrifugal Pump • Status: Warning (74% Health)',
       icon: Cpu,
       color: 'text-amber-400',
+      actionBadge: '📊 Asset View',
       action: () => navigate('/equipment'),
     },
     {
       id: 'ent-3',
       category: 'Entity',
-      type: 'Equipment',
+      type: 'Equipment Asset',
       title: 'Compressor-001 (EQ-CMP-001)',
       subtitle: 'Gas Compressor • Status: Healthy (98% Health)',
       icon: Cpu,
       color: 'text-emerald-400',
+      actionBadge: '📊 Asset View',
       action: () => navigate('/equipment'),
     },
     {
       id: 'ent-4',
       category: 'Entity',
-      type: 'Sensor',
+      type: 'SCADA Tag',
       title: 'DB1.DBD4 (Bearing Temp Sensor)',
       subtitle: 'Current: 68.4 °C • Siemens S7-1200 Connected',
       icon: Radio,
       color: 'text-sky-400',
+      actionBadge: '📡 Telemetry Tag',
       action: () => navigate('/telemetry'),
     },
     {
       id: 'ent-5',
       category: 'Entity',
-      type: 'Plant',
+      type: 'Plant Site',
       title: 'Refinery Alpha',
       subtitle: 'Primary Operational Facility • 5 Registered Assets',
       icon: Building2,
       color: 'text-emerald-400',
+      actionBadge: '🏭 Site Overview',
       action: () => navigate('/plant-explorer'),
     },
     {
       id: 'ent-6',
       category: 'Entity',
-      type: 'Alarm',
+      type: 'ISA Alarm',
       title: 'ALM-2024-001 (High Temperature Spike)',
       subtitle: 'ISA-18.2 Critical • Source: Reactor-001',
       icon: AlertTriangle,
       color: 'text-red-400',
+      actionBadge: '🚨 ISA Alarm',
       action: () => navigate('/alerts'),
     },
     {
@@ -311,20 +293,11 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
       category: 'Entity',
       type: 'Work Order',
       title: 'WO-101 (Sensor Calibration)',
-      subtitle: 'Assigned to John Doe • Status: IN_PROGRESS',
+      subtitle: 'Assigned to Lead Tech • Status: IN_PROGRESS',
       icon: ClipboardList,
       color: 'text-amber-400',
+      actionBadge: '📋 Maintenance',
       action: () => navigate('/work-orders'),
-    },
-    {
-      id: 'ent-8',
-      category: 'Entity',
-      type: 'Report',
-      title: 'Monthly Operational & OEE Report (PDF)',
-      subtitle: 'Valid PDF-1.4 Spec • Generated Today',
-      icon: FileText,
-      color: 'text-emerald-400',
-      action: () => navigate('/reports'),
     },
   ];
 
@@ -349,26 +322,46 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-[9999] flex items-start justify-center pt-16 sm:pt-20 p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in font-sans selection:bg-cyan-500 selection:text-black"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="industrial-card w-full max-w-2xl overflow-hidden shadow-2xl relative border-emerald-500/50 flex flex-col max-h-[80vh]"
+        className="w-full max-w-2xl overflow-hidden shadow-2xl relative border rounded-3xl backdrop-blur-2xl flex flex-col max-h-[82vh]"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          borderColor: 'var(--border-color)',
+          color: 'var(--text-primary)',
+        }}
       >
         {/* Search Bar Input Header */}
-        <div className="p-4 bg-[var(--bg-header)] border-b border-[var(--border-color)] flex items-center space-x-3">
-          <Search className="w-5 h-5 text-emerald-400 shrink-0" />
+        <div
+          className="p-4 border-b flex items-center space-x-3"
+          style={{
+            backgroundColor: 'var(--bg-header)',
+            borderColor: 'var(--border-color)',
+          }}
+        >
+          <Search className="w-5 h-5 text-cyan-400 shrink-0" />
           <input
             type="text"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search equipment, sensors, plants, alarms, work orders, or launch AI commands..."
-            className="flex-1 bg-transparent text-sm font-medium text-[var(--text-primary)] placeholder-slate-500 focus:outline-none"
+            className="flex-1 bg-transparent text-sm font-bold placeholder-slate-500 focus:outline-none"
+            style={{ color: 'var(--text-primary)' }}
           />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="text-xs font-mono text-slate-400 hover:text-white px-2 py-0.5 rounded bg-slate-800"
+            >
+              Clear
+            </button>
+          )}
           <button
             onClick={onClose}
-            className="p-1 rounded text-slate-400 hover:text-slate-100 hover:bg-[var(--bg-canvas)] transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
             title="Close Command Palette"
           >
             <X className="w-4 h-4" />
@@ -376,29 +369,52 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
         </div>
 
         {/* Category Filter Pills */}
-        <div className="px-4 py-2 bg-[var(--bg-canvas)] border-b border-[var(--border-color)] flex items-center space-x-2 text-xs font-semibold overflow-x-auto">
-          {['ALL', 'AI', 'ACTIONS', 'ENTITIES'].map((cat) => (
+        <div
+          className="px-4 py-2.5 border-b flex items-center space-x-2 text-xs font-bold overflow-x-auto no-scrollbar"
+          style={{
+            backgroundColor: 'var(--bg-canvas)',
+            borderColor: 'var(--border-color)',
+          }}
+        >
+          {[
+            { id: 'ALL', label: 'All Commands', shortcut: 'Ctrl+1' },
+            { id: 'AI', label: '🤖 AI Commands', shortcut: 'Ctrl+2' },
+            { id: 'ACTIONS', label: '⚡ Quick Actions', shortcut: 'Ctrl+3' },
+            { id: 'ENTITIES', label: '📦 Platform Entities', shortcut: 'Ctrl+4' },
+          ].map((cat) => (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1 rounded-full transition-colors font-mono ${
-                selectedCategory === cat
-                  ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-3.5 py-1.5 rounded-xl transition-all font-mono flex items-center space-x-1.5 ${
+                selectedCategory === cat.id
+                  ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-black shadow-md'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] border'
               }`}
+              style={
+                selectedCategory !== cat.id
+                  ? {
+                      backgroundColor: 'var(--bg-card)',
+                      borderColor: 'var(--border-color)',
+                    }
+                  : {}
+              }
             >
-              {cat === 'AI' ? '🤖 AI Commands' : cat === 'ACTIONS' ? '⚡ Quick Actions' : cat === 'ENTITIES' ? '📦 Platform Entities' : 'All Commands'}
+              <span>{cat.label}</span>
+              <span className="text-[9px] opacity-75 font-normal">({cat.shortcut})</span>
             </button>
           ))}
         </div>
 
         {/* Command Results Stream */}
-        <div className="flex-1 overflow-y-auto p-2 space-y-1 bg-[var(--bg-canvas)]">
+        <div
+          className="flex-1 overflow-y-auto p-3 space-y-1.5"
+          style={{ backgroundColor: 'var(--bg-canvas)' }}
+        >
           {filteredItems.length === 0 ? (
-            <div className="p-8 text-center space-y-2 text-slate-400">
-              <Command className="w-8 h-8 text-slate-600 mx-auto" />
-              <div className="text-xs font-semibold">No command matching "{query}" found.</div>
-              <div className="text-[11px] text-slate-500">Try searching for "Pump", "Report", "Alarm", or "Explain".</div>
+            <div className="p-10 text-center space-y-2 text-slate-400">
+              <Command className="w-10 h-10 text-slate-600 mx-auto" />
+              <div className="text-xs font-bold text-[var(--text-primary)]">No command matching "{query}" found.</div>
+              <div className="text-[11px] text-slate-500 font-mono">Try searching for "Pump", "Report", "Alarm", or "Explain".</div>
             </div>
           ) : (
             filteredItems.map((item) => {
@@ -407,28 +423,47 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleAction(item)}
-                  className="w-full p-3 rounded-lg flex items-center justify-between text-left hover:bg-[var(--bg-card)] border border-transparent hover:border-[var(--border-color)] transition-all group"
+                  className="w-full p-3.5 rounded-2xl flex items-center justify-between text-left border transition-all group"
+                  style={{
+                    backgroundColor: 'var(--bg-card)',
+                    borderColor: 'var(--border-color)',
+                    color: 'var(--text-primary)',
+                  }}
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-lg bg-[var(--bg-header)] border border-[var(--border-color)] ${item.color || 'text-slate-300'}`}>
+                  <div className="flex items-center space-x-3.5">
+                    <div
+                      className={`p-2.5 rounded-xl border ${item.color || 'text-slate-300'}`}
+                      style={{
+                        backgroundColor: 'var(--bg-canvas)',
+                        borderColor: 'var(--border-color)',
+                      }}
+                    >
                       <IconComponent className="w-4 h-4" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2">
+                      <div className="text-xs font-black flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
                         <span>{item.title}</span>
                         {item.badge && (
-                          <span className="text-[9px] font-mono text-purple-400 bg-purple-950/60 px-1.5 py-0.5 rounded border border-purple-500/30">
+                          <span className="text-[9px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-500/40">
                             {item.badge}
                           </span>
                         )}
+                        {item.actionBadge && (
+                          <span className="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-500/30">
+                            {item.actionBadge}
+                          </span>
+                        )}
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">{item.subtitle}</div>
+                      <div className="text-[11px] text-slate-400 mt-0.5 font-mono">{item.subtitle}</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-2 text-[10px] font-mono text-slate-500 group-hover:text-emerald-400 transition-colors">
-                    <span>{item.type}</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  <div className="flex items-center space-x-2 text-[10px] font-mono text-slate-500 group-hover:text-cyan-400 transition-colors">
+                    <span className="hidden sm:inline font-bold">{item.type}</span>
+                    <div className="flex items-center space-x-1 px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 group-hover:border-cyan-500/50 group-hover:text-cyan-300">
+                      <span>↵ Enter</span>
+                      <CornerDownLeft className="w-3 h-3" />
+                    </div>
                   </div>
                 </button>
               );
@@ -437,12 +472,19 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
         </div>
 
         {/* Footer Shortcut Bar */}
-        <div className="p-2.5 bg-[var(--bg-header)] border-t border-[var(--border-color)] flex items-center justify-between text-[11px] text-slate-400 font-mono">
-          <span className="flex items-center space-x-1">
-            <Command className="w-3.5 h-3.5 text-emerald-400" />
-            <span>PlantTwin AI Navigator & AI Launcher</span>
+        <div
+          className="p-3 border-t flex items-center justify-between text-[11px] font-mono"
+          style={{
+            backgroundColor: 'var(--bg-header)',
+            borderColor: 'var(--border-color)',
+            color: 'var(--text-secondary)',
+          }}
+        >
+          <span className="flex items-center space-x-1.5 font-bold text-cyan-400">
+            <Command className="w-3.5 h-3.5" />
+            <span>PlantTwin AI Command Navigator & Execution Launcher</span>
           </span>
-          <span>Click outside or Press ESC to close</span>
+          <span className="text-[10px] text-slate-500">Press ESC or click outside to close</span>
         </div>
       </div>
     </div>
