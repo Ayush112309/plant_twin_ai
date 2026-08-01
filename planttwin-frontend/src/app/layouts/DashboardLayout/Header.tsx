@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [plantsList, setPlantsList] = useState<PlantOrgItem[]>(DEFAULT_PLANTS);
   const [backendStatus, setBackendStatus] = useState<string>('ONLINE');
 
-  const userEmail = permissions.email;
+  const userEmail = localStorage.getItem('planttwin_user_email') || permissions.email;
 
   // Close all dropdowns when clicking anywhere outside the header
   useEffect(() => {

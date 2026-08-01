@@ -81,11 +81,14 @@ export const LoginPage: React.FC = () => {
             const res: any = await apiClient.post('/identity/auth/login', { email, password });
             if (res?.data?.access_token) {
               await setAuthData(res.data.access_token, res.data.refresh_token);
+              if (email) localStorage.setItem('planttwin_user_email', email);
             } else {
               enterDemoMode('System Administrator');
+              if (email) localStorage.setItem('planttwin_user_email', email);
             }
           } catch {
             enterDemoMode('System Administrator');
+            if (email) localStorage.setItem('planttwin_user_email', email);
           }
         } else {
           navigate('/register');
