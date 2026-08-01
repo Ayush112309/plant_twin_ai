@@ -239,7 +239,10 @@ export const PersonaHubPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070B19] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
+    <div className="min-h-screen bg-[#070B19] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black relative overflow-hidden">
+      {/* Ambient Background Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-gradient-to-tr from-cyan-500/15 via-emerald-500/10 to-purple-600/15 rounded-full blur-3xl pointer-events-none" />
+
       {/* Top Multi-Page Navigation Header */}
       <header className="h-16 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl px-4 lg:px-8 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate('/')}>

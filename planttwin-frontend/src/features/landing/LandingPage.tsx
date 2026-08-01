@@ -44,7 +44,6 @@ export const LandingPage: React.FC = () => {
   const [assetCount, setAssetCount] = useState<number>(25);
   const [downtimeCostPerHour, setDowntimeCostPerHour] = useState<number>(8500);
 
-  // Real-time telemetry simulation pulse
   useEffect(() => {
     const interval = setInterval(() => {
       setVibration((prev) => +(prev + (Math.random() * 0.08 - 0.04)).toFixed(2));
@@ -54,12 +53,14 @@ export const LandingPage: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Calculated Annual Savings formula: (Assets * DowntimeCost * 0.65 estimated failure prevention)
   const annualSavings = Math.round((assetCount * downtimeCostPerHour * 2.4) / 1000) * 1000;
 
   return (
-    <div className="min-h-screen bg-[#070B19] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
-      {/* Top Multi-Page Navigation Header */}
+    <div className="min-h-screen bg-[#070B19] text-white flex flex-col font-sans selection:bg-cyan-500 selection:text-black relative overflow-hidden">
+      {/* Ambient Background Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-gradient-to-tr from-cyan-500/15 via-emerald-500/10 to-purple-600/15 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Unified Top Multi-Page Navigation Header */}
       <header className="h-16 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl px-4 lg:px-8 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate('/')}>
           <PlantTwinLogo size="md" showText={true} />
@@ -83,15 +84,13 @@ export const LandingPage: React.FC = () => {
             onClick={() => navigate('/register')}
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-extrabold text-xs hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all"
           >
-            Get Started
+            Register Org
           </button>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative px-4 lg:px-8 pt-16 pb-16 max-w-7xl mx-auto w-full text-center flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-cyan-500/20 via-emerald-500/15 to-purple-600/20 rounded-full blur-3xl pointer-events-none" />
-
+      <section className="relative px-4 lg:px-8 pt-16 pb-16 max-w-7xl mx-auto w-full text-center flex flex-col items-center justify-center">
         {/* High-Impact Headline */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-5xl leading-[1.1] mb-6">
           AI Agents for Autonomous <br className="hidden sm:inline" />
