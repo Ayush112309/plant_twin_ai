@@ -92,20 +92,6 @@ export const LandingPage: React.FC = () => {
       <section className="relative px-4 lg:px-8 pt-16 pb-16 max-w-7xl mx-auto w-full text-center flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-cyan-500/20 via-emerald-500/15 to-purple-600/20 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Live SCADA Telemetry Stream Ticker */}
-        <div className="inline-flex items-center space-x-4 px-4 py-2 rounded-full bg-slate-950/80 border border-cyan-500/30 text-xs font-mono font-bold mb-8 shadow-xl backdrop-blur-xl">
-          <span className="flex items-center space-x-1.5 text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>LIVE SCADA STREAM (1,250 Hz)</span>
-          </span>
-          <span className="text-slate-600">|</span>
-          <span className="text-slate-300">Vibration: <strong className="text-cyan-400">{vibration} mm/s</strong></span>
-          <span className="text-slate-600">|</span>
-          <span className="text-slate-300">Reactor Pressure: <strong className="text-emerald-400">{pressure} bar</strong></span>
-          <span className="text-slate-600">|</span>
-          <span className="text-slate-300 font-bold text-purple-400">RUL: 14 Days Remaining</span>
-        </div>
-
         {/* High-Impact Headline */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-5xl leading-[1.1] mb-6">
           AI Agents for Autonomous <br className="hidden sm:inline" />
@@ -174,11 +160,11 @@ export const LandingPage: React.FC = () => {
             Industrial Hardware & Protocol Drivers:
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-mono font-bold text-slate-300">
-            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-cyan-300">Siemens S7-1200 / S7-1500</span>
-            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-emerald-300">OPC-UA Server</span>
-            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-purple-300">Allen-Bradley ControlLogix</span>
-            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-amber-300">Delta AS Series</span>
-            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-sky-300">Modbus TCP & MQTT</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-cyan-300">Siemens S7 & PLCSIM</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-emerald-300">OPC-UA Server Browser</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-purple-300">MQTT Broker Explorer</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-amber-300">REST API Ingestion</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-sky-300">CSV Batch Upload</span>
           </div>
         </div>
       </section>
