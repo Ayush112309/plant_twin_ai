@@ -16,6 +16,10 @@ import {
   PlaySquare,
   LogIn,
   Sliders,
+  Play,
+  Check,
+  Layers,
+  Zap,
 } from 'lucide-react';
 import { useAuth } from '../../app/contexts/AuthContext';
 
@@ -34,6 +38,11 @@ interface PersonaRoleData {
   primaryWorkspaces: string[];
   permissions: { name: string; allowed: boolean }[];
   defaultRoute: string;
+  liveScenario: {
+    title: string;
+    description: string;
+    actionOutput: string;
+  };
 }
 
 const PERSONA_ROLES: PersonaRoleData[] = [
@@ -65,6 +74,11 @@ const PERSONA_ROLES: PersonaRoleData[] = [
       { name: 'User & System Administration', allowed: false },
     ],
     defaultRoute: '/operations',
+    liveScenario: {
+      title: 'Plant OEE Target Deviation Alert',
+      description: 'Rotterdam Plant Line-02 OEE dropped to 77.8% due to pump cavitation.',
+      actionOutput: 'Generated Executive PDF Report & Re-allocated 15% Capacity to Line-03.',
+    },
   },
   {
     id: 'maintenance_manager',
@@ -94,6 +108,11 @@ const PERSONA_ROLES: PersonaRoleData[] = [
       { name: 'System Licensing & Tenant Settings', allowed: false },
     ],
     defaultRoute: '/work-orders',
+    liveScenario: {
+      title: 'Pump-002 Drive End Bearing Wear',
+      description: 'RUL model estimates 14 Days remaining before impeller seizure.',
+      actionOutput: 'Dispatched Emergency Work Order WO-8902 to Lead Tech for SKF 6208 bearing.',
+    },
   },
   {
     id: 'ai_specialist',
@@ -123,6 +142,11 @@ const PERSONA_ROLES: PersonaRoleData[] = [
       { name: 'Manage Billing & Subscription', allowed: false },
     ],
     defaultRoute: '/ai',
+    liveScenario: {
+      title: 'Feature Drift in XGBoost Vibration Model',
+      description: 'Sensor noise drift detected on Tag DB10.DBD14 (Pressure Transducer).',
+      actionOutput: 'Triggered Automated Model Retraining Pipeline on 100K Feast Embeddings.',
+    },
   },
   {
     id: 'operator',
@@ -152,6 +176,11 @@ const PERSONA_ROLES: PersonaRoleData[] = [
       { name: 'Delete Audit History Logs', allowed: false },
     ],
     defaultRoute: '/telemetry',
+    liveScenario: {
+      title: 'Reactor Excursion Warning (520 Bar)',
+      description: 'ISA-18.2 High-High alarm triggered on Siemens S7 DB1.DBX0.0 coil.',
+      actionOutput: 'Executed Closed-Loop Bypass Valve Override +12% Open.',
+    },
   },
   {
     id: 'admin',
@@ -181,6 +210,11 @@ const PERSONA_ROLES: PersonaRoleData[] = [
       { name: 'Manage Enterprise Subscriptions', allowed: true },
     ],
     defaultRoute: '/operations',
+    liveScenario: {
+      title: 'New OPC-UA Driver Node Registration',
+      description: 'Adding 64 new SCADA tags for Houston Refinery Expansion.',
+      actionOutput: 'Configured Driver Gateway opc.tcp://192.168.1.100:4840 & Provisioned Roles.',
+    },
   },
 ];
 
@@ -188,12 +222,20 @@ export const PersonaHubPage: React.FC = () => {
   const navigate = useNavigate();
   const { enterDemoMode } = useAuth();
   const [selectedRole, setSelectedRole] = useState<PersonaRoleData>(PERSONA_ROLES[0]);
+  const [simRunning, setSimRunning] = useState(false);
 
   const handleLaunchWorkspace = (role: PersonaRoleData) => {
     enterDemoMode(role.roleName);
     localStorage.setItem('planttwin_user_email', role.email);
     window.dispatchEvent(new Event('planttwin:org-updated'));
     navigate(role.defaultRoute);
+  };
+
+  const handleTestSim = () => {
+    setSimRunning(true);
+    setTimeout(() => {
+      setSimRunning(false);
+    }, 2200);
   };
 
   return (
@@ -280,7 +322,7 @@ export const PersonaHubPage: React.FC = () => {
         </div>
 
         {/* Bottom Detailed Workspace Preview Box */}
-        <div className="w-full bg-slate-950/90 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-2xl shadow-2xl">
+        <div className="w-full bg-slate-950/90 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-2xl shadow-2xl mb-12">
           {/* Header Row */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-6 mb-6">
             <div>
@@ -292,7 +334,16 @@ export const PersonaHubPage: React.FC = () => {
             </div>
 
             {/* CTAs */}
-            <div className="flex items-center space-x-3 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              <button
+                onClick={handleTestSim}
+                disabled={simRunning}
+                className="px-4 py-2.5 rounded-xl bg-slate-900 border border-cyan-500/40 hover:border-cyan-500 text-xs font-bold text-cyan-300 transition-all flex items-center space-x-1.5 shrink-0"
+              >
+                <Zap className={`w-4 h-4 text-cyan-400 ${simRunning ? 'animate-spin' : ''}`} />
+                <span>{simRunning ? 'Simulating Event...' : 'Test Persona Scenario'}</span>
+              </button>
+
               <button
                 onClick={() => navigate('/login')}
                 className="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-500 text-xs font-bold text-slate-200 transition-all flex items-center space-x-1.5 shrink-0"
@@ -311,10 +362,16 @@ export const PersonaHubPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Mission Quote Box */}
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/90 text-xs sm:text-sm text-slate-300 italic mb-8 leading-relaxed">
-            "{selectedRole.quote}"
-          </div>
+          {/* Live Interactive Scenario Trigger Result */}
+          {simRunning ? (
+            <div className="p-4 rounded-2xl bg-cyan-950/50 border border-cyan-500/50 text-cyan-200 text-xs font-mono mb-6 animate-pulse">
+              ⚡ <strong>Simulating Real-Time Event for {selectedRole.roleName}:</strong> {selectedRole.liveScenario.title}... Processing telemetry stream & AI actions...
+            </div>
+          ) : (
+            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/90 text-xs sm:text-sm text-slate-300 italic mb-8 leading-relaxed">
+              "{selectedRole.quote}"
+            </div>
+          )}
 
           {/* 3 Grid Columns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -383,6 +440,50 @@ export const PersonaHubPage: React.FC = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* 5-Persona Governance Comparison Matrix */}
+        <div className="w-full bg-slate-950/80 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-2xl shadow-2xl">
+          <div className="text-center mb-6">
+            <h3 className="text-xl font-black text-white">5-Persona RBAC Governance Comparison Matrix</h3>
+            <p className="text-xs text-slate-400 font-mono mt-1">Side-by-side breakdown of operational scope and PLC write authority</p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs font-mono">
+              <thead>
+                <tr className="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
+                  <th className="py-3 px-4">User Persona</th>
+                  <th className="py-3 px-4">Operational Scope</th>
+                  <th className="py-3 px-4">PLC Write Level</th>
+                  <th className="py-3 px-4">Primary Decision Output</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/60">
+                {PERSONA_ROLES.map((role) => (
+                  <tr key={role.id} className="hover:bg-slate-900/50 transition-colors">
+                    <td className="py-3.5 px-4 font-bold text-white flex items-center space-x-2">
+                      <span className={`w-2 h-2 rounded-full ${role.metricColor}`} />
+                      <span>{role.roleName}</span>
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-300">
+                      {role.id === 'plant_manager' ? 'All Plant Sites & Refineries' : role.id === 'admin' ? 'Global Multi-Tenant Infrastructure' : 'Single Production Facility'}
+                    </td>
+                    <td className="py-3.5 px-4">
+                      {role.permissions.some(p => p.name.includes('Write Access') && p.allowed) ? (
+                        <span className="text-emerald-400 font-bold">● Allowed (Tag Overrides)</span>
+                      ) : (
+                        <span className="text-slate-500">○ Read-Only Monitoring</span>
+                      )}
+                    </td>
+                    <td className="py-3.5 px-4 text-cyan-300">
+                      {role.liveScenario.actionOutput}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </main>
