@@ -341,80 +341,73 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
             borderColor: 'var(--border-color)',
           }}
         >
-          <Search className="w-5 h-5 text-cyan-400 shrink-0" />
+          <Search className="w-6 h-6 text-emerald-500 shrink-0" />
           <input
             type="text"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search equipment, sensors, plants, alarms, work orders, or launch AI commands..."
-            className="flex-1 bg-transparent text-sm font-bold placeholder-slate-500 focus:outline-none"
+            className="flex-1 bg-transparent text-lg placeholder-slate-500 focus:outline-none"
             style={{ color: 'var(--text-primary)' }}
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="text-xs font-mono text-slate-400 hover:text-white px-2 py-0.5 rounded bg-slate-800"
+              className="p-1 text-slate-400 hover:text-white transition-colors"
             >
-              Clear
+              <X className="w-5 h-5" />
             </button>
           )}
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            title="Close Command Palette"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          {!query && (
+            <button
+              onClick={onClose}
+              className="p-1 text-slate-400 hover:text-white transition-colors"
+              title="Close Command Palette"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         {/* Category Filter Pills */}
         <div
-          className="px-4 py-2.5 border-b flex items-center space-x-2 text-xs font-bold overflow-x-auto no-scrollbar"
+          className="px-4 py-3 border-b flex items-center space-x-6 overflow-x-auto no-scrollbar"
           style={{
             backgroundColor: 'var(--bg-canvas)',
             borderColor: 'var(--border-color)',
           }}
         >
           {[
-            { id: 'ALL', label: 'All Commands', shortcut: 'Ctrl+1' },
-            { id: 'AI', label: '🤖 AI Commands', shortcut: 'Ctrl+2' },
-            { id: 'ACTIONS', label: '⚡ Quick Actions', shortcut: 'Ctrl+3' },
-            { id: 'ENTITIES', label: '📦 Platform Entities', shortcut: 'Ctrl+4' },
+            { id: 'ALL', label: 'All Commands' },
+            { id: 'AI', label: '🤖 AI Commands' },
+            { id: 'ACTIONS', label: '⚡ Quick Actions' },
+            { id: 'ENTITIES', label: '📦 Platform Entities' },
           ].map((cat) => (
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3.5 py-1.5 rounded-xl transition-all font-mono flex items-center space-x-1.5 ${
+              className={`px-4 py-1.5 rounded-full transition-all flex items-center text-sm font-semibold ${
                 selectedCategory === cat.id
-                  ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-black shadow-md'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] border'
+                  ? 'bg-emerald-950/50 text-emerald-500 border border-emerald-900/50'
+                  : 'text-slate-400 hover:text-slate-300'
               }`}
-              style={
-                selectedCategory !== cat.id
-                  ? {
-                      backgroundColor: 'var(--bg-card)',
-                      borderColor: 'var(--border-color)',
-                    }
-                  : {}
-              }
             >
               <span>{cat.label}</span>
-              <span className="text-[9px] opacity-75 font-normal">({cat.shortcut})</span>
             </button>
           ))}
         </div>
 
         {/* Command Results Stream */}
         <div
-          className="flex-1 overflow-y-auto p-3 space-y-1.5"
+          className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar"
           style={{ backgroundColor: 'var(--bg-canvas)' }}
         >
           {filteredItems.length === 0 ? (
             <div className="p-10 text-center space-y-2 text-slate-400">
               <Command className="w-10 h-10 text-slate-600 mx-auto" />
-              <div className="text-xs font-bold text-[var(--text-primary)]">No command matching "{query}" found.</div>
-              <div className="text-[11px] text-slate-500 font-mono">Try searching for "Pump", "Report", "Alarm", or "Explain".</div>
+              <div className="text-sm font-semibold text-[var(--text-primary)]">No command matching "{query}" found.</div>
+              <div className="text-xs text-slate-500">Try searching for "Pump", "Report", "Alarm", or "Explain".</div>
             </div>
           ) : (
             filteredItems.map((item) => {
@@ -423,47 +416,28 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleAction(item)}
-                  className="w-full p-3.5 rounded-2xl flex items-center justify-between text-left border transition-all group"
-                  style={{
-                    backgroundColor: 'var(--bg-card)',
-                    borderColor: 'var(--border-color)',
-                    color: 'var(--text-primary)',
-                  }}
+                  className="w-full p-4 rounded-xl flex items-center justify-between text-left transition-colors group hover:bg-white/5"
                 >
-                  <div className="flex items-center space-x-3.5">
+                  <div className="flex items-center space-x-4">
                     <div
-                      className={`p-2.5 rounded-xl border ${item.color || 'text-slate-300'}`}
+                      className={`p-3 rounded-2xl border border-white/5 ${item.color || 'text-slate-300'}`}
                       style={{
-                        backgroundColor: 'var(--bg-canvas)',
-                        borderColor: 'var(--border-color)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.02)',
                       }}
                     >
-                      <IconComponent className="w-4 h-4" />
+                      <IconComponent className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-black flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-                        <span>{item.title}</span>
-                        {item.badge && (
-                          <span className="text-[9px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-500/40">
-                            {item.badge}
-                          </span>
-                        )}
-                        {item.actionBadge && (
-                          <span className="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-500/30">
-                            {item.actionBadge}
-                          </span>
-                        )}
+                      <div className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                        {item.title}
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5 font-mono">{item.subtitle}</div>
+                      <div className="text-xs text-slate-400 font-medium">{item.subtitle}</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-2 text-[10px] font-mono text-slate-500 group-hover:text-cyan-400 transition-colors">
-                    <span className="hidden sm:inline font-bold">{item.type}</span>
-                    <div className="flex items-center space-x-1 px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 group-hover:border-cyan-500/50 group-hover:text-cyan-300">
-                      <span>↵ Enter</span>
-                      <CornerDownLeft className="w-3 h-3" />
-                    </div>
+                  <div className="flex items-center space-x-2 text-sm text-slate-500 group-hover:text-slate-300 transition-colors mr-2">
+                    <span>Action</span>
+                    <ArrowRight className="w-4 h-4" />
                   </div>
                 </button>
               );
@@ -473,18 +447,18 @@ export const GlobalCommandPaletteModal: React.FC<ModalProps> = ({
 
         {/* Footer Shortcut Bar */}
         <div
-          className="p-3 border-t flex items-center justify-between text-[11px] font-mono"
+          className="p-4 flex items-center justify-between text-sm"
           style={{
             backgroundColor: 'var(--bg-header)',
-            borderColor: 'var(--border-color)',
+            borderTop: '1px solid var(--border-color)',
             color: 'var(--text-secondary)',
           }}
         >
-          <span className="flex items-center space-x-1.5 font-bold text-cyan-400">
-            <Command className="w-3.5 h-3.5" />
-            <span>PlantTwin AI Command Navigator & Execution Launcher</span>
+          <span className="flex items-center space-x-2">
+            <Command className="w-4 h-4 text-emerald-500" />
+            <span className="font-semibold text-slate-400 hover:text-slate-300 transition-colors">PlantTwin AI Navigator & AI Launcher</span>
           </span>
-          <span className="text-[10px] text-slate-500">Press ESC or click outside to close</span>
+          <span className="text-slate-500">Click outside or Press ESC to close</span>
         </div>
       </div>
     </div>
