@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlantTwin AI — Solution Flyer</title>
+    <title>PlantTwin AI — Master Solution Flyer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -42,14 +42,6 @@
             color: #ef4444; /* AeroInspect red accent */
         }
 
-        .eyebrow-tag-emerald {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #10b981;
-        }
-
         .card-grey {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -81,24 +73,30 @@
 
     <div class="flyer-container">
         
-        <!-- TOP BRAND HEADER BAR -->
-        <div class="bg-slate-950 text-white px-8 py-4 flex justify-between items-center border-b border-slate-800">
-            <div class="flex items-center space-x-2">
-                <span class="text-xl font-black tracking-tight">PlantTwin <span class="text-emerald-500">AI</span></span>
+        <!-- TOP BRAND HEADER BAR WITH OFFICIAL LOGO -->
+        <div class="bg-slate-950 text-white px-8 py-3.5 flex justify-between items-center border-b border-slate-800">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 bg-slate-900 rounded-lg p-1 flex items-center justify-center border border-slate-800 shadow-inner">
+                    <img src="file:///C:/Users/ayush/.gemini/antigravity/scratch/planttwin-frontend/src/assets/logo.png" alt="PlantTwin AI Logo" class="w-full h-full object-contain" />
+                </div>
+                <div class="flex items-center space-x-1.5 font-black tracking-tight text-lg">
+                    <span class="text-white">PlantTwin</span>
+                    <span class="text-emerald-400">AI</span>
+                </div>
             </div>
             <span class="text-xs font-mono font-bold tracking-widest text-slate-400 uppercase">SOLUTION FLYER</span>
         </div>
 
-        <!-- HERO HEADER BANNER (Dark Background Image Overlay) -->
+        <!-- HERO HEADER BANNER (Dark Industrial Background Image) -->
         <div class="relative bg-slate-950 text-white px-8 py-10 overflow-hidden border-b-4 border-red-600">
             <div class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');"></div>
             <div class="relative z-10 max-w-3xl">
-                <span class="eyebrow-tag block mb-2">AI-POWERED INDUSTRIAL PREDICTIVE OPERATIONS PLATFORM</span>
+                <span class="eyebrow-tag block mb-2">AI-POWERED INDUSTRIAL DIGITAL TWIN & PREDICTIVE OPERATIONS PLATFORM</span>
                 <h1 class="text-3xl font-extrabold tracking-tight leading-tight text-white mb-3">
-                    Real-time site safety & asset health monitoring, powered by AI vision
+                    Real-time plant operations & predictive maintenance, powered by AI vision & telemetry
                 </h1>
                 <p class="text-xs text-slate-300 font-medium leading-relaxed max-w-2xl">
-                    PlantTwin AI connects live SCADA telemetry, PLC controllers, and site cameras to an intelligent detection engine — automatically identifying equipment anomalies, tracking operator compliance, and keeping every site accountable in real time.
+                    PlantTwin AI connects live SCADA telemetry, Siemens S7 PLCs, 3D Digital Twins, and site cameras to an intelligent detection engine — automatically predicting equipment failures, managing ISA-18.2 alarms, and routing work orders in real time.
                 </p>
             </div>
         </div>
@@ -113,9 +111,9 @@
                 <!-- Right Text Column -->
                 <div class="col-span-7 space-y-2">
                     <span class="eyebrow-tag block">PROBLEM & OPPORTUNITY</span>
-                    <h2 class="text-lg font-bold text-slate-900 leading-tight">Manual inspection can't scale with site risk</h2>
+                    <h2 class="text-lg font-bold text-slate-900 leading-tight">Manual monitoring can't scale with industrial plant risk</h2>
                     <p class="text-xs text-slate-600 leading-relaxed font-normal">
-                        Process plants and manufacturing facilities generate constant, distributed operational risk — unpredicted bearing failures, pressure spikes, micro-vibrations, and unmonitored zones. But human inspectors can only be in one place at a time. Breakdown incidents recur consistently, data remains fragmented across historian silos, and accountability lapses the moment nobody is watching. PlantTwin AI turns raw tag telemetry and video feeds into continuous, automated operational intelligence.
+                        Process plants and manufacturing facilities generate constant, distributed operational risk — unpredicted bearing failures, thermal spikes, alarm fatigue, and OT/IT data silos. Human operators cannot monitor thousands of SCADA tags simultaneously. Breakdown incidents recur consistently, over 70% of telemetry is discarded without insights, and accountability lapses when data remains fragmented. PlantTwin AI turns raw sensor telemetry, PLC signals, and camera feeds into continuous, automated operational intelligence.
                     </p>
                 </div>
             </div>
@@ -124,32 +122,32 @@
         <!-- SECTION 2: SOLUTION -->
         <div class="px-8 py-8 bg-slate-50/70 border-b border-slate-100">
             <span class="eyebrow-tag block mb-1">SOLUTION</span>
-            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-2">One platform, from detection to accountability</h2>
+            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-2">One platform, from detection to automated work orders</h2>
             <p class="text-xs text-slate-600 leading-relaxed max-w-3xl mb-6">
-                PlantTwin AI connects live sensors, PLCs, and camera feeds to a real-time AI detection engine that identifies equipment degradation before failure occurs, links every incident to a registered work order, and routes critical alerts directly to the responsible reliability engineer — closing the loop from raw telemetry to actionable compliance automatically.
+                PlantTwin AI connects live sensors, PLCs, and camera streams to a real-time AI engine that identifies equipment degradation before failure occurs, links every incident to a registered 3D asset twin, and routes critical alerts directly to the responsible shift engineer — closing the loop from raw telemetry to actionable maintenance automatically.
             </p>
 
             <!-- 4-Card Grid -->
             <div class="grid grid-cols-2 gap-4">
                 <div class="card-white p-4">
                     <span class="number-badge block mb-1">01</span>
-                    <h3 class="text-xs font-bold text-slate-900 mb-1">Live Detection</h3>
-                    <p class="text-[11px] text-slate-600 leading-normal">AI vision & telemetry streams continuously monitor tag thresholds for thermal, vibration, and safety rule violations.</p>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Live Telemetry & Detection</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Sub-second telemetry ingestion across Siemens S7, OPC-UA, and MQTT Sparkplug B sensor streams.</p>
                 </div>
                 <div class="card-white p-4">
                     <span class="number-badge block mb-1">02</span>
-                    <h3 class="text-xs font-bold text-slate-900 mb-1">Worker & Asset Accountability</h3>
-                    <p class="text-[11px] text-slate-600 leading-normal">Every anomaly detection links directly to an ISO 14224 asset profile with full historical maintenance logging.</p>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Asset & Worker Accountability</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Every anomaly detection links directly to an ISO 14224 asset profile with complete historical log tracking.</p>
                 </div>
                 <div class="card-white p-4">
                     <span class="number-badge block mb-1">03</span>
-                    <h3 class="text-xs font-bold text-slate-900 mb-1">AI Rule Extraction</h3>
-                    <p class="text-[11px] text-slate-600 leading-normal">Upload P&IDs, OEM operating manuals, and safety guidelines — AI extracts structured, enforceable alert rules automatically.</p>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">AI Rule & Manual Extraction</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Upload P&IDs and OEM operating manuals — AI extracts structured, enforceable alert rules automatically.</p>
                 </div>
                 <div class="card-white p-4">
                     <span class="number-badge block mb-1">04</span>
-                    <h3 class="text-xs font-bold text-slate-900 mb-1">Real-Time Routing</h3>
-                    <p class="text-[11px] text-slate-600 leading-normal">ISA-18.2 compliant alerts reach assigned shift engineers immediately with automated work order dispatch.</p>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Real-Time Routing & Work Orders</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">ISA-18.2 compliant alerts reach shift engineers immediately with automated work order dispatch.</p>
                 </div>
             </div>
         </div>
@@ -162,30 +160,30 @@
             <!-- 4 Pain Point Cards Grid -->
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div class="card-grey p-4">
-                    <h3 class="text-xs font-bold text-slate-900 mb-1">Inconsistent Inspection Coverage</h3>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">Manual walk-throughs can't cover every asset, every shift — automated monitoring runs continuously across all registered tags.</p>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Inconsistent Tag & SCADA Coverage</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Manual walk-throughs can't monitor every tag — automated monitoring runs continuously across all registered equipment.</p>
                 </div>
                 <div class="card-grey p-4">
                     <h3 class="text-xs font-bold text-slate-900 mb-1">Slow Incident Response</h3>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">Violations discovered hours later are breakdowns that already caused downtime — real-time detection closes that window.</p>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Unpredicted breakdowns cause millions in downtime — 14-day early failure prediction eliminates catastrophic outages.</p>
                 </div>
                 <div class="card-grey p-4">
-                    <h3 class="text-xs font-bold text-slate-900 mb-1">Weak Audit Trails</h3>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">Paper logs and memory-based shift handovers don't hold up under audit — every incident here is timestamped & logged.</p>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Weak Audit & Compliance Trails</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Paper logs and memory-based shift handovers fail audits — every incident is timestamped & logged in append-only audit streams.</p>
                 </div>
                 <div class="card-grey p-4">
-                    <h3 class="text-xs font-bold text-slate-900 mb-1">Manual Compliance Review</h3>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">Reading dense safety manuals to build rules takes days — AI extraction converts documents into active rules in seconds.</p>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Manual P&ID & Document Review</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Reading dense vendor manuals takes days — GenAI Copilot RAG converts technical documents into active rules in seconds.</p>
                 </div>
             </div>
 
             <!-- Image Gallery Strip (3 Side-by-Side Photos with Captions) -->
             <div class="grid grid-cols-3 gap-3">
                 <div class="relative h-28 rounded overflow-hidden border border-slate-200 shadow-sm bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');">
-                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">WORKER SAFETY</div>
+                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">ASSET HEALTH</div>
                 </div>
                 <div class="relative h-28 rounded overflow-hidden border border-slate-200 shadow-sm bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');">
-                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">SITE COVERAGE</div>
+                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">SCADA COVERAGE</div>
                 </div>
                 <div class="relative h-28 rounded overflow-hidden border border-slate-200 shadow-sm bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');">
                     <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">LIVE MONITORING</div>
@@ -201,8 +199,8 @@
             <!-- 4 Benefit Cards Grid -->
             <div class="grid grid-cols-2 gap-4">
                 <div class="card-white p-4">
-                    <h3 class="text-xs font-bold text-slate-900 mb-1">Reduced Incident Rate</h3>
-                    <p class="text-[11px] text-slate-600 leading-relaxed">Continuous early detection catches asset degradation before it escalates into actual equipment failure or unplanned downtime.</p>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">35% Reduced Unplanned Downtime</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Continuous early detection catches asset degradation before it escalates into actual equipment failure or outage.</p>
                 </div>
                 <div class="card-white p-4">
                     <h3 class="text-xs font-bold text-slate-900 mb-1">Lower Compliance Overhead</h3>
@@ -224,18 +222,18 @@
             <span class="eyebrow-tag text-red-500 block mb-1">WHAT MAKES US UNIQUE</span>
             <h2 class="text-lg font-extrabold text-white leading-tight mb-3">Our Edge</h2>
             <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                Most industrial software digitizes paperwork. PlantTwin AI replaces paperwork with live, AI-verified evidence — turning existing plant telemetry and cameras into a genuine safety intelligence layer, not just another checklist app.
+                Most industrial software digitizes paperwork. PlantTwin AI replaces paperwork with live, AI-verified evidence — turning existing plant telemetry and cameras into a genuine operational intelligence layer, not just another checklist app.
             </p>
 
             <!-- 2-Column Bullet List with Red Dots -->
             <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-xs text-slate-200">
                 <div class="flex items-start space-x-2">
                     <span class="text-red-500 font-bold text-base leading-none">•</span>
-                    <span><strong>AI reads manuals directly:</strong> No manual rule configuration required.</span>
+                    <span><strong>AI reads manuals directly:</strong> Extracts rules from P&IDs & SOPs without manual coding.</span>
                 </div>
                 <div class="flex items-start space-x-2">
                     <span class="text-red-500 font-bold text-base leading-none">•</span>
-                    <span><strong>Tag-matching links telemetry:</strong> Connects anonymous alarms to specific assets automatically.</span>
+                    <span><strong>Tag-matching links telemetry:</strong> Connects raw sensor alarms to specific 3D assets automatically.</span>
                 </div>
                 <div class="flex items-start space-x-2">
                     <span class="text-red-500 font-bold text-base leading-none">•</span>
@@ -247,11 +245,11 @@
                 </div>
                 <div class="flex items-start space-x-2">
                     <span class="text-red-500 font-bold text-base leading-none">•</span>
-                    <span><strong>Built to extend beyond SCADA:</strong> Same AI engine adapts to any monitored plant site type.</span>
+                    <span><strong>Built to extend beyond SCADA:</strong> Same AI engine adapts to multi-site process manufacturing.</span>
                 </div>
                 <div class="flex items-start space-x-2">
                     <span class="text-red-500 font-bold text-base leading-none">•</span>
-                    <span><strong>Photographic & telemetry evidence:</strong> Every incident carries verified logs, not just a typed entry.</span>
+                    <span><strong>Photographic & SHAP evidence:</strong> Every incident carries verified logs & feature attribution scores.</span>
                 </div>
             </div>
         </div>
@@ -267,9 +265,9 @@
                         <span class="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] flex items-center justify-center font-bold">01</span>
                         <span class="text-[10px] font-bold text-red-600 uppercase tracking-wider">STEP 1 — LIVE NOW & ROLLING OUT</span>
                     </div>
-                    <h3 class="text-xs font-bold text-slate-900 font-sans">Core Platform & Site Deployment</h3>
+                    <h3 class="text-xs font-bold text-slate-900 font-sans">Core Platform & Testbed PLC Deployment</h3>
                     <p class="text-[11px] text-slate-600 font-sans leading-relaxed">
-                        Real-time anomaly detection, worker tracking, AI rule extraction, and live SCADA streaming — deployed from testbed rigs to active plant construction sites.
+                        Real-time anomaly detection, Siemens S7 PLC telemetry streaming, AI manual extraction, and 3D digital twin rendering.
                     </p>
                 </div>
                 <div class="space-y-1">
@@ -277,9 +275,9 @@
                         <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[10px] flex items-center justify-center font-bold">02</span>
                         <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">STEP 2</span>
                     </div>
-                    <h3 class="text-xs font-bold text-slate-900 font-sans">Cross-Industry Expansion</h3>
+                    <h3 class="text-xs font-bold text-slate-900 font-sans">Autonomous Closed-Loop Plant Operations</h3>
                     <p class="text-[11px] text-slate-600 font-sans leading-relaxed">
-                        Configurable safety & health monitoring extending beyond manufacturing — ground transport, facility security, and high-risk utility environments.
+                        Autonomous AI control loops adjusting operating parameters to safely extend asset life during active degradation.
                     </p>
                 </div>
             </div>
@@ -287,7 +285,7 @@
 
         <!-- FOOTER BAR -->
         <div class="bg-slate-50 px-8 py-3 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-500 font-mono">
-            <span>PlantTwin AI — Industrial Intelligence Platform</span>
+            <span>PlantTwin AI — Industrial Digital Twin & SCADA Operations Platform</span>
             <span>For internal review — 360 AI Agents Team</span>
         </div>
 
