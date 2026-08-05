@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantTwin AI - Enterprise Product Analysis Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #cbd5e1;
+            color: #0f172a;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .page {
+            width: 210mm;
+            height: 297mm;
+            background: #ffffff;
+            margin: 20px auto;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            page-break-after: always;
+            border: 1px solid #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+        
+        @page { size: A4; margin: 0; }
+        @media print {
+            body { background: #ffffff; margin: 0; }
+            .page { margin: 0; box-shadow: none; border: none; }
+        }
+
+        .gradient-text-emerald {
+            background: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-text-amber {
+            background: linear-gradient(135deg, #d97706 0%, #dc2626 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .card-panel-dark {
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #1e293b;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-emerald {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #047857;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .badge-cyan {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= PAGE 1 — EXECUTIVE SUMMARY & PRODUCT SNAPSHOT ================= -->
+    <div class="page p-8">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-slate-900 rounded-xl p-1.5 flex items-center justify-center shadow-md">
+                    <img src="file:///C:/Users/ayush/.gemini/antigravity/scratch/planttwin-frontend/src/assets/logo.png" alt="Logo" class="w-full h-full object-contain" />
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2 font-black tracking-tight text-xl">
+                        <span class="text-slate-900">PlantTwin</span>
+                        <span class="gradient-text-emerald">AI</span>
+                        <span class="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-slate-900 text-white ml-1">v1.1</span>
+                    </div>
+                    <p class="text-[9px] text-slate-500 font-semibold uppercase tracking-wider mt-0.5">360 AI Agents • Enterprise Product Intelligence Report</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase tracking-widest">
+                    Page 01 / 10
+                </span>
+                <p class="text-[9px] text-slate-500 mt-1 font-mono font-medium">July 2026 Distribution</p>
+            </div>
+        </div>
+
+        <!-- Hero Banner -->
+        <div class="card-panel-dark p-5 mb-3 relative overflow-hidden">
+            <div class="absolute right-0 top-0 w-1/2 h-full opacity-20 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+            <div class="relative z-10">
+                <span class="text-[9px] font-bold text-emerald-400 tracking-[0.2em] uppercase block mb-1">Solution – PlantTwin AI</span>
+                <h1 class="text-2xl font-black text-white uppercase tracking-tight leading-tight mb-1.5">
+                    Industrial Intelligence & <span class="gradient-text-emerald">Predictive Operations</span> Platform
+                </h1>
+                <p class="text-[10.5px] text-slate-300 font-medium leading-relaxed max-w-2xl">
+                    PlantTwin AI serves as the unified operational nervous system for complex industrial environments — seamlessly transforming raw SCADA, PLC, and IoT telemetry into real-time predictive intelligence, ISA-18.2 alarm resolution, and LLM Copilot decision support.
+                </p>
+            </div>
+        </div>
+
+        <!-- Formal Siemens/ABB Style Product Snapshot Grid -->
+        <div class="card-panel p-3 bg-slate-900 text-white mb-3">
+            <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1.5">Product Snapshot</h3>
+            <div class="grid grid-cols-4 gap-2 text-[9px] font-mono text-slate-300">
+                <div><span class="text-slate-400 block uppercase text-[7.5px]">Product Name</span><strong class="text-white">PlantTwin AI</strong></div>
+                <div><span class="text-slate-400 block uppercase text-[7.5px]">Version</span><strong class="text-emerald-400">v1.1 Enterprise</strong></div>
+                <div><span class="text-slate-400 block uppercase text-[7.5px]">Category</span><strong class="text-white">Industrial Intelligence</strong></div>
+                <div><span class="text-slate-400 block uppercase text-[7.5px]">Deployment</span><strong class="text-cyan-400">Cloud / Edge / Hybrid</strong></div>
+                <div><span class="text-slate-400 block uppercase text-[7.5px]">Target Sectors</span><strong class="text-white">Mfg, Oil&Gas, Utilities</strong></div>
+                <div><span class="text-slate-400 block uppercase text-[7.5px]">Protocols</span><strong class="text-white">S7, OPC-UA, MQTT</strong></div>
+                <div><span class="text-slate-400 block uppercase text-[7.5px]">Licensing</span><strong class="text-emerald-400">Asset-Based SaaS</strong></div>
+                <div><span class="text-slate-400 block uppercase text-[7.5px]">Velocity</span><strong class="text-white">&lt; 2 Weeks</strong></div>
+            </div>
+        </div>
+
+        <!-- Business Value Strip (Key Differentiators) -->
+        <div class="card-panel p-3 mb-2 bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 text-white flex justify-between items-center text-center font-mono">
+            <div><span class="text-lg font-black text-emerald-400 block">35% ↓*</span><span class="text-[8px] text-slate-300 uppercase">Unplanned Downtime</span></div>
+            <div class="w-px h-6 bg-slate-800"></div>
+            <div><span class="text-lg font-black text-cyan-400 block">20% ↑*</span><span class="text-[8px] text-slate-300 uppercase">Plant OEE Boost</span></div>
+            <div class="w-px h-6 bg-slate-800"></div>
+            <div><span class="text-lg font-black text-amber-400 block">14 Days</span><span class="text-[8px] text-slate-300 uppercase">Early Failure Window</span></div>
+            <div class="w-px h-6 bg-slate-800"></div>
+            <div><span class="text-lg font-black text-emerald-400 block">&lt; 2 Weeks</span><span class="text-[8px] text-slate-300 uppercase">Deployment Speed</span></div>
+        </div>
+        <p class="text-[7.5px] text-slate-500 italic mb-2 text-right font-mono">* Representative operational improvements based on targeted pilot deployment objectives.</p>
+
+        <!-- Why PlantTwin AI? Core Value Checklist -->
+        <div class="card-panel p-3 bg-slate-50 border-l-4 border-l-emerald-600 mb-2">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Why PlantTwin AI? (Core Value Checklist)</h3>
+            <div class="grid grid-cols-4 gap-2 text-[9px] font-semibold text-slate-800">
+                <div class="p-1.5 bg-white rounded border border-slate-200">• 100% Vendor Agnostic</div>
+                <div class="p-1.5 bg-white rounded border border-slate-200">• AI-Native Architecture</div>
+                <div class="p-1.5 bg-white rounded border border-slate-200">• Rapid &lt;2 Wk Deployment</div>
+                <div class="p-1.5 bg-white rounded border border-slate-200">• SHAP Explainable AI</div>
+                <div class="p-1.5 bg-white rounded border border-slate-200">• Open Protocol Standards</div>
+                <div class="p-1.5 bg-white rounded border border-slate-200">• Scalable Multi-Site Engine</div>
+                <div class="p-1.5 bg-white rounded border border-slate-200">• Human-in-the-Loop Safety</div>
+                <div class="p-1.5 bg-white rounded border border-slate-200">• No Per-Seat Licensing</div>
+            </div>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 2 — BUSINESS CHALLENGES & MARKET TRENDS ================= -->
+    <div class="page p-8">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-3">
+            <div>
+                <h2 class="text-emerald-700 text-xs font-bold uppercase tracking-widest">Market Context</h2>
+                <h1 class="text-xl font-black text-slate-900 uppercase">Business Challenges & Market Trends</h1>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase">
+                Page 02 / 10
+            </span>
+        </div>
+
+        <!-- Customer Adoption Journey Infographic -->
+        <div class="mb-3">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Customer Adoption Journey</h3>
+            <div class="card-panel p-2.5 bg-slate-900 text-white flex justify-between items-center text-center font-mono text-[8.5px]">
+                <span class="px-2 py-1 bg-slate-800 rounded text-slate-300">1. Discovery</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-slate-800 rounded text-slate-300">2. Pilot Rig</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-slate-800 rounded text-slate-300">3. Deployment</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-cyan-950 text-cyan-400 border border-cyan-500/40">4. Team Training</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/40">5. Go Live</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-slate-800 rounded text-slate-300">6. Continuous AI</span>
+            </div>
+        </div>
+
+        <!-- Current Market Trends Grid -->
+        <div class="card-panel p-3 mb-3 bg-slate-50 border-l-4 border-l-cyan-600">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Current Market Trends Driving Adoption</h3>
+            <div class="grid grid-cols-4 gap-2 text-center text-[9px] font-mono">
+                <div class="p-1.5 bg-white rounded border border-slate-200"><strong class="text-cyan-800 block">🏭 Industry 4.0</strong><span class="text-slate-500 text-[8px]">Smart Factory</span></div>
+                <div class="p-1.5 bg-white rounded border border-slate-200"><strong class="text-cyan-800 block">🤖 Industrial AI</strong><span class="text-slate-500 text-[8px]">Agentic ML</span></div>
+                <div class="p-1.5 bg-white rounded border border-slate-200"><strong class="text-cyan-800 block">🔮 Predictive Maint</strong><span class="text-slate-500 text-[8px]">Condition-Based</span></div>
+                <div class="p-1.5 bg-white rounded border border-slate-200"><strong class="text-cyan-800 block">🧊 Digital Twins</strong><span class="text-slate-500 text-[8px]">Physics Mirror</span></div>
+                <div class="p-1.5 bg-white rounded border border-slate-200"><strong class="text-cyan-800 block">📡 IIoT Telemetry</strong><span class="text-slate-500 text-[8px]">Edge-to-Cloud</span></div>
+                <div class="p-1.5 bg-white rounded border border-slate-200"><strong class="text-cyan-800 block">🖥️ Edge AI</strong><span class="text-slate-500 text-[8px]">Sub-100ms Inference</span></div>
+                <div class="p-1.5 bg-white rounded border border-slate-200"><strong class="text-cyan-800 block">⚙️ Connected Assets</strong><span class="text-slate-500 text-[8px]">Unified Historian</span></div>
+                <div class="p-1.5 bg-white rounded border border-slate-200"><strong class="text-cyan-800 block">🌱 ESG & Energy</strong><span class="text-slate-500 text-[8px]">Carbon Footprint</span></div>
+            </div>
+        </div>
+
+        <!-- 3 Industry Business Challenges -->
+        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Key Business Challenges in Industrial Operations</h3>
+        <div class="grid grid-cols-3 gap-3 mb-3">
+            <div class="card-panel p-3 border-t-4 border-t-red-600">
+                <h4 class="text-xs font-bold text-slate-900 uppercase mb-1">1. Unplanned Downtime</h4>
+                <p class="text-[9.5px] text-slate-600 leading-relaxed font-medium">Plants lose $50B+ annually due to unscheduled breakdowns. Reactive repairs cost 5x more than condition-based interventions.</p>
+            </div>
+            <div class="card-panel p-3 border-t-4 border-t-amber-600">
+                <h4 class="text-xs font-bold text-slate-900 uppercase mb-1">2. Siloed OT/IT Databases</h4>
+                <p class="text-[9.5px] text-slate-600 leading-relaxed font-medium">SCADA, PLCs, and ERPs operate in silos. Engineers spend 40% of their shift manually correlating tag data.</p>
+            </div>
+            <div class="card-panel p-3 border-t-4 border-t-yellow-600">
+                <h4 class="text-xs font-bold text-slate-900 uppercase mb-1">3. Alarm Fatigue</h4>
+                <p class="text-[9.5px] text-slate-600 leading-relaxed font-medium">Operators face thousands of raw alarms daily. Over 70% of collected telemetry is discarded without yielding insights.</p>
+            </div>
+        </div>
+
+        <!-- Current Pain Points Checklist (8 items with icons) -->
+        <div class="card-panel p-3 bg-slate-50 border-l-4 border-l-red-600 mb-2">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1">Current Customer Pain Points Addressed</h3>
+            <div class="grid grid-cols-4 gap-1.5 text-[9px] font-medium text-slate-700">
+                <div class="flex items-center gap-1"><span class="text-red-600 font-bold">✖</span> Reactive Maintenance</div>
+                <div class="flex items-center gap-1"><span class="text-red-600 font-bold">✖</span> High MTTR Delays</div>
+                <div class="flex items-center gap-1"><span class="text-red-600 font-bold">✖</span> Alarm Flooding</div>
+                <div class="flex items-center gap-1"><span class="text-red-600 font-bold">✖</span> Aging Assets</div>
+                <div class="flex items-center gap-1"><span class="text-red-600 font-bold">✖</span> OT/IT Silos</div>
+                <div class="flex items-center gap-1"><span class="text-red-600 font-bold">✖</span> Manual Reporting</div>
+                <div class="flex items-center gap-1"><span class="text-red-600 font-bold">✖</span> Lack of Explainable AI</div>
+                <div class="flex items-center gap-1"><span class="text-red-600 font-bold">✖</span> Rising Energy Costs</div>
+            </div>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 3 — SOLUTION & 10 PLATFORM MODULES (WITH ICONS) ================= -->
+    <div class="page p-8">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-3">
+            <div>
+                <h2 class="text-cyan-700 text-xs font-bold uppercase tracking-widest">Platform Solution</h2>
+                <h1 class="text-xl font-black text-slate-900 uppercase">The PlantTwin AI Solution & 10 Platform Modules</h1>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase">
+                Page 03 / 10
+            </span>
+        </div>
+
+        <!-- Section: The PlantTwin AI Solution -->
+        <div class="card-panel p-3 mb-2.5 bg-gradient-to-r from-slate-900 to-slate-800 text-white border-l-4 border-l-emerald-500">
+            <h3 class="text-xs font-bold text-emerald-400 uppercase mb-1">The PlantTwin AI Solution</h3>
+            <p class="text-[10px] text-slate-200 leading-relaxed font-medium">
+                PlantTwin AI is an <strong>AI-native Industrial Intelligence & Predictive Operations Platform</strong> designed as a modular software layer connecting physical plant operations to enterprise decision makers. It ingests continuous telemetry, models 3D digital twins, executes predictive ML algorithms, and enables natural language AI Copilot diagnostics.
+            </p>
+        </div>
+
+        <!-- 10 Platform Modules Grid WITH ICONS -->
+        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">10 Integrated Enterprise Modules</h3>
+        <div class="grid grid-cols-2 gap-2 mb-2.5 text-[9px]">
+            <div class="card-panel p-2 border-l-4 border-l-emerald-600 flex items-start gap-2">
+                <span class="text-base">🏭</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">1. Operations Center</strong>
+                    <span class="text-slate-600 text-[8.5px]">Centralized multi-plant telemetry monitoring and unified control space.</span>
+                </div>
+            </div>
+            <div class="card-panel p-2 border-l-4 border-l-cyan-600 flex items-start gap-2">
+                <span class="text-base">🤖</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">2. GenAI Copilot (LLM)</strong>
+                    <span class="text-slate-600 text-[8.5px]">Natural language diagnostic chat assistant for P&IDs, manuals, and live tag values.</span>
+                </div>
+            </div>
+            <div class="card-panel p-2 border-l-4 border-l-blue-600 flex items-start gap-2">
+                <span class="text-base">📡</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">3. Live Telemetry Streamer</strong>
+                    <span class="text-slate-600 text-[8.5px]">Sub-100ms real-time sensor ingestion engine for high-frequency data.</span>
+                </div>
+            </div>
+            <div class="card-panel p-2 border-l-4 border-l-amber-600 flex items-start gap-2">
+                <span class="text-base">🧊</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">4. 3D Digital Twin Engine</strong>
+                    <span class="text-slate-600 text-[8.5px]">Interactive physical asset state mirror synchronized with sensor telemetry.</span>
+                </div>
+            </div>
+            <div class="card-panel p-2 border-l-4 border-l-purple-600 flex items-start gap-2">
+                <span class="text-base">🔮</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">5. Predictive Analytics Engine</strong>
+                    <span class="text-slate-600 text-[8.5px]">XGBoost failure degradation curves and estimated time-to-failure windows.</span>
+                </div>
+            </div>
+            <div class="card-panel p-2 border-l-4 border-l-rose-600 flex items-start gap-2">
+                <span class="text-base">🏷️</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">6. ISO 14224 Asset Manager</strong>
+                    <span class="text-slate-600 text-[8.5px]">Standardized industrial asset hierarchy (Site → Area → Unit → Equipment).</span>
+                </div>
+            </div>
+            <div class="card-panel p-2 border-l-4 border-l-indigo-600 flex items-start gap-2">
+                <span class="text-base">🚨</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">7. ISA-18.2 Alarm Center</strong>
+                    <span class="text-slate-600 text-[8.5px]">Standards-compliant alarm console, shelving, and SLA escalation routing.</span>
+                </div>
+            </div>
+            <div class="card-panel p-2 border-l-4 border-l-teal-600 flex items-start gap-2">
+                <span class="text-base">🔧</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">8. Maintenance Hub & Work Orders</strong>
+                    <span class="text-slate-600 text-[8.5px]">Automated work order creation from AI alerts with technician dispatch and MTTR tracking.</span>
+                </div>
+            </div>
+            <div class="card-panel p-2 border-l-4 border-l-slate-700 flex items-start gap-2">
+                <span class="text-base">📊</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">9. Executive Reports Engine</strong>
+                    <span class="text-slate-600 text-[8.5px]">Automated OEE, availability, and regulatory compliance PDF export suite.</span>
+                </div>
+            </div>
+            <div class="card-panel p-2 border-l-4 border-l-emerald-800 flex items-start gap-2">
+                <span class="text-base">🧠</span>
+                <div>
+                    <strong class="text-slate-900 block font-bold mb-0.5">10. Knowledge Base & MLOps</strong>
+                    <span class="text-slate-600 text-[8.5px]">Version-controlled model promotion pipeline and industrial document store.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Operational Pipeline Bar -->
+        <div class="card-panel p-2.5 bg-slate-900 text-white flex justify-between items-center text-center font-mono text-[8.5px]">
+            <span class="text-slate-300">1. Sensors</span><span class="text-emerald-400 font-bold">→</span>
+            <span class="text-slate-300">2. PLC / OPC</span><span class="text-emerald-400 font-bold">→</span>
+            <span class="text-slate-300">3. Telemetry</span><span class="text-emerald-400 font-bold">→</span>
+            <span class="text-emerald-400 font-bold">4. 3D Twin</span><span class="text-emerald-400 font-bold">→</span>
+            <span class="text-cyan-400 font-bold">5. AI Engine</span><span class="text-emerald-400 font-bold">→</span>
+            <span class="text-red-400 font-bold">6. ISA Alarm</span><span class="text-emerald-400 font-bold">→</span>
+            <span class="text-slate-300">7. Work Order</span>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 4 — DIFFERENTIATORS & MATRIX (REFINED WORDING) ================= -->
+    <div class="page p-8">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-3">
+            <div>
+                <h2 class="text-emerald-700 text-xs font-bold uppercase tracking-widest">Strategic Value</h2>
+                <h1 class="text-xl font-black text-slate-900 uppercase">Differentiators – The PlantTwin AI Advantage</h1>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase">
+                Page 04 / 10
+            </span>
+        </div>
+
+        <!-- Refined Competitor Matrix Table (Balanced Wording) -->
+        <div class="card-panel p-3 mb-3">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Internal Strategic Positioning Matrix</h3>
+            <table class="w-full text-left text-[9.5px]">
+                <thead>
+                    <tr class="border-b-2 border-slate-900 text-slate-900 font-mono uppercase text-[8.5px]">
+                        <th class="pb-1.5">Feature / Capability</th>
+                        <th class="pb-1.5 text-emerald-700 font-bold">PlantTwin AI</th>
+                        <th class="pb-1.5">Siemens MindSphere</th>
+                        <th class="pb-1.5">AVEVA APM</th>
+                        <th class="pb-1.5">ABB Ability</th>
+                        <th class="pb-1.5">Ignition SCADA</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-slate-700">
+                    <tr><td class="py-1.5 font-bold text-slate-900">3D Digital Twin</td><td class="py-1.5 text-emerald-700 font-bold">Strong (Native)</td><td class="py-1.5">Strong (Native)</td><td class="py-1.5">Strong (Native)</td><td class="py-1.5">Strong (Native)</td><td class="py-1.5 text-amber-600">Limited / Partner</td></tr>
+                    <tr><td class="py-1.5 font-bold text-slate-900">GenAI Copilot Interface</td><td class="py-1.5 text-emerald-700 font-bold">Built-in (LLM)</td><td class="py-1.5 text-amber-600">Available (Add-on)</td><td class="py-1.5 text-slate-500">Ecosystem-dependent</td><td class="py-1.5 text-slate-500">Ecosystem-dependent</td><td class="py-1.5 text-slate-500">Limited</td></tr>
+                    <tr><td class="py-1.5 font-bold text-slate-900">SHAP/XAI Explainability</td><td class="py-1.5 text-emerald-700 font-bold">Built-in</td><td class="py-1.5 text-slate-500">Optional Module</td><td class="py-1.5 text-slate-500">Limited</td><td class="py-1.5 text-slate-500">Limited</td><td class="py-1.5 text-slate-500">Limited</td></tr>
+                    <tr><td class="py-1.5 font-bold text-slate-900">Vendor-Agnostic Connectivity</td><td class="py-1.5 text-emerald-700 font-bold">S7, OPC, MQTT</td><td class="py-1.5 text-amber-600">Siemens-first</td><td class="py-1.5 text-amber-600">AVEVA-first</td><td class="py-1.5 text-amber-600">ABB-first</td><td class="py-1.5 text-emerald-700 font-bold">Strong (OPC/Modbus)</td></tr>
+                    <tr><td class="py-1.5 font-bold text-slate-900">Predictive Maintenance (RUL)</td><td class="py-1.5 text-emerald-700 font-bold">Native ML Engine</td><td class="py-1.5 text-amber-600">Optional Add-on</td><td class="py-1.5 text-amber-600">Optional Add-on</td><td class="py-1.5 text-amber-600">Optional Add-on</td><td class="py-1.5 text-slate-500">Scripted Rules</td></tr>
+                    <tr><td class="py-1.5 font-bold text-slate-900">Deployment Velocity</td><td class="py-1.5 text-emerald-700 font-bold">&lt; 2 Weeks</td><td class="py-1.5">Enterprise Months</td><td class="py-1.5">Enterprise Months</td><td class="py-1.5">Enterprise Months</td><td class="py-1.5">2-4 Weeks</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section: Why Customers Choose PlantTwin AI -->
+        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Why Customers Choose PlantTwin AI</h3>
+        <div class="grid grid-cols-3 gap-2 mb-2 text-[9.5px]">
+            <div class="card-panel p-2.5 bg-emerald-50 border-emerald-200"><strong class="text-emerald-900 block mb-0.5">1. Faster Deployment</strong><span class="text-slate-600 text-[8.5px]">Containerized Docker stack deploys in &lt;2 weeks.</span></div>
+            <div class="card-panel p-2.5 bg-cyan-50 border-cyan-200"><strong class="text-cyan-900 block mb-0.5">2. Lower CAPEX</strong><span class="text-slate-600 text-[8.5px]">Works with existing PLCs without hardware rip-and-replace.</span></div>
+            <div class="card-panel p-2.5 bg-blue-50 border-blue-200"><strong class="text-blue-900 block mb-0.5">3. Lower OPEX</strong><span class="text-slate-600 text-[8.5px]">Asset-based pricing without expensive per-user licenses.</span></div>
+            <div class="card-panel p-2.5 bg-amber-50 border-amber-200"><strong class="text-amber-900 block mb-0.5">4. Vendor Agnostic</strong><span class="text-slate-600 text-[8.5px]">Open protocol support for Siemens, Allen-Bradley & Schneider.</span></div>
+            <div class="card-panel p-2.5 bg-purple-50 border-purple-200"><strong class="text-purple-900 block mb-0.5">5. Explainable AI (SHAP)</strong><span class="text-slate-600 text-[8.5px]">Auditable feature attribution builds control room trust.</span></div>
+            <div class="card-panel p-2.5 bg-rose-50 border-rose-200"><strong class="text-rose-900 block mb-0.5">6. Industrial Grade</strong><span class="text-slate-600 text-[8.5px]">ISA-18.2, ISO 14224 & air-gapped security compliant.</span></div>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 5 — AI CAPABILITIES & WORKFLOW ================= -->
+    <div class="page p-8">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-3">
+            <div>
+                <h2 class="text-cyan-700 text-xs font-bold uppercase tracking-widest">Capabilities Deep-Dive</h2>
+                <h1 class="text-xl font-black text-slate-900 uppercase">AI Capabilities & End-to-End AI Workflow</h1>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase">
+                Page 05 / 10
+            </span>
+        </div>
+
+        <!-- 8 Core AI Capabilities Grid -->
+        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">8 Core AI Capabilities</h3>
+        <div class="grid grid-cols-4 gap-2 mb-3 text-[9px]">
+            <div class="card-panel p-2 border-l-4 border-l-emerald-600"><strong class="text-slate-900 block font-bold">1. Health Score</strong><span class="text-slate-600 text-[8px]">Real-time 0-100% asset health index.</span></div>
+            <div class="card-panel p-2 border-l-4 border-l-cyan-600"><strong class="text-slate-900 block font-bold">2. Remaining Useful Life</strong><span class="text-slate-600 text-[8px]">XGBoost failure countdown in days.</span></div>
+            <div class="card-panel p-2 border-l-4 border-l-blue-600"><strong class="text-slate-900 block font-bold">3. Failure Prediction</strong><span class="text-slate-600 text-[8px]">Isolation Forest anomaly flags.</span></div>
+            <div class="card-panel p-2 border-l-4 border-l-amber-600"><strong class="text-slate-900 block font-bold">4. Root Cause Analysis</strong><span class="text-slate-600 text-[8px]">SHAP sensor degradation ranking.</span></div>
+            <div class="card-panel p-2 border-l-4 border-l-purple-600"><strong class="text-slate-900 block font-bold">5. GenAI Copilot</strong><span class="text-slate-600 text-[8px]">LLM diagnostic manual query chat.</span></div>
+            <div class="card-panel p-2 border-l-4 border-l-rose-600"><strong class="text-slate-900 block font-bold">6. SHAP Explainability</strong><span class="text-slate-600 text-[8px]">Feature contribution breakdown.</span></div>
+            <div class="card-panel p-2 border-l-4 border-l-indigo-600"><strong class="text-slate-900 block font-bold">7. Trend Forecasting</strong><span class="text-slate-600 text-[8px]">Time-series telemetry projection.</span></div>
+            <div class="card-panel p-2 border-l-4 border-l-slate-700"><strong class="text-slate-900 block font-bold">8. Asset Ranking</strong><span class="text-slate-600 text-[8px]">Criticality risk matrix prioritization.</span></div>
+        </div>
+
+        <!-- Detailed AI Workflow Pipeline -->
+        <div class="mb-3">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">End-to-End AI Workflow Pipeline</h3>
+            <div class="card-panel p-2 bg-slate-900 text-white flex justify-between items-center text-center font-mono text-[8px]">
+                <span class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">1. Telemetry</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">2. Cleaning</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">3. Feature Eng</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-cyan-950 text-cyan-400 border border-cyan-500/40">4. AI Model</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">5. Prediction</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-purple-950 text-purple-400 border border-purple-500/40">6. SHAP</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/40">7. Eng Approval</span>
+            </div>
+        </div>
+
+        <!-- UI Screen Previews Side-by-Side -->
+        <div class="grid grid-cols-2 gap-3 mb-2">
+            <div class="card-panel p-3 bg-slate-900 text-white border-t-2 border-t-emerald-500">
+                <div class="flex justify-between items-center mb-1 text-[9px] font-mono border-b border-slate-800 pb-1">
+                    <span class="text-emerald-400 font-bold">UI View 1 — AI Copilot Chat</span>
+                    <span class="text-slate-400">LLM Diagnostic</span>
+                </div>
+                <div class="bg-slate-950 p-2 rounded text-[8.5px] font-mono space-y-1">
+                    <div class="bg-slate-800 p-1 rounded text-right">User: "Why did Pump-12 fail?"</div>
+                    <div class="bg-emerald-950/60 p-1.5 rounded border border-emerald-500/30">
+                        <span class="text-emerald-400 font-bold block mb-0.5">🤖 AI Response:</span>
+                        Vibration spiked 35%. Predicted RUL reached 0. Recommended bearing repair.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-panel p-3 bg-slate-900 text-white border-t-2 border-t-cyan-500">
+                <div class="flex justify-between items-center mb-1 text-[9px] font-mono border-b border-slate-800 pb-1">
+                    <span class="text-cyan-400 font-bold">UI View 2 — 3D Digital Twin Telemetry</span>
+                    <span class="text-slate-400">Asset Mirror</span>
+                </div>
+                <div class="bg-slate-950 p-2 rounded text-[8.5px] font-mono space-y-1">
+                    <div class="flex justify-between border-b border-slate-800 pb-0.5"><span class="text-slate-400">Asset:</span><span class="text-white font-bold">Pump-002</span></div>
+                    <div class="flex justify-between border-b border-slate-800 pb-0.5"><span class="text-slate-400">Telemetry:</span><span class="text-amber-400 font-bold">84.5 °C / 120 PSI</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">State:</span><span class="text-emerald-400 font-bold">92% Health / 420 Days RUL</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 6 — PROTOCOLS & DEPLOYMENT TOPOLOGY ================= -->
+    <div class="page p-8">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-3">
+            <div>
+                <h2 class="text-emerald-700 text-xs font-bold uppercase tracking-widest">Engineering Specs</h2>
+                <h1 class="text-xl font-black text-slate-900 uppercase">Supported Protocols & Deployment Topology</h1>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase">
+                Page 06 / 10
+            </span>
+        </div>
+
+        <!-- Supported Protocols Grid (8 Protocols) -->
+        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">8 Supported Industrial Protocols</h3>
+        <div class="grid grid-cols-4 gap-2 mb-3 text-[9px] font-mono">
+            <div class="card-panel p-2 text-center bg-slate-50"><strong class="text-slate-900 block">Siemens S7</strong><span class="text-slate-500 text-[8px]">S7-1200 / S7-1500</span></div>
+            <div class="card-panel p-2 text-center bg-emerald-50 border-emerald-200"><strong class="text-emerald-900 block">OPC-UA</strong><span class="text-emerald-700 text-[8px]">Unified Architecture</span></div>
+            <div class="card-panel p-2 text-center bg-cyan-50 border-cyan-200"><strong class="text-cyan-900 block">MQTT</strong><span class="text-cyan-700 text-[8px]">Sparkplug B Payload</span></div>
+            <div class="card-panel p-2 text-center bg-slate-50"><strong class="text-slate-900 block">Modbus TCP</strong><span class="text-slate-500 text-[8px]">Legacy PLC Registers</span></div>
+            <div class="card-panel p-2 text-center bg-slate-50"><strong class="text-slate-900 block">EtherNet/IP</strong><span class="text-slate-500 text-[8px]">Rockwell / CIP</span></div>
+            <div class="card-panel p-2 text-center bg-slate-50"><strong class="text-slate-900 block">REST API</strong><span class="text-slate-500 text-[8px]">JSON / HTTPS Endpoints</span></div>
+            <div class="card-panel p-2 text-center bg-slate-50"><strong class="text-slate-900 block">WebSocket</strong><span class="text-slate-500 text-[8px]">Bi-Directional Streaming</span></div>
+            <div class="card-panel p-2 text-center bg-slate-50"><strong class="text-slate-900 block">PROFINET</strong><span class="text-slate-500 text-[8px]">Fieldbus Protocol</span></div>
+        </div>
+
+        <!-- Deployment Topology Diagram Bar -->
+        <div class="card-panel p-3 bg-slate-900 text-white mb-3">
+            <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 text-center">4 Supported Deployment Topologies</h3>
+            <div class="grid grid-cols-4 gap-2 text-center font-mono text-[9px]">
+                <div class="p-2 bg-slate-800 rounded border border-slate-700"><strong class="text-emerald-400 block">☁️ Cloud</strong><span class="text-slate-400 text-[8px]">AWS / Azure / GCP</span></div>
+                <div class="p-2 bg-slate-800 rounded border border-slate-700"><strong class="text-cyan-400 block">🖥️ Edge</strong><span class="text-slate-400 text-[8px]">On-Prem Gateways</span></div>
+                <div class="p-2 bg-slate-800 rounded border border-slate-700"><strong class="text-blue-400 block">🔄 Hybrid</strong><span class="text-slate-400 text-[8px]">Edge Inference + Cloud</span></div>
+                <div class="p-2 bg-slate-800 rounded border border-slate-700"><strong class="text-purple-400 block">🛡️ Air-Gapped</strong><span class="text-slate-400 text-[8px]">100% Local Network</span></div>
+            </div>
+        </div>
+
+        <!-- Technology Stack Table -->
+        <div class="card-panel p-3 mb-2">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Technology Stack Layer Matrix</h3>
+            <table class="w-full text-left text-[9.5px]">
+                <thead>
+                    <tr class="border-b border-slate-200 text-slate-500 font-mono uppercase text-[8.5px]">
+                        <th class="pb-1">Layer</th>
+                        <th class="pb-1">Technology Selected</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 font-mono text-slate-700">
+                    <tr><td class="py-1 font-bold text-slate-900">Frontend UI</td><td>React 18 + TypeScript + Tailwind CSS</td></tr>
+                    <tr><td class="py-1 font-bold text-slate-900">Backend API</td><td>Python 3.10 + FastAPI</td></tr>
+                    <tr><td class="py-1 font-bold text-slate-900">AI Engine</td><td>Python + Scikit-Learn + XGBoost + SHAP</td></tr>
+                    <tr><td class="py-1 font-bold text-slate-900">Database Layer</td><td>PostgreSQL 15 + TimescaleDB (Time-Series Hypertables)</td></tr>
+                    <tr><td class="py-1 font-bold text-slate-900">Cache / Broker</td><td>Redis + MQTT (Sparkplug B)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 7 — HOW PLANTTWIN ADDRESSES CHALLENGES ================= -->
+    <div class="page p-8">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-3">
+            <div>
+                <h2 class="text-cyan-700 text-xs font-bold uppercase tracking-widest">Operational Alignment</h2>
+                <h1 class="text-xl font-black text-slate-900 uppercase">How PlantTwin AI Addresses User Challenges</h1>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase">
+                Page 07 / 10
+            </span>
+        </div>
+
+        <!-- Customer Personas Map (Problem → Feature → Benefit) -->
+        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Role Alignment (Problem → Feature → Benefit)</h3>
+        <div class="space-y-2 mb-3 text-[9px]">
+            <div class="card-panel p-2.5 border-l-4 border-l-emerald-600 bg-slate-50">
+                <div class="flex justify-between font-bold text-slate-900 mb-0.5"><span>🏭 Plant Manager</span><span class="text-emerald-700 font-mono text-[8px]">OEE & Throughput</span></div>
+                <p class="text-slate-600 text-[8.5px]"><strong>Problem:</strong> OEE loss & shift downtime. → <strong>Feature:</strong> Operations Center Dashboard. → <strong>Benefit:</strong> 20% higher plant throughput.</p>
+            </div>
+            <div class="card-panel p-2.5 border-l-4 border-l-cyan-600 bg-slate-50">
+                <div class="flex justify-between font-bold text-slate-900 mb-0.5"><span>🔧 Maintenance Engineer</span><span class="text-cyan-700 font-mono text-[8px]">MTTR & Work Orders</span></div>
+                <p class="text-slate-600 text-[8.5px]"><strong>Problem:</strong> High MTTR & reactive fixes. → <strong>Feature:</strong> Auto Work Orders & RUL Curves. → <strong>Benefit:</strong> 50% faster MTTR response.</p>
+            </div>
+            <div class="card-panel p-2.5 border-l-4 border-l-blue-600 bg-slate-50">
+                <div class="flex justify-between font-bold text-slate-900 mb-0.5"><span>🧠 Reliability Engineer</span><span class="text-blue-700 font-mono text-[8px]">SHAP RCA & MTBF</span></div>
+                <p class="text-slate-600 text-[8.5px]"><strong>Problem:</strong> Failure root cause ambiguity. → <strong>Feature:</strong> SHAP Explainable Feature Attribution. → <strong>Benefit:</strong> 40% faster root cause analysis.</p>
+            </div>
+            <div class="card-panel p-2.5 border-l-4 border-l-amber-600 bg-slate-50">
+                <div class="flex justify-between font-bold text-slate-900 mb-0.5"><span>💻 Operations Head</span><span class="text-amber-700 font-mono text-[8px]">Multi-Plant Benchmarking</span></div>
+                <p class="text-slate-600 text-[8.5px]"><strong>Problem:</strong> Disconnected plant silos. → <strong>Feature:</strong> Multi-Tenant Enterprise Engine. → <strong>Benefit:</strong> Standardized multi-site ROI.</p>
+            </div>
+            <div class="card-panel p-2.5 border-l-4 border-l-purple-600 bg-slate-50">
+                <div class="flex justify-between font-bold text-slate-900 mb-0.5"><span>🚨 Control Room Operator</span><span class="text-purple-700 font-mono text-[8px]">Alarm Suppression</span></div>
+                <p class="text-slate-600 text-[8.5px]"><strong>Problem:</strong> Alarm flooding fatigue. → <strong>Feature:</strong> ISA-18.2 Console & AI Copilot. → <strong>Benefit:</strong> Zero nuisance alarms.</p>
+            </div>
+            <div class="card-panel p-2.5 border-l-4 border-l-slate-700 bg-slate-50">
+                <div class="flex justify-between font-bold text-slate-900 mb-0.5"><span>🛡️ System Administrator</span><span class="text-slate-700 font-mono text-[8px]">OT Security & Air-Gap</span></div>
+                <p class="text-slate-600 text-[8.5px]"><strong>Problem:</strong> Cyber risk & data leakage. → <strong>Feature:</strong> 5-Role RBAC & Air-Gapped Mode. → <strong>Benefit:</strong> 100% IEC 62443 compliance.</p>
+            </div>
+        </div>
+
+        <!-- Product Readiness Matrix Table -->
+        <div class="card-panel p-2.5 mb-2">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1">Product Readiness Matrix</h3>
+            <table class="w-full text-left text-[8.5px] font-mono">
+                <thead><tr class="border-b border-slate-200 text-slate-500 uppercase"><th class="pb-0.5">Capability</th><th class="pb-0.5">Development Status</th></tr></thead>
+                <tbody class="divide-y divide-slate-200 text-slate-700">
+                    <tr><td class="py-0.5 font-bold text-slate-900">Platform MVP</td><td class="text-emerald-700 font-bold">MVP Validated</td></tr>
+                    <tr><td class="py-0.5 font-bold text-slate-900">Backend APIs</td><td class="text-emerald-700 font-bold">Prototype Validated</td></tr>
+                    <tr><td class="py-0.5 font-bold text-slate-900">AI Models & SHAP</td><td class="text-emerald-700 font-bold">Validation Completed</td></tr>
+                    <tr><td class="py-0.5 font-bold text-slate-900">Digital Twin Engine</td><td class="text-emerald-700 font-bold">Prototype Validated</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 8 — BUSINESS BENEFITS & ROI TIMELINE ================= -->
+    <div class="page p-8">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-3">
+            <div>
+                <h2 class="text-emerald-700 text-xs font-bold uppercase tracking-widest">Executive Value</h2>
+                <h1 class="text-xl font-black text-slate-900 uppercase">Business Benefits, ROI & Timeline</h1>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase">
+                Page 08 / 10
+            </span>
+        </div>
+
+        <!-- ROI Impact Metrics Grid -->
+        <div class="grid grid-cols-4 gap-2 mb-2 text-center">
+            <div class="card-panel p-2.5 bg-slate-900 text-white"><span class="text-xl font-black text-emerald-400 block">35%*</span><span class="text-[8px] uppercase text-slate-300 font-bold">Less Downtime</span></div>
+            <div class="card-panel p-2.5 bg-slate-900 text-white"><span class="text-xl font-black text-cyan-400 block">20%*</span><span class="text-[8px] uppercase text-slate-300 font-bold">Higher OEE</span></div>
+            <div class="card-panel p-2.5 bg-slate-900 text-white"><span class="text-xl font-black text-amber-400 block">40%*</span><span class="text-[8px] uppercase text-slate-300 font-bold">Faster RCA</span></div>
+            <div class="card-panel p-2.5 bg-slate-900 text-white"><span class="text-xl font-black text-emerald-400 block">50%*</span><span class="text-[8px] uppercase text-slate-300 font-bold">Lower MTTR</span></div>
+        </div>
+        <p class="text-[7.5px] text-slate-500 italic mb-2 text-right font-mono">* Representative operational improvements based on targeted pilot deployment objectives.</p>
+
+        <!-- 4-Week Deployment Timeline -->
+        <div class="card-panel p-3 bg-slate-900 text-white mb-3">
+            <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 text-center">4-Week Fast-Track Deployment Timeline</h3>
+            <div class="flex justify-between items-center text-center font-mono text-[8.5px]">
+                <div class="p-1.5 bg-slate-800 rounded w-28"><strong class="text-white block">Week 1</strong><span class="text-slate-400 text-[7.5px]">PLC Integration</span></div>
+                <span class="text-emerald-400 font-bold">→</span>
+                <div class="p-1.5 bg-slate-800 rounded w-28"><strong class="text-white block">Week 2</strong><span class="text-slate-400 text-[7.5px]">AI Validation</span></div>
+                <span class="text-emerald-400 font-bold">→</span>
+                <div class="p-1.5 bg-slate-800 rounded w-28"><strong class="text-cyan-400 block">Week 3</strong><span class="text-slate-400 text-[7.5px]">Pilot Run</span></div>
+                <span class="text-emerald-400 font-bold">→</span>
+                <div class="p-1.5 bg-emerald-950 border border-emerald-500/50 rounded w-28"><strong class="text-emerald-400 block">Week 4</strong><span class="text-slate-200 text-[7.5px]">Production</span></div>
+            </div>
+        </div>
+
+        <!-- Executive Business Benefits Checklist -->
+        <div class="card-panel p-3 bg-emerald-50 border-emerald-300 mb-3">
+            <h3 class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-1">Executive Business Benefits</h3>
+            <div class="grid grid-cols-2 gap-1 text-[9.5px] font-semibold text-emerald-950">
+                <div>✔ Reduced Unplanned Downtime (up to 35%)</div>
+                <div>✔ Lower Maintenance Costs (condition-based)</div>
+                <div>✔ Faster Troubleshooting & Accelerated MTTR</div>
+                <div>✔ Improved Overall Equipment Effectiveness (OEE)</div>
+                <div>✔ AI-Assisted Operations & LLM Copilot</div>
+                <div>✔ Improved Regulatory Compliance & Audit Logs</div>
+                <div>✔ Faster Executive Decision Making Across Sites</div>
+                <div>✔ Zero Proprietary Vendor Lock-in</div>
+            </div>
+        </div>
+
+        <!-- Pricing Tiers Grid -->
+        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Pricing Tiers</h3>
+        <div class="grid grid-cols-4 gap-2 text-center text-[9px] mb-2">
+            <div class="card-panel p-2 bg-slate-50"><strong class="text-slate-900 block">Starter</strong><span class="text-slate-500">Up to 100 Assets</span></div>
+            <div class="card-panel p-2 bg-emerald-50 border-emerald-300"><strong class="text-emerald-900 block">Professional</strong><span class="text-emerald-700">Up to 1,000 Assets</span></div>
+            <div class="card-panel p-2 bg-slate-900 text-white"><strong class="text-cyan-400 block">Enterprise</strong><span class="text-slate-300">Unlimited Assets</span></div>
+            <div class="card-panel p-2 bg-slate-50"><strong class="text-slate-900 block">Edge Agent</strong><span class="text-slate-500">Remote Facilities</span></div>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 9 — HARDWARE VALIDATION & KIT SUMMARY (WITH PRODUCT ICONS) ================= -->
+    <div class="page p-8">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-3">
+            <div>
+                <h2 class="text-cyan-700 text-xs font-bold uppercase tracking-widest">Product Execution</h2>
+                <h1 class="text-xl font-black text-slate-900 uppercase">Hardware Validation & Kit Summary</h1>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase">
+                Page 09 / 10
+            </span>
+        </div>
+
+        <!-- Validation Hardware Flow Bar -->
+        <div class="mb-3">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Validation Hardware Flow</h3>
+            <div class="card-panel p-2.5 bg-slate-900 text-white flex justify-between items-center text-center font-mono text-[8.5px]">
+                <span class="px-2 py-1 bg-slate-800 rounded text-slate-300">Siemens PLC</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-slate-800 rounded text-slate-300">Sensors</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-cyan-950 text-cyan-400 border border-cyan-500/40">OPC-UA</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-slate-800 rounded text-slate-300">MQTT Broker</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/40">PlantTwin AI</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-2 py-1 bg-slate-800 rounded text-slate-300">Dashboard</span>
+            </div>
+        </div>
+
+        <!-- Hardware Test Bench Kit Visual Summary -->
+        <div class="grid grid-cols-3 gap-3 mb-3">
+            <div class="col-span-2 card-panel p-3 border-l-4 border-l-emerald-600">
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Hardware Test Bench Components</h3>
+                <div class="grid grid-cols-2 gap-1.5 text-[9px] font-mono text-slate-800">
+                    <div class="p-1.5 bg-white rounded border border-slate-200">🎛️ <strong>Siemens S7-1200</strong> (CPU 1214C)</div>
+                    <div class="p-1.5 bg-white rounded border border-slate-200">🌡️ <strong>Analog Temp Sensor Rig</strong></div>
+                    <div class="p-1.5 bg-white rounded border border-slate-200">📳 <strong>Vibration Accelerometer</strong></div>
+                    <div class="p-1.5 bg-white rounded border border-slate-200">⚡ <strong>Siemens SITOP 24V PSU</strong></div>
+                    <div class="p-1.5 bg-white rounded border border-slate-200">🔌 <strong>Managed Ethernet Switch</strong></div>
+                    <div class="p-1.5 bg-white rounded border border-slate-200">📡 <strong>OPC-UA & MQTT Servers</strong></div>
+                </div>
+            </div>
+            <div class="card-panel p-3 bg-slate-900 text-white flex flex-col justify-between text-center">
+                <h3 class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-1">Validation Kit Cost</h3>
+                <div class="text-2xl font-black gradient-text-emerald my-0.5">₹26,350</div>
+                <p class="text-[8px] text-slate-400 font-mono leading-tight">Complete hardware test bench procurement.</p>
+            </div>
+        </div>
+
+        <!-- 3-Stage Roadmap -->
+        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">Strategic Product Roadmap</h3>
+        <div class="space-y-2 mb-2">
+            <div class="card-panel p-2.5 border-l-4 border-l-emerald-600 bg-slate-50">
+                <div class="flex justify-between items-center mb-0.5"><span class="text-xs font-bold text-slate-900 uppercase">6 Months — Agentic Maintenance</span><span class="badge-emerald px-1.5 py-0.5 rounded text-[8px]">Near-Term</span></div>
+                <p class="text-[9px] text-slate-600">Autonomous AI agents auto-generating work orders, field technician mobile app, Edge v2 offline inference.</p>
+            </div>
+            <div class="card-panel p-2.5 border-l-4 border-l-cyan-600 bg-slate-50">
+                <div class="flex justify-between items-center mb-0.5"><span class="text-xs font-bold text-slate-900 uppercase">12 Months — Computer Vision & Energy AI</span><span class="badge-cyan px-1.5 py-0.5 rounded text-[8px]">Medium-Term</span></div>
+                <p class="text-[9px] text-slate-600">Visual defect inspection AI, automated energy optimization analytics, carbon tracking, and compliance reporting.</p>
+            </div>
+            <div class="card-panel p-2.5 border-l-4 border-l-purple-600 bg-slate-50">
+                <div class="flex justify-between items-center mb-0.5"><span class="text-xs font-bold text-slate-900 uppercase">24 Months — Autonomous Operations</span><span class="px-1.5 py-0.5 rounded text-[8px] font-mono bg-purple-100 text-purple-800 font-bold">Long-Term Vision</span></div>
+                <p class="text-[9px] text-slate-600">Closed-loop AI control for non-safety-critical process optimization, federated learning across plant sites, AR/VR integration.</p>
+            </div>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 10 — CONCLUSION, PARTNERS & FUTURE VISION ================= -->
+    <div class="page p-8 flex flex-col justify-between">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-3 mb-2">
+            <div>
+                <h2 class="text-emerald-700 text-xs font-bold uppercase tracking-widest">Executive Conclusion</h2>
+                <h1 class="text-xl font-black text-slate-900 uppercase">Delivering the Future & About PlantTwin AI</h1>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[9px] font-mono font-bold bg-slate-900 text-white uppercase">
+                Page 10 / 10
+            </span>
+        </div>
+
+        <!-- Future Vision Progression Banner -->
+        <div class="card-panel-dark p-4 text-center bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-2 border-emerald-500 mb-2 shadow-xl">
+            <span class="text-[8.5px] font-bold text-emerald-400 tracking-[0.25em] uppercase block mb-1">Delivering the Future of Industrial Intelligence</span>
+            <div class="flex justify-between items-center text-center font-mono text-[8px] text-white my-1">
+                <span class="px-1.5 py-0.5 bg-slate-800 rounded">PlantTwin AI</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-slate-800 rounded">Connected Plant</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-slate-800 rounded">Autonomous Maintenance</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-cyan-950 text-cyan-400">Self-Optimizing Factory</span><span class="text-emerald-400 font-bold">→</span>
+                <span class="px-1.5 py-0.5 bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/40">Industrial Intelligence Platform</span>
+            </div>
+        </div>
+
+        <!-- Validation Status Checklist Grid (9 Items) -->
+        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1">System Validation Status Checklist</h3>
+        <div class="grid grid-cols-3 gap-1.5 mb-2 text-[8.5px] font-mono">
+            <div class="p-1 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">✓ Siemens S7 Connected</div>
+            <div class="p-1 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">✓ OPC-UA Validated</div>
+            <div class="p-1 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">✓ MQTT Sparkplug B</div>
+            <div class="p-1 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">✓ REST APIs Active</div>
+            <div class="p-1 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">✓ Dashboard Live</div>
+            <div class="p-1 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">✓ AI ML Models</div>
+            <div class="p-1 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">✓ Digital Twin Engine</div>
+            <div class="p-1 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">✓ Auto Work Orders</div>
+            <div class="p-1 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">✓ Teams Notifications</div>
+        </div>
+
+        <!-- Technology Partners Strip -->
+        <div class="card-panel p-2 bg-slate-50 border-l-4 border-l-blue-600 mb-2">
+            <h3 class="text-[9.5px] font-bold text-slate-900 uppercase tracking-wider mb-1">Technology Ecosystem & Protocols</h3>
+            <div class="flex justify-between text-[8.5px] font-bold font-mono text-slate-700">
+                <span>Siemens S7</span> • <span>OPC Foundation</span> • <span>MQTT</span> • <span>PostgreSQL / TimescaleDB</span> • <span>FastAPI</span> • <span>React 18</span>
+            </div>
+        </div>
+
+        <!-- Contact & Repositories Block -->
+        <div class="card-panel p-3 bg-slate-900 text-white flex justify-between items-center mb-2">
+            <div>
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-1">Contact Information & Repositories</h3>
+                <div class="space-y-0.5 text-[9px] font-mono text-slate-300">
+                    <p>• Primary Repo: <a href="https://github.com/360-AI-Agents/plant_twin_ai" class="text-emerald-400 font-bold">github.com/360-AI-Agents/plant_twin_ai</a></p>
+                    <p>• Mirror Repo: <a href="https://github.com/Ayush112309/plant_twin_ai" class="text-cyan-400">github.com/Ayush112309/plant_twin_ai</a></p>
+                    <p>• Team: <span class="text-white font-bold">360 AI Agents Strategic Planning</span> | Contact: <span class="text-white font-bold">Available upon request</span></p>
+                </div>
+            </div>
+            <!-- QR Code -->
+            <div class="w-14 h-14 bg-white p-1 rounded-lg flex-shrink-0 flex items-center justify-center border border-slate-300">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://github.com/360-AI-Agents/plant_twin_ai" alt="QR" class="w-full h-full object-contain" />
+            </div>
+        </div>
+
+        <!-- Standard Confidential Footer -->
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[8.5px] text-slate-500 font-mono">
+            <span>Confidential • PlantTwin AI Enterprise Product Analysis • Version 1.1</span>
+            <span>© 2026 360 AI Agents</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
