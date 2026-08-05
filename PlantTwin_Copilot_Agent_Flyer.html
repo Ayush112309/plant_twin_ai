@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantTwin Copilot Agent — Solution Flyer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .flyer-container {
+            width: 210mm;
+            min-height: 297mm;
+            background: #ffffff;
+            margin: 20px auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+            box-sizing: border-box;
+        }
+
+        @page { size: A4; margin: 0; }
+        @media print {
+            body { background: #ffffff; margin: 0; }
+            .flyer-container { margin: 0; box-shadow: none; border: none; width: 100%; }
+        }
+
+        .eyebrow-tag {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #0284c7; /* Cyan / Blue accent for Copilot */
+        }
+
+        .card-grey {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+        }
+
+        .card-white {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+        }
+
+        .card-dark {
+            background-color: #0f172a;
+            color: #ffffff;
+            border-radius: 0.375rem;
+        }
+
+        .number-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 800;
+            color: #0284c7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="flyer-container">
+        
+        <!-- TOP BRAND HEADER BAR -->
+        <div class="bg-slate-950 text-white px-8 py-4 flex justify-between items-center border-b border-slate-800">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl font-black tracking-tight">PlantTwin <span class="text-cyan-400">Copilot Agent</span></span>
+            </div>
+            <span class="text-xs font-mono font-bold tracking-widest text-slate-400 uppercase">SOLUTION FLYER</span>
+        </div>
+
+        <!-- HERO HEADER BANNER (Dark Background Image Overlay) -->
+        <div class="relative bg-slate-950 text-white px-8 py-10 overflow-hidden border-b-4 border-cyan-500">
+            <div class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');"></div>
+            <div class="relative z-10 max-w-3xl">
+                <span class="eyebrow-tag block mb-2">GENAI INDUSTRIAL ASSISTANT & RAG AGENT</span>
+                <h1 class="text-3xl font-extrabold tracking-tight leading-tight text-white mb-3">
+                    Natural language P&ID & telemetry query assistant, powered by Gemini LLM
+                </h1>
+                <p class="text-xs text-slate-300 font-medium leading-relaxed max-w-2xl">
+                    PlantTwin Copilot Agent connects plant documentation, P&IDs, operating manuals, and real-time SCADA telemetry into an intelligent GenAI assistant — answering operator queries, explaining alarms, and suggesting corrective procedures instantly.
+                </p>
+            </div>
+        </div>
+
+        <!-- SECTION 1: PROBLEM & OPPORTUNITY -->
+        <div class="px-8 py-8 border-b border-slate-100">
+            <div class="grid grid-cols-12 gap-6 items-center">
+                <!-- Left Industrial Image -->
+                <div class="col-span-5">
+                    <div class="rounded-md overflow-hidden border border-slate-200 shadow-sm h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                </div>
+                <!-- Right Text Column -->
+                <div class="col-span-7 space-y-2">
+                    <span class="eyebrow-tag block">PROBLEM & OPPORTUNITY</span>
+                    <h2 class="text-lg font-bold text-slate-900 leading-tight">Control room operators waste 40% of shifts searching manuals</h2>
+                    <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                        When an industrial trip or alarm occurs, control room operators must cross-reference complex P&IDs, multi-page OEM vendor manuals, and historical trip logs. During high-stress incidents, manual document lookup causes response delays and human error. PlantTwin Copilot Agent indexes all industrial documentation into an auditable vector RAG store, allowing engineers to query live tag values and manuals in plain English.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: SOLUTION -->
+        <div class="px-8 py-8 bg-slate-50/70 border-b border-slate-100">
+            <span class="eyebrow-tag block mb-1">SOLUTION</span>
+            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-2">One conversational assistant, from query to resolution</h2>
+            <p class="text-xs text-slate-600 leading-relaxed max-w-3xl mb-6">
+                PlantTwin Copilot Agent links live sensor streams with vector-indexed equipment manuals to synthesize instant diagnostic answers, explain root cause drivers using SHAP, and draft automated maintenance work orders with zero manual typing.
+            </p>
+
+            <!-- 4-Card Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="card-white p-4">
+                    <span class="number-badge block mb-1">01</span>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">P&ID Vector RAG</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Indexes technical drawings, OEM manuals, and SOPs for sub-second natural language retrieval.</p>
+                </div>
+                <div class="card-white p-4">
+                    <span class="number-badge block mb-1">02</span>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Live Telemetry Context</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Fuses real-time PLC tag values directly into prompt context for accurate, situational diagnostic answers.</p>
+                </div>
+                <div class="card-white p-4">
+                    <span class="number-badge block mb-1">03</span>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">SHAP Root Cause Explanation</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Translates complex machine learning feature attribution scores into plain-language diagnostic summaries.</p>
+                </div>
+                <div class="card-white p-4">
+                    <span class="number-badge block mb-1">04</span>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Auto Work Order Generation</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Converts chat recommendations into structured maintenance work orders with technician routing.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: BUSINESS CHALLENGES ADDRESSED -->
+        <div class="px-8 py-8 border-b border-slate-100">
+            <span class="eyebrow-tag block mb-1">BUSINESS CHALLENGES ADDRESSED</span>
+            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-4">What this solves for control room operators</h2>
+
+            <!-- 4 Pain Point Cards Grid -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="card-grey p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Slow Manual Lookup</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Fumbling through binder manuals during trips — Copilot retrieves exact PDF page citations in seconds.</p>
+                </div>
+                <div class="card-grey p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Operator Experience Gap</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Junior operators lack 20+ years of plant memory — Copilot standardizes expert troubleshooting knowledge.</p>
+                </div>
+                <div class="card-grey p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Opaque AI Predictions</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Operators distrust black-box AI scores — Copilot explains exact sensor contributions in plain English.</p>
+                </div>
+                <div class="card-grey p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Manual Shift Logging</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Typing repetitive handover notes — Copilot auto-summarizes shift incidents and active alarms.</p>
+                </div>
+            </div>
+
+            <!-- Image Gallery Strip -->
+            <div class="grid grid-cols-3 gap-3">
+                <div class="relative h-28 rounded overflow-hidden border border-slate-200 shadow-sm bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');">
+                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">AI CHAT INTERFACE</div>
+                </div>
+                <div class="relative h-28 rounded overflow-hidden border border-slate-200 shadow-sm bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');">
+                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">P&ID MANUAL RAG</div>
+                </div>
+                <div class="relative h-28 rounded overflow-hidden border border-slate-200 shadow-sm bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');">
+                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">DIAGNOSTIC GUIDANCE</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: BUSINESS BENEFITS -->
+        <div class="px-8 py-8 bg-slate-50/70 border-b border-slate-100">
+            <span class="eyebrow-tag block mb-1">BUSINESS BENEFITS</span>
+            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-4">Measurable value, from day one</h2>
+
+            <!-- 4 Benefit Cards Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="card-white p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">40% Accelerated MTTR</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Instant diagnostic retrieval cuts Mean Time To Repair by eliminating manual troubleshooting delays.</p>
+                </div>
+                <div class="card-white p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Zero Blind Troubleshooting</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Operators act on validated RAG citations from official OEM manuals, reducing human error during trips.</p>
+                </div>
+                <div class="card-white p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Standardized Plant Knowledge</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Captures retiring expert wisdom into a permanent enterprise knowledge base accessible to all shifts.</p>
+                </div>
+                <div class="card-white p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Automated Work Orders</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">One-click conversion of chat recommendations into CMMS work orders saves administrative hours daily.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: WHAT MAKES US UNIQUE (Dark Panel) -->
+        <div class="card-dark mx-8 my-6 p-6 bg-slate-950 border border-slate-800">
+            <span class="eyebrow-tag text-cyan-400 block mb-1">WHAT MAKES US UNIQUE</span>
+            <h2 class="text-lg font-extrabold text-white leading-tight mb-3">Our Edge</h2>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                Generic LLMs hallucinate industrial facts. PlantTwin Copilot Agent uses a strict industrial RAG pipeline bounded by live SCADA tag values and verified plant P&IDs — delivering auditable, halluncination-free decision support.
+            </p>
+
+            <!-- 2-Column Bullet List -->
+            <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-xs text-slate-200">
+                <div class="flex items-start space-x-2">
+                    <span class="text-cyan-400 font-bold text-base leading-none">•</span>
+                    <span><strong>Live Telemetry Binding:</strong> Fuses live PLC values directly into prompt context.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-cyan-400 font-bold text-base leading-none">•</span>
+                    <span><strong>Verified PDF Citations:</strong> Returns exact document page & section sources.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-cyan-400 font-bold text-base leading-none">•</span>
+                    <span><strong>SHAP Explainability Integration:</strong> Explains machine learning features in plain English.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-cyan-400 font-bold text-base leading-none">•</span>
+                    <span><strong>Air-Gapped LLM Support:</strong> Operates locally on-prem without cloud data leaks.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-cyan-400 font-bold text-base leading-none">•</span>
+                    <span><strong>Role-Based Response Guardrails:</strong> Tailors depth based on operator vs engineer role.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-cyan-400 font-bold text-base leading-none">•</span>
+                    <span><strong>CMMS Work Order Integration:</strong> Directly dispatches maintenance teams from chat.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 6: DELIVERING THE FUTURE -->
+        <div class="px-8 pb-8">
+            <span class="eyebrow-tag block mb-1">DELIVERING THE FUTURE</span>
+            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-4">Where we're headed</h2>
+
+            <div class="grid grid-cols-2 gap-6 font-mono">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] flex items-center justify-center font-bold">01</span>
+                        <span class="text-[10px] font-bold text-cyan-600 uppercase tracking-wider">STEP 1 — LIVE NOW</span>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-900 font-sans">Gemini LLM & Vector RAG Engine</h3>
+                    <p class="text-[11px] text-slate-600 font-sans leading-relaxed">
+                        Natural language P&ID query, live telemetry fusion, SHAP explanation translation, and automated work order creation.
+                    </p>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[10px] flex items-center justify-center font-bold">02</span>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">STEP 2</span>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-900 font-sans">Voice Assistant & AR Glasses Integration</h3>
+                    <p class="text-[11px] text-slate-600 font-sans leading-relaxed">
+                        Hands-free voice diagnostics for field technicians and augmented reality step-by-step repair overlays.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER BAR -->
+        <div class="bg-slate-50 px-8 py-3 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-500 font-mono">
+            <span>PlantTwin AI — GenAI Copilot Agent</span>
+            <span>For internal review — 360 AI Agents Team</span>
+        </div>
+
+    </div>
+
+</body>
+</html>

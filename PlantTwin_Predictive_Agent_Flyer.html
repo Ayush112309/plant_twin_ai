@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantTwin Predictive Maintenance Agent — Solution Flyer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .flyer-container {
+            width: 210mm;
+            min-height: 297mm;
+            background: #ffffff;
+            margin: 20px auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #cbd5e1;
+            box-sizing: border-box;
+        }
+
+        @page { size: A4; margin: 0; }
+        @media print {
+            body { background: #ffffff; margin: 0; }
+            .flyer-container { margin: 0; box-shadow: none; border: none; width: 100%; }
+        }
+
+        .eyebrow-tag {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #d97706; /* Amber accent for Predictive Maintenance */
+        }
+
+        .card-grey {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+        }
+
+        .card-white {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+        }
+
+        .card-dark {
+            background-color: #0f172a;
+            color: #ffffff;
+            border-radius: 0.375rem;
+        }
+
+        .number-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 800;
+            color: #d97706;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="flyer-container">
+        
+        <!-- TOP BRAND HEADER BAR -->
+        <div class="bg-slate-950 text-white px-8 py-4 flex justify-between items-center border-b border-slate-800">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl font-black tracking-tight">PlantTwin <span class="text-amber-400">Predictive Agent</span></span>
+            </div>
+            <span class="text-xs font-mono font-bold tracking-widest text-slate-400 uppercase">SOLUTION FLYER</span>
+        </div>
+
+        <!-- HERO HEADER BANNER -->
+        <div class="relative bg-slate-950 text-white px-8 py-10 overflow-hidden border-b-4 border-amber-500">
+            <div class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');"></div>
+            <div class="relative z-10 max-w-3xl">
+                <span class="eyebrow-tag block mb-2">PREDICTIVE MAINTENANCE & RUL DEGRADATION AGENT</span>
+                <h1 class="text-3xl font-extrabold tracking-tight leading-tight text-white mb-3">
+                    14-day early failure prediction & SHAP root cause analysis
+                </h1>
+                <p class="text-xs text-slate-300 font-medium leading-relaxed max-w-2xl">
+                    PlantTwin Predictive Agent continuously monitors thermal, vibration, and pressure telemetry — using XGBoost degradation models and SHAP feature attribution to predict Remaining Useful Life (RUL) weeks before breakdown occurs.
+                </p>
+            </div>
+        </div>
+
+        <!-- SECTION 1: PROBLEM & OPPORTUNITY -->
+        <div class="px-8 py-8 border-b border-slate-100">
+            <div class="grid grid-cols-12 gap-6 items-center">
+                <!-- Left Industrial Image -->
+                <div class="col-span-5">
+                    <div class="rounded-md overflow-hidden border border-slate-200 shadow-sm h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                </div>
+                <!-- Right Text Column -->
+                <div class="col-span-7 space-y-2">
+                    <span class="eyebrow-tag block">PROBLEM & OPPORTUNITY</span>
+                    <h2 class="text-lg font-bold text-slate-900 leading-tight">Reactive maintenance causes 70% of unplanned plant outages</h2>
+                    <p class="text-xs text-slate-600 leading-relaxed font-normal">
+                        Industrial pumps, turbines, and compressors operate under severe mechanical stress. Traditional calendar-based maintenance either replaces healthy components prematurely or misses catastrophic bearing failures. Unplanned breakdowns cost manufacturing plants $50B+ annually. PlantTwin Predictive Agent turns raw vibration FFT and thermal sensor streams into continuous, explainable RUL curves.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: SOLUTION -->
+        <div class="px-8 py-8 bg-slate-50/70 border-b border-slate-100">
+            <span class="eyebrow-tag block mb-1">SOLUTION</span>
+            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-2">One agent, from anomaly detection to root cause explanation</h2>
+            <p class="text-xs text-slate-600 leading-relaxed max-w-3xl mb-6">
+                PlantTwin Predictive Agent ingests sub-second SCADA tag streams, runs real-time Isolation Forest anomaly detection, models RUL degradation windows, and pinpoints exact failure drivers using SHAP feature attribution.
+            </p>
+
+            <!-- 4-Card Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="card-white p-4">
+                    <span class="number-badge block mb-1">01</span>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Isolation Forest Anomaly Detection</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Detects subtle multi-variate statistical sensor drift days before traditional SCADA thresholds trip.</p>
+                </div>
+                <div class="card-white p-4">
+                    <span class="number-badge block mb-1">02</span>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">XGBoost RUL Regression</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Calculates estimated Remaining Useful Life in days, updated in real time as operating stress changes.</p>
+                </div>
+                <div class="card-white p-4">
+                    <span class="number-badge block mb-1">03</span>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">SHAP Explainable XAI</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Ranks sensor contribution percentages so engineers know precisely which bearing or seal is degrading.</p>
+                </div>
+                <div class="card-white p-4">
+                    <span class="number-badge block mb-1">04</span>
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Auto Work Order Routing</h3>
+                    <p class="text-[11px] text-slate-600 leading-normal">Automatically dispatches condition-based work orders to maintenance teams with recommended spare parts.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: BUSINESS CHALLENGES ADDRESSED -->
+        <div class="px-8 py-8 border-b border-slate-100">
+            <span class="eyebrow-tag block mb-1">BUSINESS CHALLENGES ADDRESSED</span>
+            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-4">What this solves for reliability engineers</h2>
+
+            <!-- 4 Pain Point Cards Grid -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="card-grey p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Unscheduled Machine Outages</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Catastrophic component breakdowns — 14-day early prediction provides ample time to order spares and schedule repairs.</p>
+                </div>
+                <div class="card-grey p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Wasted Maintenance OPEX</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Replacing parts on fixed calendars — condition-based maintenance extends component life by 30%+.</p>
+                </div>
+                <div class="card-grey p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Root Cause Ambiguity</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Guessing why a motor tripped — SHAP feature attribution isolates exact vibration vs temperature contributions.</p>
+                </div>
+                <div class="card-grey p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">High Spare Parts Inventory</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Overstocking emergency spares — accurate RUL countdowns enable just-in-time spare parts procurement.</p>
+                </div>
+            </div>
+
+            <!-- Image Gallery Strip -->
+            <div class="grid grid-cols-3 gap-3">
+                <div class="relative h-28 rounded overflow-hidden border border-slate-200 shadow-sm bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');">
+                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">RUL DEGRADATION CURVE</div>
+                </div>
+                <div class="relative h-28 rounded overflow-hidden border border-slate-200 shadow-sm bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');">
+                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">SHAP FEATURE ATTRIBUTION</div>
+                </div>
+                <div class="relative h-28 rounded overflow-hidden border border-slate-200 shadow-sm bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');">
+                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 px-2 py-1 text-[9px] font-mono font-bold text-white uppercase tracking-wider">HEALTH SCORE INDEX</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: BUSINESS BENEFITS -->
+        <div class="px-8 py-8 bg-slate-50/70 border-b border-slate-100">
+            <span class="eyebrow-tag block mb-1">BUSINESS BENEFITS</span>
+            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-4">Measurable value, from day one</h2>
+
+            <!-- 4 Benefit Cards Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="card-white p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">35% Downtime Reduction</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Predicting failure 14 days in advance prevents unexpected line halts and catastrophic machine destruction.</p>
+                </div>
+                <div class="card-white p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">20% OEE Boost</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Optimizing equipment health index improves overall plant equipment availability and operational throughput.</p>
+                </div>
+                <div class="card-white p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">50% Lower MTTR</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">SHAP root cause analysis pinpoints exact faulty bearings, accelerating repair work order execution.</p>
+                </div>
+                <div class="card-white p-4">
+                    <h3 class="text-xs font-bold text-slate-900 mb-1">Zero Black-Box Uncertainty</h3>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">Auditable machine learning models build trust with plant reliability engineers and safety auditors.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: WHAT MAKES US UNIQUE (Dark Panel) -->
+        <div class="card-dark mx-8 my-6 p-6 bg-slate-950 border border-slate-800">
+            <span class="eyebrow-tag text-amber-400 block mb-1">WHAT MAKES US UNIQUE</span>
+            <h2 class="text-lg font-extrabold text-white leading-tight mb-3">Our Edge</h2>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                Standard predictive tools give raw vibration graphs. PlantTwin Predictive Agent combines statistical anomaly detection, XGBoost RUL modeling, and SHAP explainability into a single automated decision engine.
+            </p>
+
+            <!-- 2-Column Bullet List -->
+            <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-xs text-slate-200">
+                <div class="flex items-start space-x-2">
+                    <span class="text-amber-400 font-bold text-base leading-none">•</span>
+                    <span><strong>14-Day Advance Warning:</strong> Predicts degradation weeks before threshold breaches.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-amber-400 font-bold text-base leading-none">•</span>
+                    <span><strong>Native SHAP XAI:</strong> Quantifies exact feature contribution percentages.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-amber-400 font-bold text-base leading-none">•</span>
+                    <span><strong>Multi-Sensor Fusion:</strong> Fuses vibration, thermal, and pressure tag streams.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-amber-400 font-bold text-base leading-none">•</span>
+                    <span><strong>Sub-100ms Inference:</strong> Executes ML models on live streaming telemetry.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-amber-400 font-bold text-base leading-none">•</span>
+                    <span><strong>Auto-Retraining Pipeline:</strong> Learns continuously from technician feedback.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-amber-400 font-bold text-base leading-none">•</span>
+                    <span><strong>Direct Work Order Dispatch:</strong> Converts predictions into active work orders.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 6: DELIVERING THE FUTURE -->
+        <div class="px-8 pb-8">
+            <span class="eyebrow-tag block mb-1">DELIVERING THE FUTURE</span>
+            <h2 class="text-lg font-bold text-slate-900 leading-tight mb-4">Where we're headed</h2>
+
+            <div class="grid grid-cols-2 gap-6 font-mono">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] flex items-center justify-center font-bold">01</span>
+                        <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">STEP 1 — LIVE NOW</span>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-900 font-sans">XGBoost & SHAP Predictive Engine</h3>
+                    <p class="text-[11px] text-slate-600 font-sans leading-relaxed">
+                        Live RUL regression, multi-variate anomaly detection, SHAP feature attribution, and automated work order routing.
+                    </p>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[10px] flex items-center justify-center font-bold">02</span>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">STEP 2</span>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-900 font-sans">Closed-Loop Autonomous Control</h3>
+                    <p class="text-[11px] text-slate-600 font-sans leading-relaxed">
+                        Autonomous AI control loops adjusting operating parameters to safely extend asset life during active degradation.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER BAR -->
+        <div class="bg-slate-50 px-8 py-3 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-500 font-mono">
+            <span>PlantTwin AI — Predictive Maintenance Agent</span>
+            <span>For internal review — 360 AI Agents Team</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
