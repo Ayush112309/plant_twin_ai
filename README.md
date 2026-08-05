@@ -11,12 +11,9 @@
 
 > **PlantTwin AI™** is a enterprise-ready, industrial-grade **Digital Twin, Real-Time Telemetry Historian, and AI Predictive Maintenance Platform**. Built specifically for continuous process manufacturing, chemical refineries, power generation facilities, and smart factories.
 
-## 📄 Enterprise Documentation & Tech Stack Excel Deliverables
+## 📊 Tech Stack & Dependencies Deliverable
 
-- 📘 **10-Page Master Enterprise Product Analysis Report (HTML)**: [PlantTwin_AI_Enterprise_Report.html](PlantTwin_AI_Enterprise_Report.html) *(Published 10/10 Corporate Light Theme for Siemens/ABB grade overview)*
-- 📑 **Enterprise Brochure (HTML Sync)**: [PlantTwin_AI_Brochure.html](PlantTwin_AI_Brochure.html)
 - 📊 **Tech Stack & Dependencies Excel Sheet (.xlsx)**: [PlantTwin_AI_Tech_Stack_and_Dependencies.xlsx](PlantTwin_AI_Tech_Stack_and_Dependencies.xlsx) *(Complete 4-sheet workbook detailing all backend, frontend, infrastructure, and hardware dependencies)*
-- 🐍 **Tech Stack Excel Generator Script**: [generate_tech_stack_excel.py](generate_tech_stack_excel.py)
 
 ---
 
