@@ -11,6 +11,12 @@
 
 > **PlantTwin AI™** is a enterprise-ready, industrial-grade **Digital Twin, Real-Time Telemetry Historian, and AI Predictive Maintenance Platform**. Built specifically for continuous process manufacturing, chemical refineries, power generation facilities, and smart factories.
 
+## 📄 Master Solution Flyer Deliverable
+
+- 🔴 **PlantTwin AI Master Solution Flyer (HTML)**: [PlantTwin_AI_Solution_Flyer.html](PlantTwin_AI_Solution_Flyer.html) *(Complete solution flyer featuring official PlantTwin AI logo image, exact AeroInspect AI reference layout & titles)*
+
+---
+
 ## 📊 Tech Stack & Dependencies Deliverable
 
 - 📊 **Tech Stack & Dependencies Excel Sheet (.xlsx)**: [PlantTwin_AI_Tech_Stack_and_Dependencies.xlsx](PlantTwin_AI_Tech_Stack_and_Dependencies.xlsx) *(Complete 4-sheet workbook detailing all backend, frontend, infrastructure, and hardware dependencies)*
