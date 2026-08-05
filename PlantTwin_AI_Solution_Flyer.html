@@ -30,6 +30,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            page-break-after: always;
         }
 
         @page { size: A4 portrait; margin: 0; }
@@ -39,7 +40,7 @@
         }
 
         .eyebrow-tag {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.15em;
@@ -67,7 +68,7 @@
 
         .number-badge {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
             color: #ef4444;
         }
@@ -97,11 +98,11 @@
             </div>
 
             <!-- HERO HEADER BANNER (Dark Industrial Background Image) -->
-            <div class="relative bg-slate-950 text-white px-8 py-7 overflow-hidden border-b-4 border-red-600">
+            <div class="relative bg-slate-950 text-white px-8 py-6 overflow-hidden border-b-4 border-red-600">
                 <div class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');"></div>
                 <div class="relative z-10 max-w-3xl">
-                    <span class="eyebrow-tag block mb-1.5">AI-POWERED INDUSTRIAL DIGITAL TWIN & AUTONOMOUS AGENTS PLATFORM</span>
-                    <h1 class="text-2xl font-black tracking-tight leading-tight text-white mb-2">
+                    <span class="eyebrow-tag block mb-1">AI-POWERED INDUSTRIAL DIGITAL TWIN & AUTONOMOUS AGENTS PLATFORM</span>
+                    <h1 class="text-2xl font-black tracking-tight leading-tight text-white mb-1.5">
                         Real-time site safety & predictive operations, powered by 7 specialized AI agents
                     </h1>
                     <p class="text-[11px] text-slate-300 font-medium leading-relaxed max-w-2xl">
@@ -111,30 +112,30 @@
             </div>
 
             <!-- KPI SUMMARY METRIC STRIP -->
-            <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white px-8 py-2.5 border-b border-slate-800 flex justify-between items-center text-center font-mono text-[9px]">
-                <div><span class="text-emerald-400 font-black text-sm block">35% ↓</span><span class="text-slate-300 uppercase text-[7.5px]">Downtime Reduction</span></div>
-                <div class="w-px h-5 bg-slate-800"></div>
-                <div><span class="text-cyan-400 font-black text-sm block">20% ↑</span><span class="text-slate-300 uppercase text-[7.5px]">OEE Improvement</span></div>
-                <div class="w-px h-5 bg-slate-800"></div>
-                <div><span class="text-amber-400 font-black text-sm block">14 Days</span><span class="text-slate-300 uppercase text-[7.5px]">Early RUL Warning</span></div>
-                <div class="w-px h-5 bg-slate-800"></div>
-                <div><span class="text-purple-400 font-black text-sm block">50% ↓</span><span class="text-slate-300 uppercase text-[7.5px]">Faster MTTR</span></div>
-                <div class="w-px h-5 bg-slate-800"></div>
-                <div><span class="text-emerald-400 font-black text-sm block">&lt; 2 Wks</span><span class="text-slate-300 uppercase text-[7.5px]">Deployment Speed</span></div>
+            <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white px-8 py-2 border-b border-slate-800 flex justify-between items-center text-center font-mono text-[9px]">
+                <div><span class="text-emerald-400 font-black text-xs block">35% ↓</span><span class="text-slate-300 uppercase text-[7px]">Downtime Reduction</span></div>
+                <div class="w-px h-4 bg-slate-800"></div>
+                <div><span class="text-cyan-400 font-black text-xs block">20% ↑</span><span class="text-slate-300 uppercase text-[7px]">OEE Improvement</span></div>
+                <div class="w-px h-4 bg-slate-800"></div>
+                <div><span class="text-amber-400 font-black text-xs block">14 Days</span><span class="text-slate-300 uppercase text-[7px]">Early RUL Warning</span></div>
+                <div class="w-px h-4 bg-slate-800"></div>
+                <div><span class="text-purple-400 font-black text-xs block">50% ↓</span><span class="text-slate-300 uppercase text-[7px]">Faster MTTR</span></div>
+                <div class="w-px h-4 bg-slate-800"></div>
+                <div><span class="text-emerald-400 font-black text-xs block">&lt; 2 Wks</span><span class="text-slate-300 uppercase text-[7px]">Deployment Speed</span></div>
             </div>
 
             <!-- SECTION 1: PROBLEM & OPPORTUNITY -->
-            <div class="px-8 py-5 border-b border-slate-100">
+            <div class="px-8 py-4 border-b border-slate-100">
                 <div class="grid grid-cols-12 gap-5 items-center">
                     <!-- Left Industrial Image -->
                     <div class="col-span-4">
-                        <div class="rounded-md overflow-hidden border border-slate-200 shadow-sm h-36 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                        <div class="rounded-md overflow-hidden border border-slate-200 shadow-sm h-32 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
                     </div>
                     <!-- Right Text Column -->
-                    <div class="col-span-8 space-y-1.5">
+                    <div class="col-span-8 space-y-1">
                         <span class="eyebrow-tag block">PROBLEM & OPPORTUNITY</span>
-                        <h2 class="text-base font-bold text-slate-900 leading-tight">Manual monitoring can't scale with complex industrial plant risk</h2>
-                        <p class="text-[11px] text-slate-600 leading-relaxed font-normal">
+                        <h2 class="text-sm font-bold text-slate-900 leading-tight">Manual monitoring can't scale with complex industrial plant risk</h2>
+                        <p class="text-[10.5px] text-slate-600 leading-relaxed font-normal">
                             Process manufacturing plants, refineries, and utilities operate thousands of sensor tags under severe stress. Human operators face alarm flooding (over 70% of telemetry discarded without insights), unpredicted bearing failures costing $50B+ annually, and 40% of shifts wasted manually cross-referencing P&ID drawings and OEM manuals. PlantTwin AI's autonomous agents continuously turn raw telemetry into real-time predictive intelligence, zero-latency alarms, and automated work orders.
                         </p>
                     </div>
@@ -142,72 +143,72 @@
             </div>
 
             <!-- SECTION 2: EXPANDED MASTER SOLUTION & MULTI-AGENT ARCHITECTURE -->
-            <div class="px-8 py-5 bg-slate-50/70">
-                <span class="eyebrow-tag block mb-1">SOLUTION</span>
-                <h2 class="text-base font-bold text-slate-900 leading-tight mb-1">One platform, from detection to automated work orders</h2>
-                <p class="text-[11px] text-slate-600 leading-relaxed max-w-3xl mb-3.5">
+            <div class="px-8 py-4 bg-slate-50/70">
+                <span class="eyebrow-tag block mb-0.5">SOLUTION</span>
+                <h2 class="text-sm font-bold text-slate-900 leading-tight mb-1">One platform, from detection to automated work orders</h2>
+                <p class="text-[10.5px] text-slate-600 leading-relaxed max-w-3xl mb-3">
                     PlantTwin AI operates as a unified operational ecosystem where 7 specialized AI agents collaborate across telemetry ingestion, 3D Digital Twin mirror synchronization, RUL degradation modeling, GenAI Copilot query resolution, and automated work order routing.
                 </p>
 
                 <!-- 6-Agent Showcase Grid -->
-                <div class="grid grid-cols-3 gap-3 mb-3">
-                    <div class="card-white p-3 border-l-4 border-l-amber-500">
-                        <span class="number-badge block mb-0.5 text-[10px]">01</span>
+                <div class="grid grid-cols-3 gap-2.5 mb-3">
+                    <div class="card-white p-2.5 border-l-4 border-l-amber-500">
+                        <span class="number-badge block mb-0.5 text-[9.5px]">01</span>
                         <div class="flex justify-between items-center mb-0.5">
-                            <strong class="text-[11px] text-slate-900">Predictive RUL Agent</strong>
+                            <strong class="text-[10.5px] text-slate-900">Predictive RUL Agent</strong>
                             <span class="text-[7.5px] font-mono bg-amber-100 text-amber-800 px-1 rounded font-bold">XGBoost</span>
                         </div>
-                        <p class="text-[9.5px] text-slate-600 leading-tight">Calculates Remaining Useful Life (RUL) in days with 14-day early warning windows.</p>
+                        <p class="text-[9px] text-slate-600 leading-tight">Calculates Remaining Useful Life (RUL) in days with 14-day early warning windows.</p>
                     </div>
 
-                    <div class="card-white p-3 border-l-4 border-l-cyan-500">
-                        <span class="number-badge block mb-0.5 text-[10px]">02</span>
+                    <div class="card-white p-2.5 border-l-4 border-l-cyan-500">
+                        <span class="number-badge block mb-0.5 text-[9.5px]">02</span>
                         <div class="flex justify-between items-center mb-0.5">
-                            <strong class="text-[11px] text-slate-900">GenAI Copilot Agent</strong>
+                            <strong class="text-[10.5px] text-slate-900">GenAI Copilot Agent</strong>
                             <span class="text-[7.5px] font-mono bg-cyan-100 text-cyan-800 px-1 rounded font-bold">Gemini RAG</span>
                         </div>
-                        <p class="text-[9.5px] text-slate-600 leading-tight">Natural language assistant querying live tag values, P&IDs, and OEM vendor manuals.</p>
+                        <p class="text-[9px] text-slate-600 leading-tight">Natural language assistant querying live tag values, P&IDs, and OEM vendor manuals.</p>
                     </div>
 
-                    <div class="card-white p-3 border-l-4 border-l-purple-500">
-                        <span class="number-badge block mb-0.5 text-[10px]">03</span>
+                    <div class="card-white p-2.5 border-l-4 border-l-purple-500">
+                        <span class="number-badge block mb-0.5 text-[9.5px]">03</span>
                         <div class="flex justify-between items-center mb-0.5">
-                            <strong class="text-[11px] text-slate-900">SHAP Root Cause Agent</strong>
+                            <strong class="text-[10.5px] text-slate-900">SHAP Root Cause Agent</strong>
                             <span class="text-[7.5px] font-mono bg-purple-100 text-purple-800 px-1 rounded font-bold">XAI Attribution</span>
                         </div>
-                        <p class="text-[9.5px] text-slate-600 leading-tight">Translates machine learning feature attributions into plain English fault rankings.</p>
+                        <p class="text-[9px] text-slate-600 leading-tight">Translates machine learning feature attributions into plain English fault rankings.</p>
                     </div>
 
-                    <div class="card-white p-3 border-l-4 border-l-emerald-500">
-                        <span class="number-badge block mb-0.5 text-[10px]">04</span>
+                    <div class="card-white p-2.5 border-l-4 border-l-emerald-500">
+                        <span class="number-badge block mb-0.5 text-[9.5px]">04</span>
                         <div class="flex justify-between items-center mb-0.5">
-                            <strong class="text-[11px] text-slate-900">3D Digital Twin Agent</strong>
+                            <strong class="text-[10.5px] text-slate-900">3D Digital Twin Agent</strong>
                             <span class="text-[7.5px] font-mono bg-emerald-100 text-emerald-800 px-1 rounded font-bold">State Mirror</span>
                         </div>
-                        <p class="text-[9.5px] text-slate-600 leading-tight">Synchronizes interactive 3D physical asset mirrors sub-second with sensor streams.</p>
+                        <p class="text-[9px] text-slate-600 leading-tight">Synchronizes interactive 3D physical asset mirrors sub-second with sensor streams.</p>
                     </div>
 
-                    <div class="card-white p-3 border-l-4 border-l-indigo-500">
-                        <span class="number-badge block mb-0.5 text-[10px]">05</span>
+                    <div class="card-white p-2.5 border-l-4 border-l-indigo-500">
+                        <span class="number-badge block mb-0.5 text-[9.5px]">05</span>
                         <div class="flex justify-between items-center mb-0.5">
-                            <strong class="text-[11px] text-slate-900">ISA-18.2 Alarm Agent</strong>
+                            <strong class="text-[10.5px] text-slate-900">ISA-18.2 Alarm Agent</strong>
                             <span class="text-[7.5px] font-mono bg-indigo-100 text-indigo-800 px-1 rounded font-bold">Suppression</span>
                         </div>
-                        <p class="text-[9.5px] text-slate-600 leading-tight">Manages alarm lifecycles, suppresses nuisance floods, and routes 3-tier escalations.</p>
+                        <p class="text-[9px] text-slate-600 leading-tight">Manages alarm lifecycles, suppresses nuisance floods, and routes 3-tier escalations.</p>
                     </div>
 
-                    <div class="card-white p-3 border-l-4 border-l-rose-500">
-                        <span class="number-badge block mb-0.5 text-[10px]">06</span>
+                    <div class="card-white p-2.5 border-l-4 border-l-rose-500">
+                        <span class="number-badge block mb-0.5 text-[9.5px]">06</span>
                         <div class="flex justify-between items-center mb-0.5">
-                            <strong class="text-[11px] text-slate-900">Work Order Agent</strong>
+                            <strong class="text-[10.5px] text-slate-900">Work Order Agent</strong>
                             <span class="text-[7.5px] font-mono bg-rose-100 text-rose-800 px-1 rounded font-bold">CMMS Auto</span>
                         </div>
-                        <p class="text-[9.5px] text-slate-600 leading-tight">Auto-creates structured work orders with technician routing and spare part lists.</p>
+                        <p class="text-[9px] text-slate-600 leading-tight">Auto-creates structured work orders with technician routing and spare part lists.</p>
                     </div>
                 </div>
 
                 <!-- 4 Core Technical Pillars Bar -->
-                <div class="grid grid-cols-4 gap-2 mb-3 text-[9px]">
+                <div class="grid grid-cols-4 gap-2 mb-2.5 text-[8.5px]">
                     <div class="bg-white p-2 rounded border border-slate-200">
                         <strong class="block text-slate-900 font-bold mb-0.5">⚡ High-Frequency Ingestion</strong>
                         <span class="text-slate-500 leading-tight block">TimescaleDB hypertables handling 100,000+ tag reads/sec.</span>
@@ -226,8 +227,39 @@
                     </div>
                 </div>
 
+                <!-- NEW SECTION ADDED TO UTILIZE PAGE 1 BOTTOM SPACE: INDUSTRIAL CONNECTIVITY PROTOCOLS -->
+                <div class="mt-2 bg-slate-900 text-white p-3 rounded-md border border-slate-800">
+                    <span class="text-[8px] font-mono font-bold text-emerald-400 uppercase tracking-widest block mb-1">INDUSTRIAL SCADA CONNECTIVITY & PROTOCOL DRIVERS</span>
+                    <div class="grid grid-cols-6 gap-2 text-center font-mono text-[8px]">
+                        <div class="bg-slate-950 p-1.5 rounded border border-slate-800">
+                            <span class="block text-white font-bold">Siemens S7</span>
+                            <span class="text-[7px] text-slate-400">S7-1200 / S7-1500</span>
+                        </div>
+                        <div class="bg-slate-950 p-1.5 rounded border border-slate-800">
+                            <span class="block text-white font-bold">OPC-UA</span>
+                            <span class="text-[7px] text-slate-400">DA / HA Tags</span>
+                        </div>
+                        <div class="bg-slate-950 p-1.5 rounded border border-slate-800">
+                            <span class="block text-white font-bold">MQTT Sparkplug</span>
+                            <span class="text-[7px] text-slate-400">Edge Payload B</span>
+                        </div>
+                        <div class="bg-slate-950 p-1.5 rounded border border-slate-800">
+                            <span class="block text-white font-bold">Modbus TCP</span>
+                            <span class="text-[7px] text-slate-400">PLC Memory Regs</span>
+                        </div>
+                        <div class="bg-slate-950 p-1.5 rounded border border-slate-800">
+                            <span class="block text-white font-bold">REST / WebSocket</span>
+                            <span class="text-[7px] text-slate-400">Real-Time Streams</span>
+                        </div>
+                        <div class="bg-slate-950 p-1.5 rounded border border-slate-800">
+                            <span class="block text-white font-bold">Historian CSV</span>
+                            <span class="text-[7px] text-slate-400">Bulk Data Ingestion</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- End-to-End Operational Flow Pipeline -->
-                <div class="card-panel p-2 bg-slate-900 text-white flex justify-between items-center text-center font-mono text-[8px] rounded">
+                <div class="mt-2.5 card-panel p-2 bg-slate-950 text-white flex justify-between items-center text-center font-mono text-[8px] rounded border border-slate-800">
                     <span class="text-slate-300">1. PLC / Sensors</span><span class="text-emerald-400 font-bold">→</span>
                     <span class="text-slate-300">2. Connectivity Hub</span><span class="text-emerald-400 font-bold">→</span>
                     <span class="text-emerald-400 font-bold">3. 3D Twin Agent</span><span class="text-emerald-400 font-bold">→</span>
@@ -251,7 +283,7 @@
     <div class="flyer-page">
         <div>
             <!-- PAGE 2 HEADER BAR -->
-            <div class="bg-slate-950 text-white px-8 py-3 flex justify-between items-center border-b border-slate-800">
+            <div class="bg-slate-950 text-white px-8 py-3.5 flex justify-between items-center border-b border-slate-800">
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 bg-slate-900 rounded-lg p-1 flex items-center justify-center border border-slate-800">
                         <img src="file:///C:/Users/ayush/.gemini/antigravity/scratch/planttwin-frontend/src/assets/logo.png" alt="PlantTwin AI Logo" class="w-full h-full object-contain" />
@@ -264,7 +296,7 @@
             <!-- SECTION 3: BUSINESS CHALLENGES ADDRESSED -->
             <div class="px-8 py-4 border-b border-slate-100">
                 <span class="eyebrow-tag block mb-0.5">BUSINESS CHALLENGES ADDRESSED</span>
-                <h2 class="text-base font-bold text-slate-900 leading-tight mb-2.5">What this solves for site operators & reliability engineers</h2>
+                <h2 class="text-base font-bold text-slate-900 leading-tight mb-2">What this solves for site operators & reliability engineers</h2>
 
                 <!-- 4 Pain Point Cards Grid -->
                 <div class="grid grid-cols-2 gap-3 mb-3">
@@ -303,7 +335,7 @@
             <!-- SECTION 4: BUSINESS BENEFITS -->
             <div class="px-8 py-4 bg-slate-50/70 border-b border-slate-100">
                 <span class="eyebrow-tag block mb-0.5">BUSINESS BENEFITS</span>
-                <h2 class="text-base font-bold text-slate-900 leading-tight mb-2.5">Measurable value, from day one</h2>
+                <h2 class="text-base font-bold text-slate-900 leading-tight mb-2">Measurable value, from day one</h2>
 
                 <!-- 4 Benefit Cards Grid -->
                 <div class="grid grid-cols-2 gap-3">
@@ -327,15 +359,15 @@
             </div>
 
             <!-- SECTION 5: WHAT MAKES US UNIQUE / OUR EDGE (Dark Panel) -->
-            <div class="card-dark mx-8 my-3.5 p-4 bg-slate-950 border border-slate-800">
+            <div class="card-dark mx-8 my-3 p-4 bg-slate-950 border border-slate-800">
                 <span class="eyebrow-tag text-red-500 block mb-0.5">WHAT MAKES US UNIQUE</span>
-                <h2 class="text-base font-extrabold text-white leading-tight mb-1.5">Our Edge</h2>
-                <p class="text-[10.5px] text-slate-400 leading-relaxed mb-3">
+                <h2 class="text-base font-extrabold text-white leading-tight mb-1">Our Edge</h2>
+                <p class="text-[10px] text-slate-400 leading-relaxed mb-2.5">
                     Most industrial software digitizes paperwork. PlantTwin AI replaces paperwork with live, AI-verified evidence — turning existing plant telemetry and cameras into a genuine operational intelligence layer, not just another checklist app.
                 </p>
 
                 <!-- 2-Column Bullet List with Red Dots -->
-                <div class="grid grid-cols-2 gap-y-2 gap-x-6 text-[10.5px] text-slate-200">
+                <div class="grid grid-cols-2 gap-y-1.5 gap-x-6 text-[10px] text-slate-200">
                     <div class="flex items-start space-x-2">
                         <span class="text-red-500 font-bold text-base leading-none">•</span>
                         <span><strong>AI reads manuals directly:</strong> Extracts rules from P&IDs & SOPs without manual coding.</span>
@@ -363,19 +395,19 @@
                 </div>
             </div>
 
-            <!-- SECTION 6: DELIVERING THE FUTURE / ROADMAP -->
+            <!-- SECTION 6: DELIVERING THE FUTURE & INDUSTRIAL STANDARDS -->
             <div class="px-8 pb-3">
-                <span class="eyebrow-tag block mb-0.5">DELIVERING THE FUTURE</span>
-                <h2 class="text-base font-bold text-slate-900 leading-tight mb-2">Where we're headed</h2>
+                <span class="eyebrow-tag block mb-0.5">DELIVERING THE FUTURE & COMPLIANCE</span>
+                <h2 class="text-base font-bold text-slate-900 leading-tight mb-2">Where we're headed & compliance standards</h2>
 
-                <div class="grid grid-cols-2 gap-6 font-mono">
+                <div class="grid grid-cols-2 gap-5 font-mono mb-2">
                     <div class="space-y-0.5">
                         <div class="flex items-center space-x-1.5">
                             <span class="w-4 h-4 rounded-full bg-slate-900 text-white text-[9px] flex items-center justify-center font-bold">01</span>
                             <span class="text-[9px] font-bold text-red-600 uppercase tracking-wider">STEP 1 — LIVE NOW & ROLLING OUT</span>
                         </div>
                         <h3 class="text-xs font-bold text-slate-900 font-sans">Core Platform & Testbed PLC Deployment</h3>
-                        <p class="text-[10px] text-slate-600 font-sans leading-relaxed">
+                        <p class="text-[9.5px] text-slate-600 font-sans leading-relaxed">
                             Real-time anomaly detection, Siemens S7 PLC telemetry streaming, AI manual extraction, and 3D digital twin rendering.
                         </p>
                     </div>
@@ -385,9 +417,21 @@
                             <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">STEP 2</span>
                         </div>
                         <h3 class="text-xs font-bold text-slate-900 font-sans">Autonomous Closed-Loop Plant Operations</h3>
-                        <p class="text-[10px] text-slate-600 font-sans leading-relaxed">
+                        <p class="text-[9.5px] text-slate-600 font-sans leading-relaxed">
                             Autonomous AI control loops adjusting operating parameters to safely extend asset life during active degradation.
                         </p>
+                    </div>
+                </div>
+
+                <!-- NEW COMPLIANCE & CONTACT STRIP FILLING PAGE 2 BOTTOM SPACE -->
+                <div class="bg-slate-100 p-2 rounded border border-slate-200 flex justify-between items-center text-[8.5px] font-mono text-slate-700">
+                    <div>
+                        <strong class="text-slate-900 font-bold block">STANDARDS & COMPLIANCE:</strong>
+                        <span>ISA-95 Level 0-4 • ISA-18.2 Alarms • SOC-2 Type II • ISO 14224 Asset Taxonomy</span>
+                    </div>
+                    <div class="text-right">
+                        <strong class="text-emerald-700 font-bold block">DEMO & SUPPORT:</strong>
+                        <span>contact@360aiagents.com • demo.planttwin.ai</span>
                     </div>
                 </div>
             </div>
